@@ -1,50 +1,68 @@
-from django.shortcuts import render
-from .models import Account
+from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views.decorators.cache import never_cache
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
-from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+from django.db.models import Q
 
 @never_cache
 def usersignup(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
     if request.method == 'POST':
-        first_name = request.POST.get('firstname')
-        last_name = request.POST.get('lastname')
-        Email = request.POST.get('email')
-        pass1 = request.POST.get('password1')
-        pass2 = request.POST.get('password2')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        print(username)
+        print(email)
+        print(password1)
+        print(password2)
 
-        if Account.objects.filter(email = Email).exists():
-            messages(request,'Email Already Exists')
-        elif pass1 != pass2:
-            messages(request,"Password Does not Match")
+        if User.objects.filter(email=email).exists():
+            messages.warning(request, 'Email Already Exists')
+        elif password1 != password2:
+            messages.warning(request, "Passwords Do Not Match")
         else:
-            user1 = Account.objects.create(firstname = first_name, lastname = last_name, email = Email,password = pass1)
-            user1.is_active = False
-            user1.is_admin = False
-            user1.is_superadmin = False
-            user1.is_staff = False
-            user1.is_superuser = False
-
+            user1 = User.objects.create(username=username, email=email, password=password1)
+            # user1.is_active = False
+            # user1.is_admin = False
+            # user1.is_superadmin = False
+            # user1.is_staff = False
+            # user1.is_superuser = False
             user1.save()
-            return render(request, 'home.html')
-    # return render(request,'userlogin.html')
+            user1.login()
+            return render(request, 'userside/userlogin.html')
 
+    else:
+        return render(request, 'userside/usersignup.html')
+
+
+@never_cache
 def userlogin(request):
 
+    print('userlogin')
+    # if request.user.is_authenticated:
+    #     return redirect('home')
+
     if request.method == 'POST':
-        Email = request.POST.get('email')
-        Pass = request.POST.get('password')
-        user_details = authenticate(email = Email, password = Pass)
-        if user_details is not None and user_details.is_superuser is False:
-            return HttpResponse(request, '<h1>Welcome User</h1>')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        print(username)
+        # user_details = authenticate(username=username, password=password)
+
+        # if user_details is not None:
+        if User.objects.filter(Q(username = username) & Q(password = password)).exists():
+            # login(request, user_details)
+            return redirect("home")
         else:
-            return HttpResponse(request, 'Something Went Wrong Please Try Again...')
-    # return render(request,'userside/userlogin.html')
-    return HttpResponse(request, 'Something Went Wrong Please Try Again...')
+            messages.error(request, 'Invalid Credentials. Please Try Again.')
+            return redirect('userlogin')
+
+    return render(request, 'userside/userlogin.html')
 
 
-
-
-
-            
+def userhome(request):
+    return render(request, 'userside/home.html')
