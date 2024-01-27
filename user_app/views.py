@@ -33,8 +33,9 @@ def usersignup(request):
             # user1.is_staff = False
             # user1.is_superuser = False
             user1.save()
-            user1.login()
-            return render(request, 'userside/userlogin.html')
+            return redirect("home")
+            # login(request,user1)
+            # return render(request, 'userside/userlogin.html')
 
     else:
         return render(request, 'userside/usersignup.html')

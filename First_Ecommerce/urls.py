@@ -23,4 +23,5 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('user_app.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
