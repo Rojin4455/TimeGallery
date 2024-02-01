@@ -14,3 +14,9 @@ from django.contrib.auth.models import AbstractBaseUser
 #     is_superadmin   = models.BooleanField(default=False)
 #     is_blocked      = models.BooleanField(default=False)
 #     is_superuser    = models.BooleanField(default=False)
+
+class User(AbstractBaseUser):
+    is_email_verified = models.BooleanField(default = False)
+
+    def __str__(self):
+        return self.email

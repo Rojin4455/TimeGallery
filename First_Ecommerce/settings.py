@@ -14,6 +14,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = '/'
+# ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -22,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user_app',
+    'admin_app',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -56,7 +60,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
+                
             ],
         },
     },
@@ -98,6 +102,16 @@ USE_I18N = True
 
 USE_TZ = True
 
+#Email Config
+
+EMAIL_BACKEND       = os.environ["EMAIL_BACKEND"]
+EMAIL_HOST          = os.environ["EMAIL_HOST"]
+EMAIL_USE_TLS       = os.environ["EMAIL_USE_TLS"]
+EMAIL_PORT          = os.environ["EMAIL_PORT"]
+EMAIL_HOST_USER     = os.environ["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"] 
+
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
@@ -114,3 +128,6 @@ AUTHENTICATION_BACKENDS = [
 SITE_ID = 1
 
 SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_LOGIN_ON_GET=True
+
+

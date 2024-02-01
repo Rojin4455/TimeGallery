@@ -1,5 +1,7 @@
 <!-- usersignup.html -->
+{% comment %} {% load socialaccount %}  {% endcomment %}
 {% load static %}
+{% comment %} {% load account %} {% endcomment %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,6 +58,7 @@
                     </form>
                     {% include 'userside/alert.html' %}
                         <p class="text-center py-4 fw-bold fs-8">Or Sign up with social platforms</p>
+                        {% comment %} <a  class="btn btn-sm btn-block btn-light mt-2" id="gp" href="{% provider_login_url 'google' %}" style="width: 100%;margin-bottom: 25px;background-color: aliceblue;">Login With <img src="https://img.icons8.com/color/30/000000/google-logo.png"/></a> {% endcomment %}
                         <ul class="d-inline-block mx-auto">
                             <li class="float-start px-3"><a href=""><i class="bi bi-facebook"></i></a></li>
                             <li class="float-start px-3"><a href=""><i class="bi bi-twitter"></i></a></li>
