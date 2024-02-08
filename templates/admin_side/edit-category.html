@@ -1,0 +1,68 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+{% block content %}
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Edit Category</h2>
+                <p>Add or update category details</p>
+            </div>
+            <div>
+                <input type="text" placeholder="Search Categories" class="form-control bg-white">
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <form action="  " method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <label for="category_name" class="form-label">Name</label>
+                                <input type="text" placeholder="Enter category name" class="form-control" id="category_name" name="name" value="{{ category_object.cat_name }}">
+                            </div>
+                            {% comment %} <div class="mb-4">
+                                <label for="category_slug" class="form-label">Slug</label>
+                                <input type="text" placeholder="Enter category slug" class="form-control" id="category_slug" name="slug" value="{{ category_object.cat_slug }}">
+                            </div> {% endcomment %}
+                            <div class="mb-4">
+                                <label for="category_description" class="form-label">Description</label>
+                                <textarea placeholder="Enter category description" class="form-control" id="category_description" name="description"> </textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="is_active" class="form-label">Active</label>
+                                <select class="form-select" id="is_active" name="is_active">
+                                    <option value="1" {% if user.is_active %}selected{% endif %}>Active</option>
+                                    <option value="0" {% if not user.is_active %}selected{% endif %}>Inactive</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label for="category_image" class="form-label">Image</label>
+                                <input type="file" class="form-control" id="category_image" name="image">
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- Sample Category Details -->
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Sample Category Details</h4>
+                                <hr>
+                                <p class="card-text"><strong>ID:</strong> {{category_object.id}}</p>
+                                <p class="card-text"><strong>Name:</strong> {{category_object.cat_name}}</p>
+                                <p class="card-text"><strong>Slug:</strong> {{category_object.cat_slug}}</p>
+                                <p class="card-text"><strong>Description:</strong> {{category_object.cat_description}}</p>
+                                <p class="card-text"><strong>Active:</strong> {{category_object.is_active}}</p>
+                                <p class="card-text"><strong>Created Date:</strong> {{category_object.created_on}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

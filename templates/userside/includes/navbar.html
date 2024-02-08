@@ -36,7 +36,7 @@
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="" class="text-decoration-none">
-                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
+                    <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">Time</span>Gallery</h1>
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
@@ -100,8 +100,8 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="index.html" class="nav-item nav-link active">Home</a>
-                            <a href="shop.html" class="nav-item nav-link">Shop</a>
+                            <a href="{% url 'user_app:userhome' %}" class="nav-item nav-link active">Home</a>
+                            <a href="{% url 'store_app:products_by_category' %}" class="nav-item nav-link">Shop</a>
                             <a href="detail.html" class="nav-item nav-link">Shop Detail</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
@@ -115,17 +115,17 @@
                         </div>
                         <div class="navbar-nav ml-auto py-0">
 
-                            <a href="{% url 'user-logout' %}"> Logout </a>
+                            {% comment %} <a href="{% url 'user-logout' %}"> Logout </a> {% endcomment %}
                         </div>
                         {% if request.user.is_authenticated %}
                         <div class="navbar-nav ml-auto py-0">
 
-                            <a href="{% url 'account_logout' %}"> Logout of Account </a>
+                            <a href="{% url 'user_app:user_logout' %}"> Logout of Account </a>
                         </div>
                         {% else %}
                         <div class="navbar-nav ml-auto py-0">
-                            <a href="{% url 'userlogin' %}" class="nav-item nav-link" >Login</a>
-                            <a href="{% url 'usersignup' %}" class="nav-item nav-link">Register</a>
+                            <a href="{% url 'user_app:user_login' %}" class="nav-item nav-link" >Login</a>
+                            <a href="{% url 'user_app:usersignup' %}" class="nav-item nav-link">Register</a>
                         </div>
                         {% endif %}
                         

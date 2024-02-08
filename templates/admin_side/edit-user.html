@@ -1,0 +1,47 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Edit User </h2>
+            <p>Edit user details here.</p>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <header class="card-header">
+            <h5>User Details</h5>
+        </header> <!-- card-header end// -->
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="is_active" class="form-label">Active</label>
+                    <select class="form-select" id="is_active" name="is_active">
+                        <option value="1" {% if user.is_active %}selected{% endif %}>Active</option>
+                        <option value="0" {% if not user.is_active %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="last_login" class="form-label">Last Login</label>
+                    <input type="text" class="form-control" id="last_login" name="last_login" value="{{ user.last_login }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="joined_on" class="form-label">Joined Date</label>
+                    <input type="text" class="form-control" id="joined_on" name="joined_on" value="{{ user.joined_on }}" disabled>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div> <!-- card-body end// -->
+    </div> <!-- card end// -->
+</section> <!-- content-main end// -->
+{% endblock %}

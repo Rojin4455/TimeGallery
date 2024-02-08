@@ -68,16 +68,18 @@
                 </ul>
             </div>
         </header> {% endcomment %}
+        
         <section class="content-main" style="height:100vh;">
             <div class="card mx-auto card-login mt-100">
                 <div class="card-body">
                     <h4 class="card-title mb-4">Sign in</h4>
                     {% comment %} <form> {% endcomment %}
+                        <form method="post">{% csrf_token %}
                         <div class="mb-3">
-                            <input class="form-control" placeholder="Username or email" type="text">
+                            <input class="form-control" placeholder="email" type="email", name = 'email'>
                         </div> <!-- form-group// -->
                         <div class="mb-3">
-                            <input class="form-control" placeholder="Password" type="password">
+                            <input class="form-control" placeholder="Password" type="password", name = 'password'>
                         </div> <!-- form-group// -->
                         <div class="mb-3">
                             <a href="#" class="float-end font-sm text-muted">Forgot password?</a>
@@ -87,8 +89,11 @@
                             </label> {% endcomment %}
                         </div> <!-- form-group form-check .// -->
                         <div class="mb-4">
-                            <a href="{% url 'admin_dashboard' %}"> <button type="submit" class="btn btn-primary w-100"> Login </button></a>
-                        </div> <!-- form-group// -->
+                            <a  action="{% url 'admin_app:admin_dashboard' %}">
+                            <button type="submit" class="btn btn-primary w-100"> Login </button>
+                            </a>
+                        </div>
+                    </form> <!-- form-group// -->
                     {% comment %} </form> {% endcomment %}
                     {% comment %} <p class="text-center small text-muted mb-15">or sign up with</p>
                     <div class="d-grid gap-3 mb-4">
@@ -110,6 +115,7 @@
                 </div>
             </div>
         </section>
+    
         {% comment %} <footer class="main-footer text-center">
             <p class="font-xs">
                 <script>

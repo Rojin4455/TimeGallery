@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Dental Hospital Website Template | Smarteyeapps.com</title>
+    <title>Time Gallery</title>
     <link rel="shortcut icon" href="{% static 'assets/images/fav.png' %}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
     <link rel="shortcut icon" href="{% static 'assets/images/fav.jpg' %}">
@@ -22,7 +22,7 @@
                 <div class="col-lg-6 bg-gray p-5 text-center">
                    <h4 class="text-center fw-bolder fs-2">Register</h4>
                    <p class="mb-3 fs-7">Already have an account?</p>
-                   <a href="{% url 'userlogin' %}">
+                   <a href="{% url 'user_app:user_login' %}">
                    
                     <button class="btn fw-bold mb-5 btn-outline-success px-4 rounded-pill">Login</button>
                    </a>
@@ -34,28 +34,65 @@
                    <div class="row d-flex vh-100">
                     <div class="col-md-8 p-4 ikigui m-auto text-center align-items-center">
                        <h4 class="text-center fw-bolder mb-4 fs-2">Register</h4>
-                       <form method="post">
+                       <form action="{% url 'user_app:usersignup' %}" method="post">
                         {% csrf_token %}
+
+
+
                         <div class="input-group mb-4">
                           <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-person"></i></span>
                           <input type="text" class="form-control ps-2 border-start-0 fs-7 inbg form-control-lg mb-0" name="username" placeholder="Enter Full Name" aria-label="Username" aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-4">
                           <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-envelope"></i></span>
-                          <input type="text" class="form-control ps-2 border-start-0 fs-7 inbg form-control-lg mb-0" name="email" placeholder="Enter Email Address" aria-label="Username" aria-describedby="basic-addon1">
+                          <input type="email" class="form-control ps-2 border-start-0 fs-7 inbg form-control-lg mb-0" name="email" placeholder="Enter Email Address" aria-label="Username" aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-4">
                           <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-lock"></i></span>
-                          <input type="password" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" name="password1" placeholder="Enter Password" aria-label="Username" aria-describedby="basic-addon1">
+                          <input type="password" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" name="password" placeholder="Enter Password" aria-label="Username" aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-4">
                           <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-lock"></i></span>
-                          <input type="password" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" name="password2" placeholder="Re-enter Password" aria-label="Username" aria-describedby="basic-addon1">
+                          <input type="password" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" name="conf_password" placeholder="Re-enter Password" aria-label="Username" aria-describedby="basic-addon1">
                         </div>
-                        <a href="{% url 'home' %}">
+                        <div class="input-group mb-4">
+                          {% if messages %}
+                          {% for message in messages %}
+                          <span class="error" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                          {% endfor %}
+                          {% endif %}
+                    </div>
+                       
                            <button class="btn btn-lg fw-bold fs-7 btn-success w-100">Register</button>
-                        </a>
+  
                     </form>
+
+
+
+                    {% comment %} <div class="form-group">
+                      <input name="username" type="text" placeholder="Username" />
+                    </div>
+                    <div class="form-group">
+                      <input name="email" type="text" placeholder="Email" />
+                    </div>
+                    <div class="form-group">
+                      <input name="password" type="password" placeholder="Password" />
+                    </div>
+                    <div class="form-group">
+                      <input name="conf_password" type="password" placeholder="Confirm password" />
+                    </div>
+                    <div class="login_footer form-group">
+                      <div class="chek-form">
+                        <div class="custome-checkbox">
+                          <input class="form-check-input" type="checkbox" name="checkbox" id="exampleCheckbox12" value="" required />
+                          <label class="form-check-label" for="exampleCheckbox12"><span>I agree to terms &amp; Policy.</span></label>
+                        </div>
+                      </div>
+                      <a href="page-privacy-policy.html"><i class="fi-rs-book-alt mr-5 text-muted"></i>Lean more</a>
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login">Submit &amp; Register</button>
+                    </div> {% endcomment %}
                     {% include 'userside/alert.html' %}
                         <p class="text-center py-4 fw-bold fs-8">Or Sign up with social platforms</p>
                         {% comment %} <a  class="btn btn-sm btn-block btn-light mt-2" id="gp" href="{% provider_login_url 'google' %}" style="width: 100%;margin-bottom: 25px;background-color: aliceblue;">Login With <img src="https://img.icons8.com/color/30/000000/google-logo.png"/></a> {% endcomment %}

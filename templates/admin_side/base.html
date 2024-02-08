@@ -1,6 +1,6 @@
 {% comment %}----- base.html : This file has base template of side bar, navbar and footer. -----{% endcomment %}
 {%load static%}
-
+{% comment %} {% load messages %} {% endcomment %}
 <!DOCTYPE HTML>
 <html lang="en">
 
@@ -8,7 +8,7 @@
 <!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:32:35 GMT -->
 <head>
     <meta charset="utf-8">
-    <title>DapperShoes Dashboard</title>
+    <title>TimeGallery Dashboard</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,7 +28,7 @@
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
             <a href="index.html" class="brand-wrap">
-                <img src="{% static 'assets_admin/imgs/theme/logo.svg' %}" class="logo" alt="DapperShoes Dashboard">
+                <img src="{% static 'assets_admin/imgs/theme/logo.svg' %}" class="logo" alt="TimeGallery Dashboard">
             </a>
             <div>
                 <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
@@ -37,32 +37,32 @@
         <nav>
             <ul class="menu-aside">
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_dashboard'%}"> <i class="icon material-icons md-home"></i>
+                    <a class="menu-link" href="{% url 'admin_app:admin_dashboard' %}"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_products_list' %}"> <i class="icon material-icons md-shopping_bag"></i>
+                    <a class="menu-link" href="{% url 'admin_app:admin_products_list' %}"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products List</span>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_orders' %}"> <i class="icon material-icons md-shopping_cart"></i>
+                    <a class="menu-link" href="{% url 'admin_app:admin_products_list' %}"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders List</span>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_catagories' %}"> <i class="icon material-icons md-store"></i>
+                    <a class="menu-link" href="{% url 'category_app:categories' %}"> <i class="icon material-icons md-store"></i>
                         <span class="text">Catagories</span>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_add_products' %}"> <i class="icon material-icons md-add_box"></i>
+                    <a class="menu-link" href="{% url 'admin_app:admin_add_products' %}"> <i class="icon material-icons md-add_box"></i>
                         <span class="text">Add new product</span>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_users_list' %}"> <i class="icon material-icons md-person"></i>
+                    <a class="menu-link" href="{% url 'user_management_app:users_list' %}"> <i class="icon material-icons md-person"></i>
                         <span class="text">Users List</span>
                     </a>
                 </li>
@@ -128,7 +128,7 @@
                             <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
                             <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="{% url 'admin_logout'%}"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                            <a class="dropdown-item text-danger" href="{% url 'admin_app:admin_logout'%}"><i class="material-icons md-exit_to_app"></i>Logout</a>
                         </div>
                     </li>
                 </ul>
@@ -145,7 +145,7 @@
                 <div class="col-sm-6">
                     <script>
                     document.write(new Date().getFullYear())
-                    </script> ©, Dapper Shoes - HTML Ecommerce Template .
+                    </script> ©, TimeGallery - HTML Ecommerce Template .
                 </div>
                 <div class="col-sm-6">
                     <div class="text-sm-end">

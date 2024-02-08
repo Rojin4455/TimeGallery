@@ -26,6 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user_app',
     'admin_app',
+    'category',
+    'store',
+    'user_management',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -53,6 +56,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': ['templates'],
+        # 'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -60,6 +64,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'django.contrib.messages.context_processors.messages',
+                'category.context_processors.menu_links',
                 
             ],
         },
@@ -117,6 +123,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+MEDIA_URL='media/'
+MEDIA_ROOT=os.path.join(BASE_DIR,'media/')
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = [
@@ -129,5 +138,7 @@ SITE_ID = 1
 
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET=True
+
+AUTH_USER_MODEL = 'admin_app.User'
 
 
