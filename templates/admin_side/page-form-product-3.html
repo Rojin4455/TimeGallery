@@ -2,116 +2,156 @@
 {% load static %}
 
 {% block content%}
-        <section class="content-main">
-            <div class="row">
-                <div class="col-9">
-                    <div class="content-header">
-                        <h2 class="content-title">Add New Product</h2>
-                        <div>
-                            <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
-                            <button class="btn btn-md rounded font-sm hover-up">Publich</button>
-                        </div>
+<section class="content-main">
+    <form id="productForm" action="{% url 'product_management_app:add_product' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Product</h2>
+                    <div>
+                        <button id="saveBtn" class="btn btn-md rounded font-sm hover-up">Save Changes</button>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <label for="product_title" class="form-label">Product title</label>
-                                <input type="text" placeholder="Type here" class="form-control" id="product_title">
-                            </div>
-                            <div class="row gx-3">
-                                <div class="col-md-4  mb-3">
-                                    <label for="product_sku" class="form-label">SKU</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_sku">
-                                </div>
-                                <div class="col-md-4  mb-3">
-                                    <label for="product_color" class="form-label">Color</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_color">
-                                </div>
-                                <div class="col-md-4  mb-3">
-                                    <label for="product_size" class="form-label">Size</label>
-                                    <input type="text" placeholder="Type here" class="form-control" id="product_size">
-                                </div>
-                            </div>
-                            <div class="mb-4">
-                                <label for="product_brand" class="form-label">Brand</label>
-                                <input type="text" placeholder="Type here" class="form-control" id="product_brand">
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label for="product_title" class="form-label">Product title</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="product_title" name='product_title' required>
+                        </div>
+                        <div class="row gx-3">
+                            <div class="col-md-4 mb-3">
+                                <label for="product_sku" class="form-label">Stock</label>
+                                <input type="number" placeholder="Type here" class="form-control" id="product_sku" name="stock_qty" required>
                             </div>
                         </div>
-                    </div> <!-- card end// -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div>
-                                <label class="form-label">Description</label>
-                                <textarea placeholder="Type here" class="form-control" rows="4"></textarea>
-                            </div>
+                        <div class="mb-4">
+                            <label class="form-label">Brand</label>
+                            <select class="form-select" id="brandSelect" name="Brand" required>
+                                {% for brand in brands %} 
+                                <option value="{{brand.id}}">{{brand.brand_name}}</option>
+                                {% endfor %}
+                            </select>
                         </div>
-                    </div> <!-- card end// -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div>
-                                <label class="form-label">Images</label>
-                                <input class="form-control" type="file">
-                            </div>
+                    </div>
+                </div> <!-- card end// -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div>
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control" rows="4" id="description" name="description"></textarea>
                         </div>
-                    </div> <!-- card end// -->
-                </div>
-                <div class="col-lg-3">
-                    <div class="card mb-4">
+                    </div>
+                </div> <!-- card end// -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h4>Image</h4>
+                        </div>
                         <div class="card-body">
-                            <div class="mb-4">
-                                <label class="form-label">Price</label>
-                                <input type="text" placeholder="Type here" class="form-control">
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">Status</label>
-                                <select class="form-select">
-                                    <option>Published</option>
-                                    <option>Draft</option>
-                                </select>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">Tags</label>
-                                <input type="text" placeholder="Type here" class="form-control">
-                            </div>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Tech</a>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Mobile</a>
-                            <a href="#" class="font-xs hover-up mr-15"><i class="font-xs material-icons md-close text-body"></i> Apple</a>
-                            <hr>
-                            <h5 class="mb-3">Categories</h5>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat">
-                                <label class="form-check-label" for="product-cat"> Shirt </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-1">
-                                <label class="form-check-label" for="product-cat-1"> T-Shirt </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-2">
-                                <label class="form-check-label" for="product-cat-2"> Sneakers </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-3">
-                                <label class="form-check-label" for="product-cat-3"> Joggers </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-4">
-                                <label class="form-check-label" for="product-cat-4"> Vests </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-5">
-                                <label class="form-check-label" for="product-cat-5"> Knitwear </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="product-cat-8">
-                                <label class="form-check-label" for="product-cat-8"> Shorts </label>
+                            <div class="input-upload">
+                                <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
+                                <input type="file" class="form-control" id="category_image" name="image" required>
                             </div>
                         </div>
                     </div> <!-- card end// -->
                 </div>
             </div>
-        </section>
+            <div class="col-lg-3">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label class="form-label">Price</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="price" name="price" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" id="categorySelect" name="category_id" required>
+                                {% for category in categories %}    
+                                <option value="{{category.id}}">{{category.cat_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+        </div>
+    </form>
+</section>
 
-{% endblock %} 
+<div id="errorContainer"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const saveBtn = document.getElementById('saveBtn');
+        const productForm = document.getElementById('productForm');
+        const errorContainer = document.getElementById('errorContainer');
+
+        saveBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const productTitle = document.getElementById('product_title').value.trim();
+            const productSKU = document.getElementById('product_sku').value.trim();
+            const brandSelect = document.getElementById('brandSelect').value;
+            const description = document.getElementById('description').value.trim();
+            const price = document.getElementById('price').value.trim();
+            const categorySelect = document.getElementById('categorySelect').value;
+            const categoryImage = document.getElementById('category_image').value.trim();
+
+            errorContainer.innerHTML = '';
+
+            if (!productTitle) {
+                displayError('Product title is required.', 'product_title');
+                return;
+            }
+
+            if (!productSKU) {
+                displayError('Stock quantity is required.', 'product_sku');
+                return;
+            } else if (isNaN(productSKU) || parseInt(productSKU) <= 0) {
+                displayError('Stock quantity must be a valid positive number.', 'product_sku');
+                return;
+            }
+
+            if (!brandSelect) {
+                displayError('Brand is required.', 'brandSelect');
+                return;
+            }
+
+            if (!price) {
+                displayError('Price is required.', 'price');
+                return;
+            } else if (isNaN(price) || parseFloat(price) <= 0) {
+                displayError('Price must be a valid positive number.', 'price');
+                return;
+            }
+
+            if (!categorySelect) {
+                displayError('Category is required.', 'categorySelect');
+                return;
+            }
+
+            if (!categoryImage) {
+                displayError('Image is required.', 'category_image');
+                return;
+            }
+
+            productForm.submit();
+        });
+
+        function displayError(message, fieldId) {
+            const errorDiv = document.createElement('div');
+            errorDiv.classList.add('alert', 'alert-danger');
+            errorDiv.textContent = message;
+            errorContainer.appendChild(errorDiv);
+
+            // Highlight the field with the error
+            const field = document.getElementById(fieldId);
+            field.classList.add('is-invalid');
+        }
+    });
+</script>
+
+{% endblock %}

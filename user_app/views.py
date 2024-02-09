@@ -64,24 +64,12 @@ def signup(request):
         sendermail = "timegalleryt.com"
         otp = f"Hello,\n\nYour One-Time Password (OTP) for verification at Time Gallery Ecommerce Store is: {randomotp}\n\nThank you for choosing Time Gallery Ecommerce Store.\n\nBest regards,\nTime Gallery Ecommerce Store Team"
 
-        send_mail(subject,otp,sendermail,[email])
+        send_mail(subject,otp,sendermail,[email],fail_silently=True)
+        
 
         return render(request,'userside/otp.html')
-    return render(request,'userside/usersignup.html') 
+    return render(request,'userside/usersignup.html')
 
-# # otp sending take place
-# def otp_verification(request):
-#     otp_value = random.randint(100000,999999)
-#     request.session['otp_key'] = otp_value
-
-#     send_mail(
-#         'OTP verfication from TIMEGALLERY',
-#         f"{request.session['otp_key']} Hello,\n\nThank you for logging into Time Gallery Ecommerce Store.\n\nWe appreciate your continued support.\n\nBest regards,\nTime Gallery Ecommerce Store Team",
-#         'timegalleryt.com',
-#         [request.session['email']],
-#         fail_silently=False
-#     )
-#     return redirect('otp')
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)   
 def otp(request):
@@ -124,7 +112,6 @@ def login(request):
         if not User.objects.filter(email=email):
             messages.error(request, "Invalid Email Adress")
             return redirect('user_app:user_login')
-        
         
         customer = User.objects.get(email=email)
 

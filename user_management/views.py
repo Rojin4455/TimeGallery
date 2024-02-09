@@ -1,8 +1,10 @@
 from django.shortcuts import render,redirect
 from admin_app.models import User
-from django.views.decorators.cache import cache_control
+from django.views.decorators.cache import cache_control,never_cache
 from django.db.models import Q
 from django.contrib import messages
+from django.shortcuts import get_object_or_404
+
 
 
 
@@ -11,7 +13,7 @@ from django.contrib import messages
 def users_list(request):
     if request.user.is_superuser:
         if request.user.is_authenticated:
-            users = User.objects.filter(is_superuser = False)
+            users = User.objects.filter(is_superuser = False).order_by('id')
             user_all = {
                 'users':users
             }
@@ -65,6 +67,21 @@ def edit_user(request,id):
             return render(request,'admin_side/edit-user.html')
     else:
         return render(request,'userside/userlogin.html')
+    
+
+@never_cache
+def activate_user(request, id):
+    current = get_object_or_404(User, id=id)
+    current.is_active = True
+    current.save()
+    return redirect('user_management_app:users_list')
+
+@never_cache
+def deactivate_user(request, id):
+    current = get_object_or_404(User, id=id)
+    current.is_active = False
+    current.save()
+    return redirect('user_management_app:users_list')
                         
 
                         

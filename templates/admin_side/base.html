@@ -42,12 +42,12 @@
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_app:admin_products_list' %}"> <i class="icon material-icons md-shopping_bag"></i>
+                    <a class="menu-link" href="{% url 'product_management_app:admin_products_list' %}"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products List</span>
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_app:admin_products_list' %}"> <i class="icon material-icons md-shopping_cart"></i>
+                    <a class="menu-link" href=""> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders List</span>
                     </a>
                 </li>
@@ -57,7 +57,12 @@
                     </a>
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="{% url 'admin_app:admin_add_products' %}"> <i class="icon material-icons md-add_box"></i>
+                    <a class="menu-link" href="{% url 'category_app:create_brand' %}"> <i class="icon material-icons md-store"></i>
+                        <span class="text">Brands</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="{% url 'product_management_app:add_product' %}"> <i class="icon material-icons md-add_box"></i>
                         <span class="text">Add new product</span>
                     </a>
                 </li>

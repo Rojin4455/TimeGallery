@@ -1,7 +1,7 @@
 from django.db import models
 from category.models import Category
+from django.utils.text import slugify
 
-# Create your models here.
 class Brand(models.Model):
     brand_name  = models.CharField(max_length=50,unique=True)
     is_active   = models.BooleanField(default=True)
@@ -22,6 +22,22 @@ class Product(models.Model):
     modified_date       = models.DateTimeField(auto_now = True)
     brand               = models.ForeignKey(Brand,on_delete=models.CASCADE)
 
+    def save(self, *args, **kwargs):
+        # Automatically generate the slug from the product name
+        if not self.cat_slug:
+            self.cat_slug = slugify(self.cat_name)
+        super().save(*args,**kwargs)
+
     def __str__(self):
         return self.product_name
+
+# for adding additional images of the product
+    
+class  Additional_Product_Image(models.Model):
+    product     = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='additional_product_images')
+    image       = models.ImageField(upload_to='photos/product_additional')
+    is_active   = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.image.url
 

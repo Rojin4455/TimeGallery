@@ -7,10 +7,19 @@ from django.db.models import Q
 from .models import User
 from django.contrib.auth.decorators import login_required
 from category.models import Category
+from store.models import Product,Brand
 
 
-def admin_products_list(request):
-    return render(request,'admin_side/page-products-list.html')
+# def admin_products_list(request):
+#     products = Product.objects.all()
+#     categories = Category.objects.all()
+#     brands = Brand.objects.all()
+#     context = {
+#         'products':products,
+#         'categories':categories,
+#         'brands':brands,
+#     }
+#     return render(request,'admin_side/page-products-list.html',context)
 
 def admin_orders(request):
     return render(request,'admin_side/page-orders-1.html')
@@ -18,11 +27,11 @@ def admin_orders(request):
 # def admin_catagories(request):
 #     return render(request,'admin_side/page-categories.html')
 
-def admin_add_products(request):
-    return render(request,'admin_side/page-form-product-3.html')
+# def admin_add_products(request):
+#     return render(request,'admin_side/page-form-product-3.html')
 
-def admin_users_list(request):
-    return render(request,'admin_side/page-users-list.html')
+# def admin_users_list(request):
+#     return render(request,'admin_side/page-users-list.html')
 
 # def admin_logout(request):
 #     return render(request,'admin_side/page-account-login.html')

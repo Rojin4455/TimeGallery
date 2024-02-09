@@ -2,6 +2,9 @@ from django.shortcuts import render,redirect
 from .models import Category
 from django.contrib import messages
 from django.utils.text import slugify
+from django.db import IntegrityError
+from store.models import Brand
+
 
 
 
@@ -47,7 +50,7 @@ def edit_category(request,id):
 
             cat_name = request.POST['name']
 
-            cat_image = request.POST['image']
+            cat_image = request.FILES.get('image')
             cat_description = request.POST['description']
             is_active = request.POST.get("is_active")
 
@@ -87,7 +90,42 @@ def delete_category(request,id):
         return redirect('category_app:categories')
 
 
-    
+#brand management
+
+
+def create_brand(request):
+    if request.user.is_authenticated and request.user.is_superuser:
+        if request.method == 'POST':
+            name = request.POST.get('name')
+            is_active = request.POST.get('is_active')
+
+            if not name:
+                messages.error(request, 'Please provide a valid brand name', extra_tags='brand_name_error')
+                return redirect('category_app:create_brand')
+
+            if is_active:
+                is_active = bool(int(is_active))
+
+            try:
+                brand = Brand.objects.create(brand_name=name, is_active=is_active)
+                messages.success(request, "Brand created successfully!", extra_tags="brand_success")
+            except IntegrityError:
+                messages.error(request, 'A brand with the same name already exists', extra_tags='brand_duplicate_error')
+            
+            return redirect('category_app:create_brand')
+
+        brands = Brand.objects.all()
+        brand_context = {'brands': brands}
+        return render(request, 'admin_side/page-brand.html', brand_context)
+
+    return redirect('admin_app:admin_login')
+
+
+def delete_brand(request,id):
+    if request.user.is_authenticated and request.user.is_superuser:
+        brand = Brand.objects.get(id=id)
+        brand.delete()
+        return redirect('category_app:create_brand')    
 
 
 
