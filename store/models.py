@@ -24,8 +24,8 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         # Automatically generate the slug from the product name
-        if not self.cat_slug:
-            self.cat_slug = slugify(self.cat_name)
+        if not self.slug:
+            self.slug = slugify(self.product_name)
         super().save(*args,**kwargs)
 
     def __str__(self):

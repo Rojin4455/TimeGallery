@@ -1,0 +1,46 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block content%}
+<section class="content-main">
+    <h2 class="content-title">Add Extra Images for Product</h2>
+    <form action="{% url 'product_management_app:add_extra_images' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h4>Extra Images</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-upload">
+                                <label class="form-label">Image 1</label>
+                                <input type="file" class="form-control" name="image1" required>
+                            </div>
+                            <div class="input-upload">
+                                <label class="form-label">Image 2</label>
+                                <input type="file" class="form-control" name="image2" required>
+                            </div>
+                            <div class="input-upload">
+                                <label class="form-label">Image 3</label>
+                                <input type="file" class="form-control" name="image3" required>
+                            </div>
+                            <div class="input-upload">
+                                <label class="form-label">Image 4</label>
+                                <input type="file" class="form-control" name="image4" required>
+                            </div>
+                            <div class="input-upload">
+                                <label class="form-label">Image 5</label>
+                                <input type="file" class="form-control" name="image5" required>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+            </div>
+        </div>
+        <button type="submit" class="btn btn-md rounded font-sm hover-up">Upload Images</button>
+    </form>
+</section>
+</div>
+{% endblock %}

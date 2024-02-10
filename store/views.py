@@ -2,108 +2,78 @@ from django.shortcuts import render,get_object_or_404,redirect
 from . models import Product,Brand
 from category.models import Category
 from django.contrib import messages
+from . models import Additional_Product_Image
+from django.views.decorators.cache import never_cache
 
 
+# from django.shortcuts import render, get_object_or_404
+# from .models import Product
+# from category.models import Category
 
-def store(request, category_slug = None):
+from django.shortcuts import render, get_object_or_404
+from .models import Product
+from category.models import Category
+
+def store(request, category_slug=None):
     products = None
     categories = None
 
-    if category_slug != None:
-        categories = get_object_or_404(Category,slug = category_slug)
-        products = Product.objects.all().filter(category = categories, is_available = True)
-
-    else: 
-        products = Product.objects.filter(is_available = True)
-        context = {
-        'products':products
-    }
-
-    return render(request,'userside/store.html', context)
-
-# Create your views here.
-
-def store(request, category_slug=None):
-    # products = None
-    # categories = None
-
-    # if category_slug is not None:
-    #     category = get_object_or_404(Category, cat_slug=category_slug)
-    #     products = Product.objects.filter(category=category, is_available=True)
-    # else: 
-    products = Product.objects.filter(is_available=True)
-
+    if category_slug is not None:
+        category = get_object_or_404(Category, cat_slug=category_slug, is_active=True)
+        products = Product.objects.filter(category=category, is_available=True, brand__is_active=True)
+    else:
+        products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active = True)  # Filter out products with no brand and inactive brands
+    
     context = {
-        'products': products,
-        # 'category': category  # Pass the category to the context
+        'products': products
     }
 
     return render(request, 'userside/store.html', context)
 
-# def add_product(request):
-#     if request.user.is_authenticated and request.user.is_superuser:
-#         if request.method == 'POST':
-#             title = request.POST.get('product_title')
-#             stock_qty = request.POST.get('stock_qty')
-#             brand_id = request.POST.get('Brand')
-#             description = request.POST.get('description')
-#             price = request.POST.get('price')
-#             category_id = request.POST.get('category_id')
+def product_details(request,id):
 
-#             try:
-#                 image = request.FILES.get('image')
-#             except :
-#                 messages.warning(request,"add product image")
-#                 return redirect('store_app:add_product') 
+    product = Product.objects.get(id=id)
+    products_all = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active = True)  # Filter out products with no brand and inactive brands
+    product_images = Additional_Product_Image.objects.filter(product = id)
 
-#             try:
-#                 if title == '':
-#                     messages.warning(request,"Add product title")
-#                     return redirect('store_app:add_product')
-#                 if Product.objects.get(product_name=title):
-#                     messages.warning(request,"product name is already exists")
-#                     return redirect('store_app:add_product')   
-#             except:
-#                 pass
+    print(product_images)
 
-#             if brand_id or price or category_id or stock_qty:
-#                 messages.warning(request,"All fields are required")
-#                 return redirect('store_app:add_product')
-            
-#             product = Product(
-#                 product_name = title,
-#                 stock = stock_qty,
-#                 brand = brand_id,
-#                 category = category_id,
-#                 description = description,
-#                 price = price,
-#                 images = image
-#             )
-#             product.save()
-#             messages.success(request, 'Product Added.')
-            
+    product_context = {
+        'product':product,
+        'products_all':products_all,
+        'product_images':product_images
+    }
+    
+    return render(request,'userside/shopdetails.html',product_context)
 
-#         categories = Category.objects.filter(is_active = True)
-#         brands = Brand.objects.filter(is_active = True)
-#         context = {
-#             'categories':categories,
-#             'brands':brands
-#         }
-#         return render(request,'admin_side/page-form-product-3.html', context)
-#     return redirect('admin_app:admin_login')
 
-        
-            # try:
-            #     image = request.FILES['image']
-            # except :
-            #     messages.warning(request,"add category image")
-            #     return redirect('category_app:add_categories')
-            # try:
-            #     if category == '':
-            #         messages.warning(request,"Add category title")
-            #         return redirect('category_app:add_categories')
-            #     if Categories.objects.get(category_title=category):
-            #         messages.warning(request,"category is taken")
-            #         return redirect('category_app:add_categories')
-            # except:
-            #     pass
+@never_cache
+def userside_search(request):
+
+    if request.method == 'POST':
+        product = request.POST["search_product"]
+        if product != '':
+            products = Product.objects.filter(product_name__istartswith=product, is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True)  # Filter out products with no brand and inactive brands
+            context = {
+                'products': products
+            }
+            return render(request, 'userside/store.html', context)
+        else:
+            # If the search product is empty, redirect to the store
+            return redirect('store_app:store')
+    else:
+        # Handle GET requests, if any
+        return redirect('store_app:store')  # Redirect to the store in case of GET requests
+    
+
+@never_cache
+def user_category_search(request,id):
+    products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True, category=id)  # Filter out products with no brand and inactive brands
+
+    context = {
+        'products': products
+    }
+    return render(request, 'userside/store.html', context)
+
+
+

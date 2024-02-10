@@ -1,0 +1,192 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="content-main">
+    <form id="productForm" action="{% url 'product_management_app:edit_product' product.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Edit Product</h2>
+                    <div>
+                        <button id="saveBtn" class="btn btn-md rounded font-sm hover-up">Save Changes</button>
+                    </div>
+                </div>
+                {% if messages %}
+                {% for message in messages %}
+                <span class="success" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                {% endfor %}
+                {% endif %}
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label for="product_title" class="form-label">Product title</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="product_title" name='product_title' value="{{ product.product_name }}" required>
+                        </div>
+                        <div class="row gx-3">
+                            <div class="col-md-4 mb-3">
+                                <label for="product_sku" class="form-label">Stock</label>
+                                <input type="number" placeholder="Type here" class="form-control" id="product_sku" name="stock_qty" value="{{ product.stock }}" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Brand</label>
+                            <select class="form-select" id="brandSelect" name="brand" required>
+                                {% for brand in brands %} 
+                                <option value="{{brand.id}}" {% if product.brand_id == brand.id %} selected {% endif %}>{{brand.brand_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <label class="form-label">Price</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="price" name="price" value="{{ product.price }}" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" id="categorySelect" name="category_id" required>
+                                {% for category in categories %}    
+                                <option value="{{category.id}}" {% if product.category_id == category.id %} selected {% endif %}>{{category.cat_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+                
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div>
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control" rows="4" id="description" name="description">{{ product.description }}</textarea>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+
+            </div>
+
+            <div class="col-lg-3">
+                <!-- Card for main image upload -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h4>Main Image</h4>
+                        </div>
+                        <div class="card-body">
+                            <img src="{{ product.images.url }}" class="img-thumbnail" alt="Main Image">
+                            <input type="file" class="form-control mt-3" id="category_image" name="image">
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+                <!-- End of card for main image upload -->
+                
+                <!-- Card for additional images -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h4>Additional Images</h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Additional image fields -->
+                            {% for image in product.additional_product_images.all %}
+                            <div class="input-upload mb-3">
+                                <img src="{{ image.image.url }}" class="img-thumbnail" alt="Additional Image">
+                                {% comment %} <input type="file" class="form-control mt-3" name="additional_image_{{ forloop.counter }}" multiple> {% endcomment %}
+                                <input type="file" class="form-control mt-3" name="additional_image_1" multiple>
+
+                            </div>
+                            {% endfor %}
+                            <!-- End of additional image fields -->
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+                <!-- End of card for additional images -->
+            </div>
+        </div>
+    </form>
+   
+</section>
+
+<div id="errorContainer"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const saveBtn = document.getElementById('saveBtn');
+        const productForm = document.getElementById('productForm');
+        const errorContainer = document.getElementById('errorContainer');
+
+        saveBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const productTitle = document.getElementById('product_title').value.trim();
+            const productSKU = document.getElementById('product_sku').value.trim();
+            const brandSelect = document.getElementById('brandSelect').value;
+            const description = document.getElementById('description').value.trim();
+            const price = document.getElementById('price').value.trim();
+            const categorySelect = document.getElementById('categorySelect').value;
+            const categoryImage = document.getElementById('category_image').value.trim();
+            const additionalImages = document.querySelectorAll('input[name^="additional_image"]');
+
+            errorContainer.innerHTML = '';
+
+            if (!productTitle) {
+                displayError('Product title is required.', 'product_title');
+                return;
+            }
+
+            if (!productSKU) {
+                displayError('Stock quantity is required.', 'product_sku');
+                return;
+            } else if (isNaN(productSKU) || parseInt(productSKU) <= 0) {
+                displayError('Stock quantity must be a valid positive number.', 'product_sku');
+                return;
+            }
+
+            if (!brandSelect) {
+                displayError('Brand is required.', 'brandSelect');
+                return;
+            }
+
+            if (!price) {
+                displayError('Price is required.', 'price');
+                return;
+            } else if (isNaN(price) || parseFloat(price) <= 0) {
+                displayError('Price must be a valid positive number.', 'price');
+                return;
+            }
+
+            if (!categorySelect) {
+                displayError('Category is required.', 'categorySelect');
+                return;
+            }
+
+            // Check if main image is provided
+            if (!categoryImage) {
+                // Check if there are no additional images
+                if (additionalImages.length === 0) {
+                    displayError('Main image is required.', 'category_image');
+                    return;
+                }
+            }
+
+            productForm.submit();
+        });
+
+        function displayError(message, fieldId) {
+            const errorDiv = document.createElement('div');
+            errorDiv.classList.add('alert', 'alert-danger');
+            errorDiv.textContent = message;
+            errorContainer.appendChild(errorDiv);
+
+            // Highlight the field with the error
+            const field = document.getElementById(fieldId);
+            field.classList.add('is-invalid');
+        }
+    });
+</script>
+
+
+{% endblock %}

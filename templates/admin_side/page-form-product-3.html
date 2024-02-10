@@ -1,7 +1,7 @@
 {% extends 'admin_side/base.html' %}
 {% load static %}
 
-{% block content%}
+{% block content %}
 <section class="content-main">
     <form id="productForm" action="{% url 'product_management_app:add_product' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -13,6 +13,11 @@
                         <button id="saveBtn" class="btn btn-md rounded font-sm hover-up">Save Changes</button>
                     </div>
                 </div>
+                {% if messages %}
+                {% for message in messages %}
+                <span class="success" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                {% endfor %}
+                {% endif %}
             </div>
             <div class="col-lg-6">
                 <div class="card mb-4">
@@ -36,31 +41,6 @@
                             </select>
                         </div>
                     </div>
-                </div> <!-- card end// -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div>
-                            <label class="form-label">Description</label>
-                            <textarea placeholder="Type here" class="form-control" rows="4" id="description" name="description"></textarea>
-                        </div>
-                    </div>
-                </div> <!-- card end// -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <h4>Image</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="input-upload">
-                                <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
-                                <input type="file" class="form-control" id="category_image" name="image" required>
-                            </div>
-                        </div>
-                    </div> <!-- card end// -->
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="card mb-4">
                     <div class="card-body">
                         <div class="mb-4">
                             <label class="form-label">Price</label>
@@ -76,9 +56,70 @@
                         </div>
                     </div>
                 </div> <!-- card end// -->
+                
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div>
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control" rows="4" id="description" name="description"></textarea>
+                        </div>
+                    </div>
+                </div> <!-- card end// -->
+
+            </div>
+
+            <div class="col-lg-3">
+                <!-- Card for additional images -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h4>Main Image</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-upload">
+                                <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
+                                <input type="file" class="form-control" id="category_image" name="image" required>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h4>Additional Images</h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Additional image fields -->
+                            <div class="input-upload mb-3">
+                                {% comment %} <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt=""> {% endcomment %}
+                                <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple required>
+                            </div>
+                            
+                            
+                            <!-- End of additional image fields -->
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+                <!-- End of card for additional images -->
+                <!-- Card for main image upload -->
+                {% comment %} <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <h4>Main Image</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-upload">
+                                <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
+                                <input type="file" class="form-control" id="category_image" name="image" required>
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                </div> {% endcomment %}
+                <!-- End of card for main image upload -->
             </div>
         </div>
     </form>
+   
 </section>
 
 <div id="errorContainer"></div>

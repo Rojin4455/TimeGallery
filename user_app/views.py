@@ -14,7 +14,8 @@ from store.models import Product
 
 
 # signup page
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@never_cache
 def signup(request):
     if request.user.is_authenticated:
         if request.user.is_superuser:
@@ -71,7 +72,8 @@ def signup(request):
     return render(request,'userside/usersignup.html')
 
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)   
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)   
+@never_cache
 def otp(request):
     if request.user.is_authenticated:
         if request.user.is_superuser:
@@ -92,52 +94,49 @@ def otp(request):
             return redirect('user_app:otp')   
     return render(request,'user/otp.html')
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@never_cache
 def login(request):
     if request.user.is_authenticated:
-        # if request.user.is_superuser:
-        #     return redirect('admin_app:dashboard')
-        # print("first user is auhtenticated")
-        return redirect('user_app:usersignup')
+        return redirect('user_app:userhome')
     
     if request.method == "POST":
         email = request.POST["email"]
         passw = request.POST["password"]
 
         if len(passw) < 8:
-                messages.info(request,"invalid credentials")
-                return redirect('user_app:login')
+            messages.info(request,"invalid credentials")
+            return redirect('user_app:login')
             
         if not User.objects.filter(email=email):
             messages.error(request, "Invalid Email Adress")
-            return redirect('user_app:user_login')
+            return redirect('user_app:login')
         
         customer = User.objects.get(email=email)
 
         if customer.is_active == True:
-
-            user_details = authenticate(email = email,password = passw)
-            print("user details:     ",user_details)
+            user_details = authenticate(email=email, password=passw)
             
-            if user_details is not None and user_details.is_superuser is False:
-                user_login(request,user_details)
-                
+            if user_details is not None and not user_details.is_superuser:
+                user_login(request, user_details)
                 return redirect('user_app:userhome')
             else:
-                messages.warning(request,"invalid credentials")
-                return redirect('user_app:user_login')
+                messages.warning(request, "Invalid credentials")
+                return redirect('user_app:login')
         else:
-            messages.warning(request,"Sorry your are BLOCKED")
-            return redirect('user_app:user_login')
-    return render(request,'userside/userlogin.html')
+            messages.warning(request, "Sorry you are BLOCKED")
+            return redirect('user_app:login')
+    
+    response = render(request, 'userside/userlogin.html')
+    response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return response
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@never_cache
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+# @never_cache
 
 def userhome(request):
 
-    products = Product.objects.filter(is_available = True)
+    products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active = True)  # Filter out products with no brand and inactive brands
     context = {
         'products':products
     }
@@ -145,7 +144,8 @@ def userhome(request):
     return render(request, 'userside/home.html', context)
 
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@never_cache
 
 def logout(request):
     # user = User.objects.get(user = request.user)

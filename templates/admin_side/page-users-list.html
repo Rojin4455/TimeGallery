@@ -52,7 +52,9 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>#ID</th>
+                                    <th>SL no.</th>
+
+                                    {% comment %} <th>#ID</th> {% endcomment %}
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Active</th>
@@ -64,7 +66,8 @@
                             <tbody>
                                 {% for user in users%}
                                 <tr>
-                                    <td>{{user.id}}</td>
+                                    <td>{{forloop.counter}}</td>
+                                    {% comment %} <td>{{user.id}}</td> {% endcomment %}
                                     <td><b>{{user.username}}</b></td>
                                     <td>{{user.email}}</td>
                                     {% comment %} <td><template class="__cf_email__" data-cfemail="aec3cfdcd8c7c0eecbd6cfc3dec2cb80cdc1c3">[email&#160;protected]</template></td> {% endcomment %}

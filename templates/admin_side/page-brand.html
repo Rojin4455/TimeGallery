@@ -53,18 +53,37 @@
                                     <tr>
                                         <td>{{ brand.id }}</td>
                                         <td>{{ brand.brand_name }}</td>
-                                        <td>{% if brand.is_active %}Active{% else %}Inactive{% endif %}</td>
-                                        <td class="text-end">
+                                        <td>
+                                            {% if brand.is_active %}
+                                                <span class="badge rounded-pill alert-success">Active</span>
+                                            {% else %}
+                                                <span class="badge rounded-pill alert-danger">Inactive</span>
+                                            {% endif %}
+                                        </td>
+                                        {% comment %} <td class="text-end">
                                             <div class="dropdown">
                                                 <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                <div class="dropdown-menu">
+                                                <div class="dropdown-menu"> {% endcomment %}
                                                     {% comment %} <a class="dropdown-item" href="#">View detail</a> {% endcomment %}
                                                     {% comment %} <a class="dropdown-item" href="{% url 'category_app:edit_category' id category.id %}">Edit info</a> {% endcomment %}
                                                     {% comment %} <a class="dropdown-item" href="{% url 'category_app:edit_category' category.id %}">Edit info</a> {% endcomment %}
 
-                                                    <a class="dropdown-item text-danger" href="{% url 'category_app:delete_brand' brand.id %}">Delete</a>
+                                                    {% comment %} <a class="dropdown-item text-danger" href="{% url 'category_app:delete_brand' brand.id %}">Delete</a>
                                                 </div>
                                             </div> <!-- dropdown //end -->
+                                        </td> {% endcomment %}
+                                        <td class="text-end">
+                                            {% comment %} <a href="#" class="btn btn-md rounded font-sm">Block</a> {% endcomment %}
+                                            {% if  brand.is_active %}
+                                            <a   href="{% url 'product_management_app:deactivate_brand' brand.id %}"  class="btn btn-sm font-sm alert-danger rounded block-user-btn">
+                                                Block
+                                            </a>
+                                            {% else %}
+                                            <a   href="{% url 'product_management_app:activate_brand' brand.id %}" class="btn btn-sm font-sm alert-success rounded unblock-user-btn">
+                                                Unblock
+                                            </a>
+                                            {% endif %} 
+                                      
                                         </td>
                                     </tr>
                                     {% endfor %}

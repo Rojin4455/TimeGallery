@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.views.decorators.cache import cache_control
+from django.views.decorators.cache import cache_control,never_cache
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import Q
 # from django.contrib.auth.models import User
@@ -41,6 +41,7 @@ def admin_orders(request):
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+# @never_cache
 def admin_login(request):
     if request.user.is_superuser:
         if request.user.is_authenticated:
@@ -60,7 +61,8 @@ def admin_login(request):
             return redirect('admin_app:admin_login')
     return render(request, 'admin_side/page-account-login.html')
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@never_cache
 def admin_logout(request):
     logout(request)
     return redirect('admin_app:admin_login')
@@ -68,6 +70,7 @@ def admin_logout(request):
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+# @never_cache
 def admin_dashboard(request):
     
     if request.user.is_superuser:

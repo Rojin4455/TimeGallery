@@ -88,12 +88,12 @@
                                 <table class="table table-hover">
                                     <thead>
                                         <tr>
-                                            <th class="text-center">
+                                            {% comment %} <th class="text-center">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" value="" />
                                                 </div>
-                                            </th>
-                                            <th>ID</th>
+                                            </th> {% endcomment %}
+                                            <th>SL no.</th>
                                             <th>Name</th>
                                             <th>Slug</th>
                                             <th>Description</th>
@@ -105,12 +105,12 @@
                                     <tbody>
                                         {% for category in categories %}
                                         <tr>
-                                            <td class="text-center">
+                                            {% comment %} <td class="text-center">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" value="" />
                                                 </div>
-                                            </td>
-                                            <td>{{category.id}}</td>
+                                            </td> {% endcomment %}
+                                            <td>{{forloop.counter}}</td>
                                             <td><b>{{category.cat_name}}</b></td>
                                             <td>{{category.cat_slug}}</td>
                                             <td>{{category.cat_description}}</td>

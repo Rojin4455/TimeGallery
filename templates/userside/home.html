@@ -30,7 +30,7 @@
                             </div> -->
                         {% comment %} </div> {% endcomment %}
                         {% for Category in links %}
-                        <a href="" class="nav-item nav-link">{{Category.cat_name}}</a>
+                        <a href="{% url 'store_app:user_category_search' Category.id %}" class="nav-item nav-link">{{Category.cat_name}}</a>
                         {% endfor %}
                         {% comment %} <a href="" class="nav-item nav-link">Luxury Watch</a>
                         <a href="" class="nav-item nav-link">Smart Watch</a> {% endcomment %}
@@ -45,22 +45,32 @@
             <div id="header-carousel" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active" style="height: 410px;">
-                        <img class="img-fluid" src="{% static 'img/carousel-1.jpg' %}" alt="Image">
+                        <img class="img-fluid" src="{% static 'img/banner-1.jpg' %}" alt="Image">
                         <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                             <div class="p-3" style="max-width: 700px;">
                                 <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>
                                 <h3 class="display-4 text-white font-weight-semi-bold mb-4">Fashionable Dress</h3>
-                                <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
+                                <a href="{% url 'store_app:products_by_category' %}" class="btn btn-light py-2 px-3">Shop Now</a>
                             </div>
                         </div>
                     </div>
                     <div class="carousel-item" style="height: 410px;">
-                        <img class="img-fluid" src="{% static 'img/carousel-2.jpg' %}" alt="Image">
+                        <img class="img-fluid" src="{% static 'img/banner-2.jpg' %}" alt="Image">
                         <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                             <div class="p-3" style="max-width: 700px;">
                                 <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>
                                 <h3 class="display-4 text-white font-weight-semi-bold mb-4">Reasonable Price</h3>
-                                <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
+                                <a href="{% url 'store_app:products_by_category' %}" class="btn btn-light py-2 px-3">Shop Now</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item" style="height: 410px;">
+                        <img class="img-fluid" src="{% static 'img/banner-3.png' %}" alt="Image">
+                        <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                            <div class="p-3" style="max-width: 700px;">
+                                <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>
+                                <h3 class="display-4 text-white font-weight-semi-bold mb-4">Reasonable Price</h3>
+                                <a href="{% url 'store_app:products_by_category' %}" class="btn btn-light py-2 px-3">Shop Now</a>
                             </div>
                         </div>
                     </div>
@@ -147,12 +157,14 @@
                 <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                     <div class="card product-item border-0 mb-4">
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                        <a href = "{% url 'store_app:product_details' product.id %}">
                             <img class="img-fluid w-100" src="{{ product.images.url }}" alt="">
+                        </a>
                         </div>
                         <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                             <h6 class="text-truncate mb-3">{{ product.product_name }}</h6>
                             <div class="d-flex justify-content-center">
-                                <h6>${{ product.price }}</h6>
+                                <h6>₹ {{ product.price }}</h6>
                                 {% if product.discounted_price %}
                                 <h6 class="text-muted ml-2"><del>${{ product.discounted_price }}</del></h6>
                                 {% endif %}

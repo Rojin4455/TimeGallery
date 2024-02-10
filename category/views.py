@@ -114,7 +114,7 @@ def create_brand(request):
             
             return redirect('category_app:create_brand')
 
-        brands = Brand.objects.all()
+        brands = Brand.objects.all().order_by('id')
         brand_context = {'brands': brands}
         return render(request, 'admin_side/page-brand.html', brand_context)
 
@@ -125,7 +125,7 @@ def delete_brand(request,id):
     if request.user.is_authenticated and request.user.is_superuser:
         brand = Brand.objects.get(id=id)
         brand.delete()
-        return redirect('category_app:create_brand')    
+        return redirect('category_app:create_brand')
 
 
 

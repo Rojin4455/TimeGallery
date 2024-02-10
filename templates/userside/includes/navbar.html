@@ -40,14 +40,18 @@
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-                <form action="">
+                <form class="d-flex" action="{% url 'store_app:userside_search' %}" method="post">
+                    {% csrf_token %}
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
+                        
+                        <input type="text" class="form-control" placeholder="Search by name" name="search_product">
+                        <button>
                         <div class="input-group-append">
                             <span class="input-group-text bg-transparent text-primary">
-                                <i class="fa fa-search"></i>
+                                <i class="fa fa-search" type="submit"></i>
                             </span>
                         </div>
+                    </button>
                     </div>
                 </form>
             </div>
@@ -99,7 +103,7 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                        <div class="navbar-nav mr-auto py-0">
+                        {% comment %} <div class="navbar-nav mr-auto py-0">
                             <a href="{% url 'user_app:userhome' %}" class="nav-item nav-link active">Home</a>
                             <a href="{% url 'store_app:products_by_category' %}" class="nav-item nav-link">Shop</a>
                             <a href="detail.html" class="nav-item nav-link">Shop Detail</a>
@@ -112,7 +116,25 @@
                             </div>
                             <a href="contact.html" class="nav-item nav-link">Contact</a>
                                                     
+                        </div> {% endcomment %}
+
+
+                        <div class="navbar-nav mr-auto py-0">
+                            <a href="{% url 'user_app:userhome' %}" class="nav-item nav-link {% if request.path == '/userhome/' %}active{% endif %}">Home</a>
+                            <a href="{% url 'store_app:products_by_category' %}" class="nav-item nav-link {% if request.path == '/products_by_category/' %}active{% endif %}">Shop</a>
+                            <a href="detail.html" class="nav-item nav-link {% if request.path == '/shop_detail/' %}active{% endif %}">Shop Detail</a>
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
+                                <div class="dropdown-menu rounded-0 m-0">
+                                    <a href="cart.html" class="dropdown-item {% if request.path == '/cart/' %}active{% endif %}">Shopping Cart</a>
+                                    <a href="checkout.html" class="dropdown-item {% if request.path == '/checkout/' %}active{% endif %}">Checkout</a>
+                                </div>
+                            </div>
+                            <a href="contact.html" class="nav-item nav-link {% if request.path == '/contact/' %}active{% endif %}">Contact</a>                                            
                         </div>
+                        
+
+
                         <div class="navbar-nav ml-auto py-0">
 
                             {% comment %} <a href="{% url 'user-logout' %}"> Logout </a> {% endcomment %}
@@ -169,3 +191,6 @@
         </div>
     </div>
     <!-- Navbar End -->
+
+
+    

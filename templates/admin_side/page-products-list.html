@@ -35,11 +35,11 @@
                             <input type="date" value="02.05.2021" class="form-control">
                         </div> {% endcomment %}
                         <div class="col-md-2 col-6">
-                            <select class="form-select">
-                                <option selected>Status</option>
-                                <option>Active</option>
-                                <option>Inactive</option>
-                                <option>Show all</option>
+                            <select class="form-select" onchange="window.location.href = this.value;">
+                                <option selected disabled>Status</option>
+                                <option value="{% url 'product_management_app:show_actived_products' %}">Active</option>
+                                <option value="{% url 'product_management_app:show_inactive_products' %}">Inactive</option>
+                                <option value="{% url 'product_management_app:admin_products_list' %}">Show all</option>
                             </select>
                         </div>
                     </div>
@@ -57,6 +57,8 @@
             <div class="col-lg-3 col-sm-3 col-6 flex-grow-1 col-name">
                 <a class="itemside" href="#">
                     <div class="left">
+                        {% comment %} <div class="col-lg-1 col-sm-1 col-2 col-price"> <span>{{forloop.counter}}</span> </div> {% endcomment %}
+
                         <img src="{{product.images.url}}" class="img-sm img-thumbnail" alt="Item">
                     </div>
                     <div class="info">
@@ -69,18 +71,37 @@
             <div class="col-lg-1 col-sm-1 col-2 col-brand"> <span>{{product.category}}</span> </div>
 
             <div class="col-lg-2 col-sm-2 col-4 col-status">
+                {% if  product.is_available %}
                 <span class="badge rounded-pill alert-success">{{product.is_available}}</span>
+                {% else %}
+                <span class="badge rounded-pill alert-danger">{{product.is_available}}</span>
+                {% endif %} 
+
             </div>
             <div class="col-lg-1 col-sm-1 col-2 col-date">
                 <span>{{product.created_date}}</span>
             </div>
             <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
-                <a href="#" class="btn btn-sm font-sm rounded btn-brand">
+                <a href="{% url 'product_management_app:edit_product' product.id %}" class="btn btn-sm font-sm rounded btn-brand">
                     <i class="material-icons md-edit"></i> Edit
                 </a>
-                <a href="#" class="btn btn-sm font-sm btn-light rounded">
+                {% comment %} <a href="#" class="btn btn-sm font-sm btn-light rounded">
                     <i class="material-icons md-delete_forever"></i> Delete
-                </a>
+                </a> {% endcomment %}
+                <td class="text-end">
+                    {% comment %} <a href="#" class="btn btn-md rounded font-sm">Block</a> {% endcomment %}
+                    {% if  product.is_available %}
+                    <a   href="{% url 'product_management_app:deactivate_product' product.id %}"  class="btn btn-sm font-sm alert-danger rounded block-user-btn">
+                        Block
+                    </a>
+                    {% else %}
+                    <a   href="{% url 'product_management_app:activate_product' product.id %}" class="btn btn-sm font-sm alert-success rounded unblock-user-btn">
+                        Unblock
+                    </a>
+                    {% endif %} 
+              
+                </td>
+            </tr>
             </div>
         </div> <!-- row .// -->
     </article> <!-- itemlist  .// -->
