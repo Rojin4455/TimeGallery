@@ -1,22 +1,30 @@
 from django.db import models
-from django.contrib.auth.models import User 
-from django.contrib.auth.models import AbstractBaseUser
+from admin_app.models import User
 
-# class Account(AbstractBaseUser):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE, default = None)
+# Create your models here.
+class Address(models.Model):
+    account         = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    first_name      = models.CharField(max_length=50)
+    last_name       = models.CharField(max_length=50)
+    phone_number    = models.CharField(max_length=50)
+    town_city       = models.CharField(max_length=100)
+    street_address  = models.CharField(max_length=255,null=True)
+    state           = models.CharField(max_length=50)
+    country_region  = models.CharField(max_length=50)
+    zip_code        = models.CharField(max_length=20)
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now=True)
+    is_default      = models.BooleanField(default=False)
+    is_active       = models.BooleanField(default=True)
+    # user_image      = models.ImageField(upload_to='photos/user_images',null=True)
 
-#     #required
-#     date_join       = models.DateTimeField(auto_now_add=True)
-#     last_login      = models.DateTimeField(auto_now_add=True)
-#     is_admin        = models.BooleanField(default=False)
-#     is_staff        = models.BooleanField(default=False)
-#     is_active       = models.BooleanField(default=False)
-#     is_superadmin   = models.BooleanField(default=False)
-#     is_blocked      = models.BooleanField(default=False)
-#     is_superuser    = models.BooleanField(default=False)
 
-class User(AbstractBaseUser):
-    is_email_verified = models.BooleanField(default = False)
+    
+    def save(self, *args, **kwargs):
+        if self.is_default:
+            # Set is_default=False for other addresses of the same user
+            Address.objects.filter(account=self.account).exclude(pk=self.pk).update(is_default=False)
+        super(Address, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.email
+        return f"{self.first_name} {self.last_name} - {self.account.username} Address"

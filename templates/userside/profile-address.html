@@ -1,0 +1,101 @@
+<!-- user_addresses.html -->
+
+{% extends "userside/base.html" %}
+
+{% block content %}
+<div class='d-flex justify-content-around w-100'>
+    {% include "userside/base-profile.html" %}
+    <div class="container py-5">
+        <h2 class="mb-4">Your Addresses</h2>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for address in user_addresses %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ address.first_name }} {{ address.last_name }}</h5>
+                        <p class="card-text">{{ address.street_address }}</p>
+                        <p class="card-text">{{ address.town_city }}, {{ address.state }}, {{ address.country_region }}, {{ address.zip_code }}</p>
+                        <p class="card-text">Phone: {{ address.phone_number }}</p>
+                        <div class="form-check">
+                            <input type="radio" id="radio{{ address.id }}" name="defaultAddress" value="{{ address.id }}" {% if address.is_default %}checked{% endif %}>
+                            <label for="radio{{ address.id }}">Set default address</label>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{% url 'user_app:edit_address' address.id %}" class="btn btn-sm btn-outline-dark rounded">Edit</a>
+                            <form class="delete-address-form" action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="address_id" value="{{ address.id }}">
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="delete_add('{{ address.id }}')">Delete</button>
+                            </form>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="mt-4">
+            <a href="{% url 'user_app:create_address' %}" class="btn btn-primary">Add New Address</a>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        console.log(radioButtons)
+        radioButtons.forEach(function (radioButton) {
+            radioButton.addEventListener('change', function (event) {
+                event.preventDefault(); // Prevent default form submission
+                console.log(this.value)
+                const addressId = this.value;
+                const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+                const formData = new FormData();
+                formData.append('address_id', addressId);
+                formData.append('csrfmiddlewaretoken', csrfToken);
+                fetch('{% url "user_app:set_default_address" %}', {  // Use Django template tag to get the correct URL
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'  // Ensure AJAX request is properly identified
+                    }
+                }).then(function (response) {
+                    console.log(response)
+                    if (response.ok) {
+                        console.log('Address set as default successfully.');
+                    } else {
+                        console.error('Failed to set address as default.');
+                    }
+                }).catch(function (error) {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    });
+
+
+
+    function delete_add(addressId) {
+        fetch(`{% url 'user_app:deleteaddress' %}?id=${addressId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                // Other headers as needed
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response data
+            console.log(data);
+        })
+        .catch(error => {
+            // Handle errors
+            console.error('Error:', error);
+        });
+    }
+    
+
+</script>
+
+
+
+{% endblock %}

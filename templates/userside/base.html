@@ -11,6 +11,8 @@
 
     <!-- Favicon -->
     <link href={% static 'img/favicon.ico' %} rel="icon">
+    <link href="{% static 'assets_admin/css/main.css' %}" rel="stylesheet" type="text/css" />
+
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -25,6 +27,8 @@
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 </head>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 {% comment %} navbar {% endcomment %}
     {% include 'userside/includes/navbar.html' %}

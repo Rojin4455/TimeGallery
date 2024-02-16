@@ -82,9 +82,27 @@ def deactivate_user(request, id):
     current.is_active = False
     current.save()
     return redirect('user_management_app:users_list')
-                        
 
+# def user_profile(request):
+#     return render(request,'userside/userprofile.html')
+
+# def page_account_paul(request):
+#     return render(request,'userside/page-account-paul.html')
+
+# def base_profile(request):
+#     return render(request,'userside/base-profile.html')
+
+# def profile_details(request):
+#     return render(request,'userside/profile-details.html')
+
+# def account_settings(request):
+#     return render(request,'')
+
+# def profile_address(request):
+#     return render(request,'userside/profile-address.html')
                         
-                    
+# def profile_orders(request):
+#     return render(request,'userside/profile-orders.html')
+  
 
                 

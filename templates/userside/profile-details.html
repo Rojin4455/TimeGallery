@@ -1,0 +1,46 @@
+{% extends "userside/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class='d-flex justify-content-around w-100'>
+
+{% include "userside/base-profile.html" %}
+
+<div class="card-body">
+    <!-- Profile form -->
+    <div class="card-body">
+        <!-- Profile photo -->
+        <div class="mb-5">
+            <img src="https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/profile-pic-male_4811a1.svg" class="rounded-circle" alt="Profile Photo" width="80">
+            {% comment %} <button type="button" class="btn btn-link"><i class="fas fa-plus"></i> Change Photo</button> {% endcomment %}
+        </div>
+        
+        <!-- User information -->
+        <div class="user-details">
+            <div class="field">
+                <label for="username">Username:</label>
+                <p id="username">{{user.username}}</p>
+            </div>
+            <div class="field">
+                <label for="email">Email:</label>
+                <p id="email">{{user.email}}</p>
+            </div>
+            {% if user.phone_number %}
+            <div class="field">
+                <label for="phone">Phone Number:</label>
+                <p id="phone">+1234567890</p>
+            </div>
+            {% else %}
+            <div class="field">
+                <label for="phone">Phone Number:</label>
+                <p id="phone">Unavailable</p>
+            </div>
+            {% endif %}
+        </div>  
+        
+    </div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
