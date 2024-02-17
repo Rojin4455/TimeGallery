@@ -207,10 +207,10 @@ def create_address(request):
         state            = request.POST.get('state')
         country_region   = request.POST.get('country_region')
         zip_code         = request.POST.get('zip_code')
-        image = request.FILES.get('image')
+        # image = request.FILES.get('image')
 
         user=request.user
-        address = Address.objects.create(account=user,first_name=first_name,last_name=last_name,phone_number=phone_number,town_city=town_city,street_address=street_address,state=state,country_region=country_region,zip_code=zip_code,user_image=image)
+        address = Address.objects.create(account=user,first_name=first_name,last_name=last_name,phone_number=phone_number,town_city=town_city,street_address=street_address,state=state,country_region=country_region,zip_code=zip_code)
         make_default = request.POST.get('make_default')
         print(make_default)
         # Convert 'on' to True and set is_default accordingly

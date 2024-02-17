@@ -22,11 +22,8 @@ urlpatterns = [
     path('edit-address/<int:id>/',views.edit_address,name='edit_address'),
 
 
-
     path('set-default-address/', views.set_default_address, name='set_default_address'),
-    path('delete-address/',views.delete_address,name='deleteaddress'),
-
-
+    # path('user-cart/',views.user_cart,name='user_cart'),
 
     
 

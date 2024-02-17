@@ -31,6 +31,8 @@ urlpatterns = [
     path('', include('category.urls')),
     path('', include('user_management.urls')),
     path('', include('product_management.urls')),
+    path('', include('cart_app.urls')),
+
 
 
 

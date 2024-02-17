@@ -137,7 +137,7 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="cart.html" class="dropdown-item {% if request.path == '/cart/' %}active{% endif %}">Shopping Cart</a>
+                                    <a href="{% url 'cart_app:user_cart' %}" class="dropdown-item {% if request.path == '/user-cart/' %}active{% endif %}">Shopping Cart</a>
                                     <a href="checkout.html" class="dropdown-item {% if request.path == '/checkout/' %}active{% endif %}">Checkout</a>
                                 </div>
                             </div>
