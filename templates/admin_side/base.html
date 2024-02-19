@@ -41,11 +41,24 @@
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
-                <li class="menu-item ">
+                {% comment %} <li class="menu-item ">
                     <a class="menu-link" href="{% url 'product_management_app:admin_products_list' %}"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Products List</span>
                     </a>
+                </li> {% endcomment %}
+
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href=""> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Product</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="{% url 'product_management_app:add_product' %}">Add Product</a>
+                        <a href="{% url 'product_management_app:admin_products_list' %}">Product List</a>
+                        {% comment %} <a href="{% url 'admin-category' %}">Category Detail</a> {% endcomment %}
+                        
+                    </div>
                 </li>
+
                 <li class="menu-item ">
                     <a class="menu-link" href=""> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders List</span>
@@ -61,11 +74,11 @@
                         <span class="text">Brands</span>
                     </a>
                 </li>
-                <li class="menu-item ">
+                {% comment %} <li class="menu-item ">
                     <a class="menu-link" href="{% url 'product_management_app:add_product' %}"> <i class="icon material-icons md-add_box"></i>
                         <span class="text">Add new product</span>
                     </a>
-                </li>
+                </li> {% endcomment %}
                 <li class="menu-item ">
                     <a class="menu-link" href="{% url 'user_management_app:users_list' %}"> <i class="icon material-icons md-person"></i>
                         <span class="text">Users List</span>

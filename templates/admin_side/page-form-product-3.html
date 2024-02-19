@@ -26,12 +26,8 @@
                             <label for="product_title" class="form-label">Product title</label>
                             <input type="text" placeholder="Type here" class="form-control" id="product_title" name='product_title' required>
                         </div>
-                        <div class="row gx-3">
-                            <div class="col-md-4 mb-3">
-                                <label for="product_sku" class="form-label">Stock</label>
-                                <input type="number" placeholder="Type here" class="form-control" id="product_sku" name="stock_qty" required>
-                            </div>
-                        </div>
+
+                        
                         <div class="mb-4">
                             <label class="form-label">Brand</label>
                             <select class="form-select" id="brandSelect" name="Brand" required>
@@ -42,9 +38,11 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="mb-4">
-                            <label class="form-label">Price</label>
-                            <input type="text" placeholder="Type here" class="form-control" id="price" name="price" required>
+                        <div class="row gx-3">
+                            <div class="col-md-4 mb-3">
+                                <label for="product_base_price" class="form-label">Base Price</label>
+                                <input type="number" placeholder="Enter base price" class="form-control" id="product_base_price" name="base_price" required>
+                            </div>
                         </div>
                         <div class="mb-4">
                             <label class="form-label">Category</label>
@@ -134,10 +132,10 @@
             event.preventDefault();
 
             const productTitle = document.getElementById('product_title').value.trim();
-            const productSKU = document.getElementById('product_sku').value.trim();
+            //const productSKU = document.getElementById('product_sku').value.trim();
             const brandSelect = document.getElementById('brandSelect').value;
             const description = document.getElementById('description').value.trim();
-            const price = document.getElementById('price').value.trim();
+            //const price = document.getElementById('price').value.trim();
             const categorySelect = document.getElementById('categorySelect').value;
             const categoryImage = document.getElementById('category_image').value.trim();
 
@@ -148,9 +146,7 @@
                 return;
             }
 
-            if (!productSKU) {
-                displayError('Stock quantity is required.', 'product_sku');
-                return;
+
             } else if (isNaN(productSKU) || parseInt(productSKU) <= 0) {
                 displayError('Stock quantity must be a valid positive number.', 'product_sku');
                 return;
@@ -161,13 +157,7 @@
                 return;
             }
 
-            if (!price) {
-                displayError('Price is required.', 'price');
-                return;
-            } else if (isNaN(price) || parseFloat(price) <= 0) {
-                displayError('Price must be a valid positive number.', 'price');
-                return;
-            }
+
 
             if (!categorySelect) {
                 displayError('Category is required.', 'categorySelect');

@@ -168,6 +168,7 @@ def logout(request):
 def base_profile(request):
     return render(request,'userside/base-profile.html')
 
+@never_cache
 def profile_details(request):
 
     
@@ -183,6 +184,7 @@ def profile_details(request):
 def account_settings(request):
     return render(request,'')
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def profile_address(request):
     user = request.user
     user_addresses = Address.objects.filter(account=user)
@@ -191,11 +193,11 @@ def profile_address(request):
     }
     return render(request, 'userside/profile-address.html', context)
 
-                        
+@never_cache
 def profile_orders(request):
     return render(request,'userside/profile-orders.html')
 
-
+@never_cache
 def create_address(request):
 
     if request.method == "POST":
@@ -223,6 +225,7 @@ def create_address(request):
     return render(request,'userside/profile-address-create.html')
 
 
+@never_cache
 def edit_address(request, id):
     user = request.user
     address = get_object_or_404(Address, id=id)
@@ -256,7 +259,7 @@ def edit_address(request, id):
     }
     return render(request, 'userside/profile-address-edit.html', context)
 
-
+@never_cache
 def set_default_address(request):
     if request.method == 'POST':
         address_id = request.POST.get('address_id')
@@ -273,6 +276,7 @@ def set_default_address(request):
     else:
         return JsonResponse({'error': 'Invalid request.'}, status=400)
 
+@never_cache
 def delete_address(request):
     address_id = request.GET.get('id')
     print(address_id)

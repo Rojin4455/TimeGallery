@@ -28,11 +28,12 @@ def add_product(request):
         print("before entering post method")
         if request.method == 'POST':
             title = request.POST.get('product_title')
-            stock_qty = request.POST.get('stock_qty')
+            # stock_qty = request.POST.get('stock_qty')
             brand_id = request.POST.get('Brand')
             description = request.POST.get('description')
-            price = request.POST.get('price')
+            # price = request.POST.get('price')
             category_id = request.POST.get('category_id')
+            base_price = request.POST.get('base_price')
             print("entering post method")
             image = request.FILES.get('image')
             additional_images = request.FILES.getlist('additional_image_1')
@@ -60,12 +61,13 @@ def add_product(request):
             brand = Brand.objects.get(id = brand_id)
             product = Product(
                 product_name = title,
-                stock = stock_qty,
+                # stock = stock_qty,
                 brand = brand,
                 category = category,
                 description = description,
-                price = price,
-                images = image
+                # price = price,
+                images = image,
+                base_price = base_price
             )
             product.save()
             
@@ -91,12 +93,12 @@ def edit_product(request,id):
 
         if request.method == 'POST':
             title = request.POST.get('product_title')
-            stock_qty = request.POST.get('stock_qty')
+            # stock_qty = request.POST.get('stock_qty')
             # brand_id = request.POST.get('brand')
             brand_id = request.POST.get('brand')
             brand = get_object_or_404(Brand, pk=brand_id)
             description = request.POST.get('description')
-            price = request.POST.get('price')
+            # price = request.POST.get('price')
             category_id = request.POST.get('category_id')
             category = get_object_or_404(Category, pk=category_id)
             print("entering post method")
@@ -105,14 +107,14 @@ def edit_product(request,id):
             
             if title:
                 product.product_name = title
-            if stock_qty:
-                product.stock = stock_qty
+            # if stock_qty:
+            #     product.stock = stock_qty
             if brand_id:
                 product.brand = brand
             if description:
                 product.description = description
-            if price:
-                product.price = price
+            # if price:
+            #     product.price = price
             if category_id:
                 product.category = category
             if image:

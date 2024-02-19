@@ -20,6 +20,8 @@ urlpatterns = [
     path('profile-orders',views.profile_orders,name='profile-orders'),
     path('create-address',views.create_address,name='create_address'),
     path('edit-address/<int:id>/',views.edit_address,name='edit_address'),
+    path('edit-address/',views.delete_address,name='deleteaddress'),
+
 
 
     path('set-default-address/', views.set_default_address, name='set_default_address'),
