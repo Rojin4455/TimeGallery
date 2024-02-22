@@ -54,7 +54,9 @@
                     <div class="submenu">
                         <a href="{% url 'product_management_app:add_product' %}">Add Product</a>
                         <a href="{% url 'product_management_app:admin_products_list' %}">Product List</a>
-                        {% comment %} <a href="{% url 'admin-category' %}">Category Detail</a> {% endcomment %}
+                        {% comment %} <a href="{% url 'product_management_app:add-product-variant' %}">Add Product Variant</a> {% endcomment %}
+                        <a href="{% url 'product_management_app:attribute-values' %}">Add Variant</a>
+
                         
                     </div>
                 </li>

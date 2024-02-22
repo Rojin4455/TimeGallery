@@ -73,7 +73,9 @@ def user_category_search(request,id):
     context = {
         'products': products
     }
-    return render(request, 'userside/store.html', context)
+    return render(request, 'userside/store.html', context)  
+
+
 
 
 

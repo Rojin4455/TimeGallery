@@ -1,0 +1,109 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Attribute Values</h2>
+            <p>Add, edit or delete attribute values</p>
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == "error" %}
+                        <span class="alert alert-warning" role="alert">{{ message }}</span>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "success" %}
+                    <span class="alert alert-success" role="alert">{{ message }}</span>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        </div>
+        <div>
+            <input type="text" placeholder="Search Attribute Values" class="form-control bg-white">
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <form action="{% url 'product_management_app:attribute-values' %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="attribute_value" class="form-label">Attribute Value</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="attribute_value" name="attribute_value" required/>
+                        </div>
+                        <div class="mb-4">
+                            <label for="slug" class="form-label">Slug</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="slug" name="slug"/>
+                        </div>
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" class="form-check-input" id="is_active" name="is_active" checked>
+                            <label class="form-check-label" for="is_active">Active</label>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary">Create Attribute Value</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-9">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>SL no.</th>
+                                    <th>Attribute Value</th>
+                                    <th>Slug</th>
+                                    <th>Active</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attribute_value in attribute_values %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ attribute_value.attribute_value }}</td>
+                                        <td>{{ attribute_value.slug }}</td>
+                                        <td>
+                                            {% if attribute_value.is_active %}
+                                            <a href="{% url 'product_management_app:deactivate_attribute' attribute_value.id %}">
+                                                <span class="badge rounded-pill alert-success">Active</span>
+                                            </a>
+                                            {% else %}
+                                            <a href="{% url 'product_management_app:activate_product' attribute_value.id %}">
+                                                <span class="badge rounded-pill alert-danger">Inactive</span>
+                                            </a>
+                                            {% endif %}
+                                        </td>
+                                        <div class="col-lg-2 col-sm-2 col-4 col-action text-end">
+
+                                            <td class="text-end">
+                                                <a href="" class="btn btn-sm font-sm rounded btn-brand">
+                                                    <i class="material-icons md-edit"></i> Edit
+                                                </a>
+                                                {% if attribute_value.is_active %}
+                                                <a   href="{% url 'product_management_app:deactivate_attribute' attribute_value.id %}"  class="btn btn-sm font-sm alert-danger rounded block-user-btn">
+                                                    Block
+                                                </a>
+                                                {% else %}
+                                                <a   href="{% url 'product_management_app:activate_attribute' attribute_value.id %}" class="btn btn-sm font-sm alert-success rounded unblock-user-btn">
+                                                    Unblock
+                                                </a>
+                                                {% endif %}
+                                            </td>
+                                        </div>
+                                        
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> <!-- .row // -->
+        </div> <!-- card body .// -->
+    </div> <!-- card .// -->
+</section> <!-- content-main end// -->
+{% endblock %}

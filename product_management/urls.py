@@ -20,6 +20,24 @@ urlpatterns = [
 
     # path('search_product/<int:id>',views.search_product, name='search_product'),
 
+    path('add_product_variant/<int:id>/',views.add_product_variant, name='add-product-variant'),
+    path('product-variant-list/<int:id>/',views.product_variant_list, name='product-variant-list'),
+    # path('add-variant-attribute/',views.add_variant_attribute, name='add-variant-attribute'),
+    path('attribute-values/',views.attribute_values, name='attribute-values'),
+    # path('block-attribute-value/<int:attribute_value_id>/', views.block_attribute_value, name='block_attribute_value'),
+
+    path('deactivate_attribute/<int:id>/', views.deactivate_attribute, name='deactivate_attribute'),
+    path('activate_attribute/<int:id>/', views.activate_attribute, name='activate_attribute'),
+
+
+    path('edit-product-variant/<int:id>/', views.edit_product_variant, name='edit-product-variant'),
+    path('delete-product-variant/<int:id>/', views.delete_product_variant, name='delete-product-variant')
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,181 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="content-main">
+    <form id="productVariantForm" action="{% url 'product_management_app:add-product-variant' products.id %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Product Variant for {{ selected_product.product_name }}</h2>
+                    <div>
+                        <button id="saveBtn" class="btn btn-md rounded font-sm hover-up">Save Changes</button>
+                    </div>
+                </div>
+                {% if messages %}
+                {% for message in messages %}
+                <span class="success" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                {% endfor %}
+                {% endif %}
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <!-- Other input fields -->
+                        <!-- Product field (not editable) -->
+                        <div class="mb-4">
+                            <label for="product" class="form-label">Product</label>
+                            <input type="text" class="form-control" id="product" name="product" value="{{ products.product_name }}" disabled>
+                            <input type="hidden" id="product_id" name="product_id" value="{{ products.id }}">
+                        </div>
+
+                        <!-- Dropdown for attribute selection -->
+                        <div class="mb-4">
+                            <label for="attributes" class="form-label">Attributes</label>
+                            <select class="form-select" id="attributes" name="attributes" required>
+                                <option value="" disabled selected>Select Attributes</option>
+                                {% for attribute in attribute_values %}
+                                    <option value="{{ attribute.id }}">{{ attribute.attribute_value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- SKU ID -->
+                        <div class="mb-4">
+                            <label for="sku_id" class="form-label">SKU ID</label>
+                            <input type="text" class="form-control" id="sku_id" name="sku_id" required>
+                        </div>
+
+                        <!-- Max Price -->
+                        <div class="mb-4">
+                            <label for="max_price" class="form-label">Max Price</label>
+                            <input type="number" class="form-control" id="max_price" name="max_price" required>
+                        </div>
+
+                        <!-- Sale Price -->
+                        <div class="mb-4">
+                            <label for="sale_price" class="form-label">Sale Price</label>
+                            <input type="number" class="form-control" id="sale_price" name="sale_price" required>
+                        </div>
+
+                        <!-- Stock -->
+                        <div class="mb-4">
+                            <label for="stock" class="form-label">Stock</label>
+                            <input type="number" class="form-control" id="stock" name="stock" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional image upload section -->
+            <div class="col-lg-3">
+                <!-- Card for additional images -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <!-- Additional image fields -->
+                        <!-- Main Image -->
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Main Image</label>
+                            <input type="file" class="form-control" id="image" name="image" required>
+                        </div>
+
+                        <!-- Additional Images -->
+                        <div class="mb-3">
+                            <label for="additional_image_1" class="form-label">Additional Images</label>
+                            <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</section>
+
+<div id="errorContainer"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const saveBtn = document.getElementById('saveBtn');
+        const productVariantForm = document.getElementById('productVariantForm');
+        const errorContainer = document.getElementById('errorContainer');
+    
+        saveBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+    
+            const attributes = document.getElementById('attributes').value.trim();
+            const skuId = document.getElementById('sku_id').value.trim();
+            const maxPrice = document.getElementById('max_price').value.trim();
+            const salePrice = document.getElementById('sale_price').value.trim();
+            const stock = document.getElementById('stock').value.trim();
+            const mainImage = document.getElementById('image').value.trim();
+            const additionalImages = document.getElementById('additional_image_1').files;
+    
+            errorContainer.innerHTML = '';
+    
+            if (!attributes) {
+                displayError('Please select an attribute.', 'attributes');
+                return;
+            }
+    
+            if (!skuId) {
+                displayError('SKU ID is required.', 'sku_id');
+                return;
+            }
+    
+            if (!maxPrice || isNaN(maxPrice) || parseFloat(maxPrice) <= 0) {
+                displayError('Max price must be a valid positive number.', 'max_price');
+                return;
+            }
+    
+            if (!salePrice || isNaN(salePrice) || parseFloat(salePrice) <= 0) {
+                displayError('Sale price must be a valid positive number.', 'sale_price');
+                return;
+            }
+    
+            if (!stock || isNaN(stock) || parseInt(stock) <= 0) {
+                displayError('Stock quantity must be a valid positive number.', 'stock');
+                return;
+            }
+    
+            if (!mainImage) {
+                displayError('Main image is required.', 'main_image');
+                return;
+            }
+    
+            if (additionalImages.length === 0) {
+                displayError('At least one additional image is required.', 'additional_images');
+                return;
+            }
+    
+            productVariantForm.submit();
+        });
+    
+        function displayError(message, fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = field.nextElementSibling; // Assumes the error message is the next sibling element
+    
+            if (!errorDiv || !errorDiv.classList.contains('invalid-feedback')) {
+                const newErrorDiv = document.createElement('div');
+                newErrorDiv.classList.add('invalid-feedback');
+                field.parentNode.insertBefore(newErrorDiv, field.nextSibling);
+                errorDiv = newErrorDiv;
+            }
+    
+            errorDiv.textContent = message;
+            field.classList.add('is-invalid');
+    
+            // Listen for input changes to remove the error message when the field is corrected
+            field.addEventListener('input', function() {
+                if (field.value.trim()) {
+                    errorDiv.textContent = '';
+                    field.classList.remove('is-invalid');
+                }
+            });
+        }
+    });
+        
+</script>
+
+{% endblock %}

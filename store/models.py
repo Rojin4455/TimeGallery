@@ -3,6 +3,8 @@ from category.models import Category
 from django.utils.text import slugify
 from django.db.models import UniqueConstraint, Q,F,Avg,Count
 from django.urls import reverse
+from PIL import Image
+
 
 class Brand(models.Model):
     brand_name  = models.CharField(max_length=50,unique=True)
@@ -55,46 +57,54 @@ class Product(models.Model):
 
 # Atribute Table - COLOR
 
-class Attribute(models.Model):
-    attribute_name  = models.CharField(max_length=50,unique=True)
-    is_active       = models.BooleanField(default=True)
+# class Attribute(models.Model):
+#     attribute_name  = models.CharField(max_length=50,unique=True)
+#     is_active       = models.BooleanField(default=True)
 
-    def __str__(self):
-        return self.attribute_name
+#     def __str__(self):
+#         return self.attribute_name
     
 
 # Atribute Value - RED,BLUE,GREEN,BLACK
 
 class Attribute_Value(models.Model):
-    attribute       = models.ForeignKey(Attribute,on_delete=models.CASCADE)
-    attribute_value = models.CharField(max_length=50,unique=True)
-    is_active       = models.BooleanField(default=True)
+    attribute_value = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=50, unique=True, null=True, default=None)
+    is_active = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.attribute_value)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.attribute_value
 
 
 
-class Product_VariantManager(models.Manager):
-    """
-    Custom manager
-    """
-    def get_all_variant(self,product):
-        # variant = super(Product_VariantManager, self).get_queryset().filter(product=product).values('sku_id','atributes__atribute_value','atributes__atribute__atribute_name')
-        variant = (
-                    super(Product_VariantManager, self)
-                    .get_queryset()
-                    .filter(product=product)
-                    .values('sku_id')
-                    # .annotate(
-                    #     atribute_value=F('atributes__atribute_value'),
-                    #     atribute_name=F('atributes__atribute__atribute_name')
-                    # )
-                )
-        return  variant
+# class Product_VariantManager(models.Manager):
+#     """
+#     Custom manager
+#     """
+#     def get_all_variant(self,product):
+#         # variant = super(Product_VariantManager, self).get_queryset().filter(product=product).values('sku_id','atributes__atribute_value','atributes__atribute__atribute_name')
+#         variant = (
+#                     super(Product_VariantManager, self)
+#                     .get_queryset()
+#                     .filter(product=product)
+#                     .values('sku_id')
+#                     # .annotate(
+#                     #     atribute_value=F('atributes__atribute_value'),
+#                     #     atribute_name=F('atributes__atribute__atribute_name')
+#                     # )
+#                 )
+#         return  variant
     
 
 
 class Product_Variant(models.Model):
     product              = models.ForeignKey(Product,on_delete=models.CASCADE,related_name='products')
-    sku_id               = models.CharField(max_length=30)
+    sku_id               = models.CharField(max_length=30,blank=True)
     attributes           = models.ManyToManyField(Attribute_Value,related_name='attributes')
     max_price            = models.DecimalField(max_digits=8, decimal_places=2)
     sale_price           = models.DecimalField(max_digits=8, decimal_places=2)
@@ -106,16 +116,20 @@ class Product_Variant(models.Model):
     updated_at           = models.DateTimeField(auto_now=True)
     
 
-    objects = models.Manager()
-    variants = Product_VariantManager()
-
-    def is_available(self):
-        return self.stock > 0
-        
-    def total_price(self):
-        return self.sale_price + self.product.base_price
+    # objects = models.Manager()
+    # variants = Product_VariantManager()
 
     def save(self, *args, **kwargs):
+        if not self.sku_id:
+            # Extracting relevant information for the SKU ID
+            brand_initial = self.product.brand.brand_name[:3].upper()
+            product_id = self.product.id
+            
+
+            # Generating SKU ID in the specified format
+            self.sku_id = f'{brand_initial}-{product_id}'
+
+        # Generate and save product_variant_slug
         product_variant_slug_name = f'{self.product.brand.brand_name}-{self.product.product_name}-{self.product.category.cat_name}-{self.sku_id}'
         base_slug = slugify(product_variant_slug_name)
         counter = Product_Variant.objects.filter(product_variant_slug__startswith=base_slug).count()
@@ -123,31 +137,41 @@ class Product_Variant(models.Model):
             self.product_variant_slug = f'{base_slug}-{counter}'
         else:
             self.product_variant_slug = base_slug
+
         super(Product_Variant, self).save(*args, **kwargs)
 
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                name='Unique skuid must be provided',
-                fields=['product', 'sku_id'],
-                condition=Q(sku_id__isnull=False),
-            )
-        ]
-
-    def get_url(self):
-        return reverse('product-variant-detail',args=[self.product.category.slug,self.product_variant_slug])
-    
-    def get_product_name(self):
-        return f'{self.product.brand} {self.product.product_name} - {", ".join([value[0] for value in self.attributes.all().values_list("attribute_value")])}'
-    
-    def __str__(self):
-        return self.get_product_name()
+        # Resize the thumbnail image before saving
+        if self.thumbnail_image:
+            img = Image.open(self.thumbnail_image.path)
+            size = (522,522)
+            img=img.resize(size, Image.BOX)
+            img.save(self.thumbnail_image.path)
 
     
-class  Additional_Product_Image(models.Model):
-    product     = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='additional_product_images')
-    image       = models.ImageField(upload_to='photos/product_additional')
-    is_active   = models.BooleanField(default=True)
+# class  Additional_Product_Image(models.Model):
+#     product     = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='additional_product_images')
+#     image       = models.ImageField(upload_to='photos/product_additional')
+#     is_active   = models.BooleanField(default=True)
+
+#     def __str__(self):
+#         return self.image.url
+    
+class Additional_Product_Image(models.Model):
+    product_variant = models.ForeignKey(Product_Variant,on_delete=models.CASCADE,related_name='additional_product_images')
+    image           = models.ImageField(upload_to='media/photos/additional_photos')
+    is_active       = models.BooleanField(default=True)
+
+
+    def save(self, *args, **kwargs):
+        # Call the parent class's save method to ensure proper saving
+        super().save(*args, **kwargs)
+
+        # Open the uploaded image using PIL
+        if self.image:
+            img = Image.open(self.image.path)
+            size = (522,522)
+            img=img.resize(size, Image.BOX)
+            img.save(self.image.path)
 
     def __str__(self):
         return self.image.url

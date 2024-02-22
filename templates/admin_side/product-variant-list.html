@@ -1,0 +1,58 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Product Variants - {{ selected_product.product_name }}</h2>
+        </div>
+        <div>
+            <a href="{% url 'product_management_app:add-product-variant' selected_product.id %}" class="btn btn-primary btn-sm rounded">Add New Variant</a>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for variant in product_variants %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex flex-column align-items-center">
+                        {% if variant.thumbnail_image %}
+                            <img src="{{ variant.thumbnail_image.url }}" class="card-img-top" alt="Product Image">
+                        {% else %}
+                            <img src="{% static 'path_to_placeholder_image.jpg' %}" class="card-img-top" alt="Product Image Placeholder">
+                        {% endif %}
+                        <div class="mt-3 text-center">
+                            <h5 class="card-title">{{ variant.product.brand }}</h5>
+                            {% if variant.attributes.all %}
+                                {% comment %} <p class="card-text"><h5>Attributes:</h5></p> {% endcomment %}
+                                <ul class="list-unstyled">
+                                    {% for attribute in variant.attributes.all %}
+                                        <li>{{ attribute.attribute_value }} color</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            <p class="card-text"><h5>Category:</h5> {{ variant.product.category }}</p>
+                        </div>
+                        
+                        <div class="mt-auto text-center">
+                            <p class="card-text"><strong>Price:</strong> {{ variant.sale_price }}</p>
+                            <p class="card-text"><strong>Created Date:</strong> {{ variant.created_at }}</p>
+                            <div class="d-flex justify-content-center">
+                                <a href="{% url 'product_management_app:edit-product-variant' variant.id %}" class="btn btn-sm btn-primary me-2">Edit</a>
+                                <a href="{% url 'product_management_app:delete-product-variant' variant.id %}" class="btn btn-sm btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</section>
+
+
+{% endblock %}

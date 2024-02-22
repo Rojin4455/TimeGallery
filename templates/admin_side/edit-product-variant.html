@@ -1,0 +1,67 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Edit Product Variant - {{ product_variant.product.product_name }}</h2>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="sku_id" class="form-label">SKU ID</label>
+                            <input type="text" class="form-control" id="sku_id" name="sku_id" value="{{ product_variant.sku_id }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="max_price" class="form-label">Max Price</label>
+                            <input type="number" class="form-control" id="max_price" name="max_price" value="{{ product_variant.max_price }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="sale_price" class="form-label">Sale Price</label>
+                            <input type="number" class="form-control" id="sale_price" name="sale_price" value="{{ product_variant.sale_price }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="stock" class="form-label">Stock</label>
+                            <input type="number" class="form-control" id="stock" name="stock" value="{{ product_variant.stock }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="color" class="form-label">Color</label>
+                            <select class="form-select" id="color" name="color" multiple>
+                                {% for attribute in variants %}
+                                    <option value="{{ attribute.id }}" {% if attribute in product_variant.attributes.all %} selected {% endif %}>
+                                        {{ attribute.attribute_value }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        
+                        <div class="mb-3">
+                            <label for="thumbnail_image" class="form-label">Thumbnail Image</label>
+                            <input type="file" class="form-control" id="thumbnail_image" name="thumbnail_image">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-check-label" for="is_active">Active</label>
+                            <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if product_variant.is_active %} checked {% endif %}>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}

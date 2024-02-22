@@ -10,6 +10,7 @@
                 <div class="content-header">
                     <h2 class="content-title">Add New Product</h2>
                     <div>
+
                         <button id="saveBtn" class="btn btn-md rounded font-sm hover-up">Save Changes</button>
                     </div>
                 </div>
@@ -66,9 +67,9 @@
 
             </div>
 
-            <div class="col-lg-3">
+         <div class="col-lg-3">
                 <!-- Card for additional images -->
-                <div class="card mb-3">
+                {% comment %} <div class="card mb-3">
                     <div class="card-body">
                         <div class="card-header">
                             <h4>Main Image</h4>
@@ -81,23 +82,23 @@
                         </div>
                     </div> <!-- card end// -->
                 </div>
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="card-header">
+                <div class="card mb-4"> {% endcomment %}
+                    {% comment %} <div class="card-body"> {% endcomment %}
+                        {% comment %} <div class="card-header">
                             <h4>Additional Images</h4>
-                        </div>
-                        <div class="card-body">
+                        </div> {% endcomment %}
+                        {% comment %} <div class="card-body"> {% endcomment %}
                             <!-- Additional image fields -->
-                            <div class="input-upload mb-3">
+                            {% comment %} <div class="input-upload mb-3"> {% endcomment %}
                                 {% comment %} <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt=""> {% endcomment %}
-                                <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple required>
-                            </div>
+                                {% comment %} <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple required>
+                            </div> {% endcomment %}
                             
                             
                             <!-- End of additional image fields -->
-                        </div>
-                    </div> <!-- card end// -->
-                </div>
+                        {% comment %} </div> {% endcomment %}
+                    {% comment %} </div> <!-- card end// --> {% endcomment %}
+                {% comment %} </div> {% endcomment %}
                 <!-- End of card for additional images -->
                 <!-- Card for main image upload -->
                 {% comment %} <div class="card mb-4">
@@ -114,7 +115,7 @@
                     </div> <!-- card end// -->
                 </div> {% endcomment %}
                 <!-- End of card for main image upload -->
-            </div>
+            </div>   
         </div>
     </form>
    
@@ -137,7 +138,7 @@
             const description = document.getElementById('description').value.trim();
             //const price = document.getElementById('price').value.trim();
             const categorySelect = document.getElementById('categorySelect').value;
-            const categoryImage = document.getElementById('category_image').value.trim();
+            //const categoryImage = document.getElementById('category_image').value.trim();
 
             errorContainer.innerHTML = '';
 
@@ -164,10 +165,10 @@
                 return;
             }
 
-            if (!categoryImage) {
-                displayError('Image is required.', 'category_image');
-                return;
-            }
+           // if (!categoryImage) {
+             //   displayError('Image is required.', 'category_image');
+               // return;
+            //}
 
             productForm.submit();
         });
