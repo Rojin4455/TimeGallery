@@ -123,6 +123,8 @@ def edit_product(request,id):
             #     product.price = price
             if category_id:
                 product.category = category
+
+
             # if image:
             #     product.images = image
             # for img in additional_images:
@@ -218,7 +220,8 @@ def deactivate_brand(request, id):
 def add_product_variant(request,id):
     if request.method == 'POST':
         print('its under post')
-        sku_id = request.POST.get('sku_id')
+        # sku_id = request.POST.get('sku_id')
+        variant_name = request.POST.get('variant_name')
         max_price = request.POST.get('max_price')
         sale_price = request.POST.get('sale_price')
         stock = request.POST.get('stock')
@@ -227,6 +230,8 @@ def add_product_variant(request,id):
 
         attribute_id = request.POST.get('attributes')
         attribute = get_object_or_404(Attribute_Value, pk=attribute_id)
+        # is_active = request.POST.get('is_active')
+
 
         thumbnail_image = request.FILES.get('image')
 
@@ -234,8 +239,9 @@ def add_product_variant(request,id):
 
         # Create the Product_Variant object
         p = Product_Variant.objects.create(
-            sku_id=sku_id,
+            # sku_id=sku_id,
             max_price=max_price,
+            variant_name=variant_name,
             stock=stock,
             sale_price=sale_price,
             product=product,
@@ -244,6 +250,7 @@ def add_product_variant(request,id):
 
         # Add the attribute to the Product_Variant
         p.attributes.add(attribute)
+        p.save()
         for image in additional_images:
             # Create and save Additional_Product_Image object
             additional_image = Additional_Product_Image(
@@ -354,11 +361,14 @@ def edit_product_variant(request, id):
     if request.method == "POST":
         sku_id = request.POST.get('sku_id')
         max_price = request.POST.get('max_price')
+        variant_name = request.POST.get('variant_name')
         sale_price = request.POST.get('sale_price')
         stock = request.POST.get('stock')
         color_ids = request.POST.getlist('color')  # Use getlist for multiple selections
         is_active = request.POST.get('is_active')
         thumbnail_image = request.FILES.get('thumbnail_image')
+        additional_image_1 = request.FILES.getlist('additional_image_1')
+
 
         if sku_id:
             product_variant.sku_id = sku_id
@@ -368,20 +378,27 @@ def edit_product_variant(request, id):
             product_variant.sale_price = sale_price
         if stock:
             product_variant.stock = stock
-        if color_ids:
-            # Clear existing colors and add selected colors
-            product_variant.attributes.clear()
-            for color_id in color_ids:
-                color_instance = Attribute_Value.objects.get(id=color_id)
-                product_variant.attributes.add(color_instance)
         if is_active:
-            product_variant.is_active = True if is_active == 'on' else False
+            is_active = bool(int(is_active))  # Convert to boolean
+            product_variant.is_active = is_active
+        if variant_name:
+            product_variant.variant_name=variant_name
+
+        # Clear existing colors and add selected colors
+        product_variant.attributes.clear()
+        for color_id in color_ids:
+            color_instance = Attribute_Value.objects.get(id=color_id)
+            product_variant.attributes.add(color_instance)
+
         if thumbnail_image:
             product_variant.thumbnail_image = thumbnail_image
 
+        if additional_image_1:
+            for image in additional_image_1:
+                Additional_Product_Image.objects.create(product_variant=product_variant,image=image)
         product_variant.save()
-        # return redirect('product_management_app:product-variant-list')
         return redirect(reverse('product_management_app:product-variant-list', kwargs={'id': product_variant.product.id}))
+
 
         # Redirect to a success page or back to the product variant detail page
         # Example: return redirect('product_variant_detail', id=product_variant.id)

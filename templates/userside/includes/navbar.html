@@ -67,13 +67,14 @@
                     <span class="badge">0</span>
 
                 {% endif %}
-                <a href="" class="btn border">
-                    <i class="fas fa-heart text-primary"></i>
-                    <span class="badge">0</span>
+                <a href="" class="widget-header pl-3 ml-3">
+                    <div class="icon icon-sm rounded-circle border"><i class="fas fa-heart"></i></div>
+                    {% comment %} <i class="fas fa-heart text-primary"></i> {% endcomment %}
+                    {% comment %} <span class="badge">0</span> {% endcomment %}
                 </a>
-                <a href="" class="btn border">
-                    <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
+                <a href="{% url 'cart_app:cart' %}" class="widget-header pl-3 ml-3">
+                    <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
+                    <span class="badge badge-pill badge-danger notify">{{cart_count}}</span>
                 </a>
             </div>
         </div>
@@ -137,7 +138,7 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="{% url 'cart_app:user_cart' %}" class="dropdown-item {% if request.path == '/user-cart/' %}active{% endif %}">Shopping Cart</a>
+                                    {% comment %} <a href="{% url 'cart_app:user_cart' %}" class="dropdown-item {% if request.path == '/user-cart/' %}active{% endif %}">Shopping Cart</a> {% endcomment %}
                                     <a href="checkout.html" class="dropdown-item {% if request.path == '/checkout/' %}active{% endif %}">Checkout</a>
                                 </div>
                             </div>

@@ -42,10 +42,10 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="mb-4">
+                        {% comment %} <div class="mb-4">
                             <label class="form-label">Price</label>
                             <input type="text" placeholder="Type here" class="form-control" id="price" name="price" value="{{ product.price }}" required>
-                        </div>
+                        </div> {% endcomment %}
                         <div class="mb-4">
                             <label class="form-label">Category</label>
                             <select class="form-select" id="categorySelect" name="category_id" required>
@@ -114,12 +114,12 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const saveBtn = document.getElementById('saveBtn');
+        //const saveBtn = document.getElementById('saveBtn');
         const productForm = document.getElementById('productForm');
         const errorContainer = document.getElementById('errorContainer');
 
-        saveBtn.addEventListener('click', function(event) {
-            event.preventDefault();
+        //saveBtn.addEventListener('click', function(event) {
+          //  event.preventDefault();
 
             const productTitle = document.getElementById('product_title').value.trim();
             const productSKU = document.getElementById('product_sku').value.trim();

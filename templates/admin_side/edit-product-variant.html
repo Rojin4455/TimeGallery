@@ -16,6 +16,10 @@
                 <div class="card-body">
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="variant_name" class="form-label">Product Variant title</label>
+                            <input type="text" class="form-control" id="variant_name" name='variant_name' value="{{ product_variant.variant_name }}">
+                        </div>
                         <div class="mb-3">
                             <label for="sku_id" class="form-label">SKU ID</label>
                             <input type="text" class="form-control" id="sku_id" name="sku_id" value="{{ product_variant.sku_id }}">
@@ -49,8 +53,15 @@
                             <input type="file" class="form-control" id="thumbnail_image" name="thumbnail_image">
                         </div>
                         <div class="mb-3">
-                            <label class="form-check-label" for="is_active">Active</label>
-                            <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if product_variant.is_active %} checked {% endif %}>
+                            <label for="additional_image_1" class="form-label">Additional Images</label>
+                            <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple >
+                        </div>
+                        <div class="mb-3">
+                            <label for="is_active" class="form-label">Active</label>
+                            <select class="form-select" id="is_active" name="is_active">
+                                <option value="1" {% if product_variant.product.is_active %}selected{% endif %}>Active</option>
+                                <option value="0" {% if not product_variant.product.is_active %}selected{% endif %}>Inactive</option>
+                            </select>
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Save Changes</button>

@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'user_management',
     'product_management',
     'cart_app',
+    'checkout_app',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -68,6 +69,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # 'django.contrib.messages.context_processors.messages',
                 'category.context_processors.menu_links',
+                'cart_app.context_processors.counter',
+                'cart_app.context_processors.global_order_summary',  # Replace 'myapp' with your app name
+
                 
             ],
         },

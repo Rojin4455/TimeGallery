@@ -4,16 +4,19 @@ from django.contrib import messages
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import authenticate, login as user_login, logout as user_logout
 from django.http import HttpResponse
+# from TimeGallery.admin_app import models
 from admin_app.models import User
 from django.db.models import Q
 import random 
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.cache import cache_control
-from store.models import Product
+from store.models import Product,Product_Variant
 from .models import Address
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from django.db import models
+
 
 
 # signup page
@@ -94,7 +97,7 @@ def otp(request):
             return redirect('user_app:userhome')
         else:
             messages.error(request,"Invalid OTP")
-            return redirect('user_app:otp')   
+            return redirect('user_app:otp')
     return render(request,'user/otp.html')
 
 # @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -139,13 +142,25 @@ def login(request):
     return response
 
 # @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-# @never_cache
+@never_cache
 
 def userhome(request):
+    products = Product.objects.filter(is_available=True)
+    # product_variants = Product_Variant.objects.filter(is_active=True)
 
-    products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active = True)  # Filter out products with no brand and inactive brands
+    products_list = list()
+    p = Product_Variant.objects.all()
+    for pro in products:
+        variants = Product_Variant.objects.filter(is_active=True,product=pro.id)
+        print(pro.id)
+        for variant in variants:
+            products_list.append(variant)
+            break
+
+
+    # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active = True)  # Filter out products with no brand and inactive brands
     context = {
-        'products':products
+        'products_list':products_list
     }
 
     return render(request, 'userside/home.html', context)

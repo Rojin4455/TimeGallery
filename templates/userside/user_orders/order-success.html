@@ -1,0 +1,76 @@
+{% extends "userside/base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="section-content padding-y bg">
+    <div class="container">
+        {% comment %} <div class="progress mb-4">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Step 4 of 4</div>
+        </div> {% endcomment %}
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="fas fa-check-circle text-success fa-3x mr-3"></i>
+                            <h4 class="card-title">Order Placed Successfully!</h4>
+                        </div>
+                        <p class="mb-4">Your order has been successfully placed. Thank you for shopping with us!</p>
+                        <h5>Order Details:</h5>
+                        <div class="list-group mb-4">
+                            {% for item in global_order_summary_cart_items %}
+                                <div class="list-group-item list-group-item-action flex-column align-items-start">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ item.product.name }}</h5>
+                                        <span class="badge badge-primary badge-pill">Quantity: {{ item.quantity }}</span>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="mr-3">
+                                            <img src="{{ item.product.thumbnail_image.url }}" alt="{{ item.product.name }}" style="max-height: 80px;">
+                                        </div>
+                                        <div>
+                                            <p class="mb-1">Price: ₹{{ item.product.sale_price }}</p>
+                                            <p class="mb-1">SKU: {{ item.product.sku_id }}</p>
+                                            <!-- Add more details as needed -->
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <p><strong>Total Price:</strong> ₹{{ global_order_summary_total_with_original_price }}</p>
+                        <p><strong>Discount:</strong> ₹{{ global_order_summary_discount }}</p>
+                        <p class="text-success"><strong>Order Total: ₹{{ global_order_summary_total }}</strong></p>
+                    </div>
+                </div>
+            </div>
+            <aside class="col-lg-3">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary mb-4">Order Summary</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span>Total price:</span>
+                            <span class="text-dark font-weight-bold">₹{{ global_order_summary_total_with_original_price }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span>Discount:</span>
+                            <span class="text-danger font-weight-bold">- ₹{{ global_order_summary_discount }}</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="font-weight-bold">Total:</h5>
+                            <h5 class="text-dark font-weight-bold">₹{{ global_order_summary_total }}</h5>
+                        </div>
+                        <hr>
+                        {% comment %} <div class="text-center mb-3">
+                            <img src="https://svgsilh.com/svg/304167.svg" height="50" alt="Thank You">
+                        </div> {% endcomment %}
+                        <a href="{% url 'store_app:products_by_category' %}" class="btn btn-primary btn-block">Continue Shopping</a>
+                    </div>
+                </div>
+            </aside>
+            
+        </div>
+    </div>
+</section>
+
+{% endblock %}

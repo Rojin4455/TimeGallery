@@ -30,6 +30,10 @@
                             <input type="text" class="form-control" id="product" name="product" value="{{ products.product_name }}" disabled>
                             <input type="hidden" id="product_id" name="product_id" value="{{ products.id }}">
                         </div>
+                        <div class="mb-4">
+                            <label for="variant_name" class="form-label">Product Variant title</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="variant_name" name='variant_name' required>
+                        </div>
 
                         <!-- Dropdown for attribute selection -->
                         <div class="mb-4">
@@ -43,10 +47,10 @@
                         </div>
 
                         <!-- SKU ID -->
-                        <div class="mb-4">
+                        {% comment %} <div class="mb-4">
                             <label for="sku_id" class="form-label">SKU ID</label>
                             <input type="text" class="form-control" id="sku_id" name="sku_id" required>
-                        </div>
+                        </div> {% endcomment %}
 
                         <!-- Max Price -->
                         <div class="mb-4">
@@ -100,17 +104,19 @@
         const saveBtn = document.getElementById('saveBtn');
         const productVariantForm = document.getElementById('productVariantForm');
         const errorContainer = document.getElementById('errorContainer');
-    
+        const variantNameInput = document.getElementById('variant_name'); // Add this line
+
         saveBtn.addEventListener('click', function(event) {
             event.preventDefault();
     
             const attributes = document.getElementById('attributes').value.trim();
-            const skuId = document.getElementById('sku_id').value.trim();
+            //const skuId = document.getElementById('sku_id').value.trim();
             const maxPrice = document.getElementById('max_price').value.trim();
             const salePrice = document.getElementById('sale_price').value.trim();
             const stock = document.getElementById('stock').value.trim();
             const mainImage = document.getElementById('image').value.trim();
             const additionalImages = document.getElementById('additional_image_1').files;
+            const variantName = variantNameInput.value.trim(); // Add this line
     
             errorContainer.innerHTML = '';
     
@@ -119,8 +125,13 @@
                 return;
             }
     
-            if (!skuId) {
+            /*if (!skuId) {
                 displayError('SKU ID is required.', 'sku_id');
+                return;
+            }*/
+    
+            if (!variantName) { // Validate variant_name field
+                displayError('Product Variant title is required.', 'variant_name');
                 return;
             }
     
@@ -175,7 +186,6 @@
             });
         }
     });
-        
 </script>
 
 {% endblock %}

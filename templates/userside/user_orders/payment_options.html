@@ -1,0 +1,71 @@
+{% extends "userside/base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="section-content padding-y bg">
+    <div class="container">
+        <div class="progress mb-4">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Step 3 of 3</div>
+        </div>
+        <a href="{% url 'checkout_app:order_summary' %}" class="btn btn-secondary"> Back </a>
+
+        <div class="row">
+            <div class="col-lg-9">
+                <!-- Payment Options -->
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Payment Options</h4>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="creditCard" name="payment_option" class="custom-control-input" value="creditCard">
+                                    <label class="custom-control-label" for="creditCard"> Cash On Delivery</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="debitCard" name="payment_option" class="custom-control-input" value="debitCard">
+                                    <label class="custom-control-label" for="debitCard">Debit Card</label>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="paypal" name="payment_option" class="custom-control-input" value="paypal">
+                                    <label class="custom-control-label" for="paypal">PayPal</label>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <aside class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <dl class="dlist-align">
+                            <dt>Total price:</dt>
+                            <dd class="text-right">₹{{ global_order_summary_total_with_original_price  }}</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>Discount:</dt>
+                            <dd class="text-right"> ₹{{ global_order_summary_discount  }}</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>Total:</dt>
+                            <p><dd class="text-right text-dark b"><strong>₹ {{ global_order_summary_total }}</strong></dd></p>
+                        </dl>
+                        <hr>
+                        {% comment %} <p class="text-center mb-3">
+                            <img src="{% static 'images/misc/payments.png' %}" height="26">
+                        </p> {% endcomment %}
+                        {% comment %} <a href="{% url 'checkout_app:checkout_address' %}" class="btn btn-primary btn-block"> Checkout </a> {% endcomment %}
+                        {% comment %} <a href="{% url 'store_app:products_by_category' %}" class="btn btn-light btn-block">Continue Shopping</a> {% endcomment %}
+                        <a href="{% url 'checkout_app:order_success' %}" class="btn btn-primary btn-block"> Confirm Order </a>
+
+                    </div> <!-- card-body.// -->
+                </div> <!-- card.// -->
+            </aside> <!-- col.// -->
+        </div>
+    </div>
+</section>
+
+{% endblock %}
