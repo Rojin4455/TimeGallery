@@ -6,50 +6,58 @@ from . models import Additional_Product_Image
 from django.views.decorators.cache import never_cache
 from cart_app.views import CartItem,_cart_id
 from django.http import HttpResponse
+from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
+from django.db import models
 
-
-# from django.shortcuts import render, get_object_or_404
-# from .models import Product
-# from category.models import Category
-
-from django.shortcuts import render, get_object_or_404
-from .models import Product
-from category.models import Category
 
 def store(request, category_slug=None):
+    # Assuming this is the initial retrieval of products without category filter
+    products = Product.objects.filter(category__is_active=True, is_available=True, brand__is_active=True)
     
-    products = None
-    categories = None
+    # List to store product variants
+    products_list = []
 
-    if category_slug is not None:
-        category = get_object_or_404(Category, cat_slug=category_slug, is_active=True)
-        products = Product.objects.filter(category=category, is_available=True, brand__is_active=True)
+    # Fetch product variants for each product
+    for product in products:
+        variants = Product_Variant.objects.filter(is_active=True, product=product.id)
+        for variant in variants:
+            products_list.append(variant)
 
-        products_list = list()
-        p = Product_Variant.objects.all()
-        for pro in products:
-            variants = Product_Variant.objects.filter(is_active=True,product=pro.id)
-            print(pro.id)
-            for variant in variants:
-                products_list.append(variant)
-                break
-    else:
-        products = Product.objects.filter(category__is_active=True, is_available=True, brand__is_active=True)
-        products_list = list()
-        p = Product_Variant.objects.all()
-        for pro in products:
-            variants = Product_Variant.objects.filter(is_active=True,product=pro.id)
-            print(pro.id)
-            for variant in variants:
-                products_list.append(variant)
-                break
+    # Handle form submission
+    if request.method == "POST":
+        selected_categories = request.POST.getlist('category')  # Get list of selected categories
 
-    
+        # Filter products based on selected categories
+        if selected_categories:
+            filtered_products = []
+            for category_id in selected_categories:
+                category_products = Product.objects.filter(category__is_active=True, is_available=True, brand__is_active=True, category__id=category_id)
+                for product in category_products:
+                    variants = Product_Variant.objects.filter(is_active=True, product=product.id)
+                    filtered_products.extend(variants)
+
+            # Only add unique variants to products_list
+            products_list = list(set(filtered_products))
+
+    # Pagination
+    paginator = Paginator(products_list, 6)
+    page = request.GET.get('page')
+    print("page no:    ",page)
+    paged_products = paginator.get_page(page)
+    print(type(paged_products))
+    # Get all categories with at least one product variant associated
+    categories_with_product_variants = Category.objects.annotate(
+        num_product_variants=models.Count('product__products')
+    ).filter(num_product_variants__gt=0, is_active=True)
+
     context = {
-        'products_list': products_list
+        'products_list': paged_products,
+        'categories': categories_with_product_variants
     }
 
     return render(request, 'userside/store.html', context)
+
+
 
 def product_details(request, id):
     # print(id)
@@ -120,13 +128,17 @@ def userside_search(request):
 def user_category_search(request,id):
     category = Category.objects.get(id=id)
     products_list = Product_Variant.objects.filter(product__category=category, is_active=True)
+    paginator = Paginator(products_list,6)
+    page = request.GET.get('page')
+    paged_products = paginator.get_page(page)    
+
 
     # products = Product.objects.filter(is_available=True,brand__is_active=True, category__is_active=True,category=id)
     # product_variants = Product_Variant.objects.filter(product=products)
     # # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True, category=id)  # Filter out products with no brand and inactive brands
     # products_list = product_variants
     context = {
-        'products_list': products_list
+        'products_list': paged_products
     }
     return render(request, 'userside/store.html', context)
 

@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.utils.text import slugify
 from django.db import IntegrityError
 from store.models import Brand
+from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
+
 
 
 
@@ -115,7 +117,11 @@ def create_brand(request):
             return redirect('category_app:create_brand')
 
         brands = Brand.objects.all().order_by('id')
-        brand_context = {'brands': brands}
+        paginator = Paginator(brands,6)
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page)    
+
+        brand_context = {'brands': paged_products}
         return render(request, 'admin_side/page-brand.html', brand_context)
 
     return redirect('admin_app:admin_login')

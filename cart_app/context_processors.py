@@ -8,8 +8,13 @@ def counter(request):
     
     else:
         try:
+
             cart = Cart.objects.filter(cart_id=_cart_id(request))
-            cart_items = CartItem.objects.all().filter(cart=cart[:1])
+
+            if request.user.is_authenticated:
+                cart_items = CartItem.objects.all().filter(user=request.user)
+            else:
+                cart_items = CartItem.objects.all().filter(cart=cart[:1])
             for cart_item in cart_items:
                 cart_count += cart_item.quantity
 
@@ -31,8 +36,12 @@ def global_order_summary(request):
     total_with_orginal_price = 0
 
     try:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.all().filter(user=request.user)
+        else:
+
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
             total += cart_item.subtotal()
             total_with_orginal_price += (cart_item.product.max_price * cart_item.quantity)
@@ -42,10 +51,11 @@ def global_order_summary(request):
 
     discount = total_with_orginal_price - total
 
-    return {
+    context = {
         'global_order_summary_total': total,
         'global_order_summary_quantity': quantity,
         'global_order_summary_cart_items': cart_items,
         'global_order_summary_discount': discount,
         'global_order_summary_total_with_original_price': total_with_orginal_price,
     }
+    return context

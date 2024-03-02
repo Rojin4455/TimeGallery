@@ -16,6 +16,10 @@ from .models import Address
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.db import models
+from cart_app.views import _cart_id
+from cart_app.models import Cart,CartItem
+from django.core.exceptions import ObjectDoesNotExist
+
 
 
 
@@ -128,6 +132,24 @@ def login(request):
             user_details = authenticate(email=email, password=passw)
             
             if user_details is not None and not user_details.is_superuser:
+
+
+
+                try:
+                    cart = Cart.objects.get(cart_id=_cart_id(request))
+                    is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                    if is_cart_item_exists:
+                        cart_items = CartItem.objects.filter(cart=cart)
+                        # try:
+                        #     user_cart = CartItem.objects.filter(user=user_details)
+                        #     if user_cart.exists():
+                        #         current_user_cart = user_cart[0].cart  # user's current cart
+                        for item in cart_items:
+                            item.user = user_details
+                            item.save()
+                except:
+                    pass
+
                 user_login(request, user_details)
                 return redirect('user_app:userhome')
             else:

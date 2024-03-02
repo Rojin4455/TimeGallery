@@ -10,23 +10,34 @@ from store.models import Additional_Product_Image
 from django.shortcuts import HttpResponse
 from django.views.decorators.http import require_POST
 from store.models import Attribute_Value
+from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from admin_app.decorators import admin_login_required
+from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
 
 
+
+@admin_login_required
 @never_cache
 def admin_products_list(request):
     if request.user.is_authenticated and request.user.is_superuser:
         products = Product.objects.all().order_by('id')
         categories = Category.objects.all()
         brands = Brand.objects.all()
+
+        paginator = Paginator(products,5)
+        page = request.GET.get('page')
+        paged_products = paginator.get_page(page) 
+          
         context = {
-            'products':products,
+            'products':paged_products,
             'categories':categories,
             'brands':brands,
         }
         return render(request,'admin_side/page-products-list.html',context)
     return redirect('admin_app:admin_login')
 
-
+@admin_login_required
 @never_cache
 def add_product(request):
     if request.user.is_authenticated and request.user.is_superuser:
@@ -92,6 +103,8 @@ def add_product(request):
 
 
 
+
+@admin_login_required
 @never_cache
 def edit_product(request,id):
     if request.user.is_authenticated and request.user.is_superuser:
@@ -149,12 +162,16 @@ def edit_product(request,id):
 
 
 
+@admin_login_required
 def deactivate_product(request,id):
     product = get_object_or_404(Product, id=id)
     product.is_available = False
     product.save()
     return redirect('product_management_app:admin_products_list')
 
+
+
+@admin_login_required
 def activate_product(request,id):
     product = get_object_or_404(Product, id=id)
     product.is_available = True
@@ -162,6 +179,8 @@ def activate_product(request,id):
     return redirect('product_management_app:admin_products_list')
 
 
+
+@admin_login_required
 def show_actived_products(request):
     if request.user.is_authenticated and request.user.is_superuser:
         products = Product.objects.filter(is_available=True).order_by('id')
@@ -177,6 +196,8 @@ def show_actived_products(request):
     return redirect('admin_app:admin_login')
 
 
+
+@admin_login_required
 def show_inactive_products(request):
     if request.user.is_authenticated and request.user.is_superuser:
         products = Product.objects.filter(is_available=False).order_by('id')
@@ -193,11 +214,15 @@ def show_inactive_products(request):
 
 
 
+
+@admin_login_required
 def add_extra_images(request):
     return render(request, 'admin_side/additional-images.html')
 
 
 
+
+@admin_login_required
 @never_cache
 def activate_brand(request, id):
     current = get_object_or_404(Brand, id=id)
@@ -205,6 +230,8 @@ def activate_brand(request, id):
     current.save()
     return redirect('category_app:create_brand')                     
 
+
+@admin_login_required
 @never_cache
 def deactivate_brand(request, id):
     current = get_object_or_404(Brand, id=id)
@@ -217,6 +244,8 @@ def deactivate_brand(request, id):
 # from .models import Product, Attribute_Value
 
 
+
+@admin_login_required
 def add_product_variant(request,id):
     if request.method == 'POST':
         print('its under post')
@@ -246,7 +275,7 @@ def add_product_variant(request,id):
             sale_price=sale_price,
             product=product,
             thumbnail_image=thumbnail_image,
-        )
+        )   
 
         # Add the attribute to the Product_Variant
         p.attributes.add(attribute)
@@ -274,6 +303,8 @@ def add_product_variant(request,id):
     return render(request, 'admin_side/add-product-variant.html', context)
 
 
+
+@admin_login_required
 def product_variant_list(request,id):
     product_variants = Product_Variant.objects.filter(product=id)
     # product_variants = get_object_or_404(Product_Variant,Product=id)
@@ -288,6 +319,9 @@ def product_variant_list(request,id):
 from django.db import IntegrityError
 from django.shortcuts import redirect
 
+
+
+@admin_login_required
 def attribute_values(request):
     if request.method == "POST":
         attribute_value = request.POST.get('attribute_value')
@@ -336,13 +370,17 @@ def attribute_values(request):
 #         return HttpResponse('Attribute value not found', status=404)
 #     except Exception as e:
 #         return HttpResponse(f'Error: {str(e)}', status=500)
-    
+
+
+@admin_login_required
 @never_cache
 def deactivate_attribute(request,id):
     current = get_object_or_404(Attribute_Value, id=id)
     current.is_active = False
     current.save()
     return redirect('product_management_app:attribute-values')
+
+@admin_login_required
 @never_cache
 def activate_attribute(request,id):
     current = get_object_or_404(Attribute_Value, id=id)
@@ -351,7 +389,7 @@ def activate_attribute(request,id):
     return redirect('product_management_app:attribute-values')
 
 
-
+@admin_login_required
 def edit_product_variant(request, id):
     product_variant = get_object_or_404(Product_Variant, id=id)
     variants = Attribute_Value.objects.all()
@@ -410,6 +448,8 @@ def edit_product_variant(request, id):
     return render(request, 'admin_side/edit-product-variant.html', context)
 
 
+
+@admin_login_required
 def delete_product_variant(request,id):
     product_variant = Product_Variant.objects.get(id=id)
     product = product_variant.product

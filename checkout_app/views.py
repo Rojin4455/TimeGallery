@@ -3,10 +3,11 @@ from user_app.models import Address
 from cart_app.models import Cart,CartItem
 from cart_app.views import _cart_id
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
 
 
 
-
+@login_required
 def checkout_address(request):
     user = request.user
     addresses = Address.objects.filter(account=user)
@@ -16,7 +17,7 @@ def checkout_address(request):
 
     return render(request,'userside/user_orders/address_selection.html',context)
 
-
+@login_required
 def checkout_edit_address(request, id):
     user = request.user
     address = get_object_or_404(Address, id=id)
@@ -50,7 +51,7 @@ def checkout_edit_address(request, id):
     }
     return render(request, 'userside/user_orders/checkout_address_edit.html', context)
 
-
+@login_required
 def checkout_create_address(request):
 
     if request.method == "POST":
@@ -77,22 +78,18 @@ def checkout_create_address(request):
 
     return render(request,'userside/user_orders/checkout_address_create.html')
 
-
+@login_required
 def order_summary(request, total=0, quantity=0, cart_items=None):
 
     total_with_orginal_price =0
-    try:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
-        for cart_item in cart_items:
-            total += cart_item.subtotal()
-            total_with_orginal_price +=( cart_item.product.max_price * cart_item.quantity)
-            quantity += cart_item.quantity
-    except ObjectDoesNotExist:
-        pass
+    current_user = request.user
+    cart_items = CartItem.objects.filter(user=current_user, is_active=True)
+    for cart_item in cart_items:
+        total += cart_item.subtotal()
+        total_with_orginal_price +=( cart_item.product.max_price * cart_item.quantity)
+        quantity += cart_item.quantity
 
-
-    
+ 
     discount = total_with_orginal_price - total
 
     context = {
@@ -103,16 +100,24 @@ def order_summary(request, total=0, quantity=0, cart_items=None):
         'discount':discount,
         'total_with_orginal_price':total_with_orginal_price,
 
-
     }
 
-    return render(request,'userside/user_orders/order_summary.html', context)
+    return render(request,'userside/user_orders/order_summary.html',context)
 
 
 
+@login_required
+def checkout_payment_cod(request):
 
-def checkout_payment(request):
+    if request.method == "POST":
+        cod = request.POST.get('payment_option')
+
+        if cod:
+            if cod == 'cod':
+                pass
+
     return render(request,'userside/user_orders/payment_options.html')
 
-def order_success(request):
-    return render(request,'userside/user_orders/order-success.html')
+# @login_required
+# def order_success(request):
+#     return render(request,'userside/user_orders/order-success.html')

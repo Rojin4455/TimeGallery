@@ -26,5 +26,9 @@ class Address(models.Model):
             Address.objects.filter(account=self.account).exclude(pk=self.pk).update(is_default=False)
         super(Address, self).save(*args, **kwargs)
 
+    def get_address_name(self):
+
+        return f"{self.first_name} {self.last_name}" 
+
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.account.username} Address"

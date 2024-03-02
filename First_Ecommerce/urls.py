@@ -33,12 +33,7 @@ urlpatterns = [
     path('', include('product_management.urls')),
     path('', include('cart_app.urls')),
     path('', include('checkout_app.urls')),
-
-
-
-
-
-
+    path('', include('orders.urls')),
 
     path('accounts/', include('allauth.urls')),
 ] +static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

@@ -4,6 +4,8 @@ from django.views.decorators.cache import cache_control,never_cache
 from django.db.models import Q
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
+from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
+
 
 
 
@@ -14,8 +16,11 @@ def users_list(request):
     if request.user.is_superuser:
         if request.user.is_authenticated:
             users = User.objects.filter(is_superuser = False).order_by('id')
+            paginator = Paginator(users,6)
+            page = request.GET.get('page')
+            paged_products = paginator.get_page(page) 
             user_all = {
-                'users':users
+                'users':paged_products
             }
             return render(request,'admin_side/page-users-list.html',user_all)
         return redirect('admin_app:admin_login')

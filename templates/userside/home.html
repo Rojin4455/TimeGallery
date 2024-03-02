@@ -13,18 +13,18 @@
     <div class="row px-xl-5">
 
         <!-- Categories Section -->
-        <div class="col-lg-4 col-md-12 mb-4">
-            <div class="col-lg-12 d-none d-lg-block">
+        {% comment %} <div class="col-lg-4 col-md-12 mb-4"> {% endcomment %}
+            {% comment %} <div class="col-lg-12 d-none d-lg-block">
                 <a class="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100" data-toggle="collapse" href="#navbar-vertical" style="height: 65px; margin-top: -1px; padding: 0 30px;">
                     <h6 class="m-0">Categories</h6>
 
                     <i class="fa fa-angle-down text-dark"></i>
-                </a>
+                </a> {% endcomment %}
 
-
+{% comment %} 
                 <nav class="collapse show navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0" id="navbar-vertical">
                     
-                    <div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
+                    <div class="navbar-nav w-100 overflow-hidden" style="height: 410px"> {% endcomment %}
                         {% comment %} <div class="nav-item"> {% endcomment %}
                             {% comment %} <a href="#" class="nav-link" data-toggle="dropdown">Watches <i class="fa fa-angle-down float-right mt-1"></i></a> {% endcomment %}
                             <!-- <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
@@ -33,19 +33,19 @@
                                 <a href="" class="dropdown-item">Baby's Dresses</a>
                             </div> -->
                         {% comment %} </div> {% endcomment %}
-                        {% for Category in links %}
+                        {% comment %} {% for Category in links %}
                         <a href="{% url 'store_app:user_category_search' Category.id %}" class="nav-item nav-link">{{Category.cat_name}}</a>
-                        {% endfor %}
+                        {% endfor %} {% endcomment %}
                         {% comment %} <a href="" class="nav-item nav-link">Luxury Watch</a>
                         <a href="" class="nav-item nav-link">Smart Watch</a> {% endcomment %}
-                    </div>
+                    {% comment %} </div>
           
-                </nav>
-            </div>
-        </div>
+                </nav> {% endcomment %}
+            {% comment %} </div>
+        </div> {% endcomment %}
 
         <!-- Banner Image Carousel -->
-        <div class="col-lg-8 col-md-12 mb-4">
+        <div class="col-12 mb-4">
             <div id="header-carousel" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                     <div class="carousel-item active" style="height: 410px;">
@@ -91,6 +91,7 @@
                 </a>
             </div>
         </div>
+        
         
         <!-- Other Sections (Quality Product, Free Shipping, etc.) go here -->
         

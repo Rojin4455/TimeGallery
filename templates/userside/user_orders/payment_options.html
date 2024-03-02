@@ -8,7 +8,8 @@
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Step 3 of 3</div>
         </div>
         <a href="{% url 'checkout_app:order_summary' %}" class="btn btn-secondary"> Back </a>
-
+        <form method = 'post'>
+            {% csrf_token %}
         <div class="row">
             <div class="col-lg-9">
                 <!-- Payment Options -->
@@ -18,8 +19,8 @@
                         <ul class="list-group">
                             <li class="list-group-item">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" id="creditCard" name="payment_option" class="custom-control-input" value="creditCard">
-                                    <label class="custom-control-label" for="creditCard"> Cash On Delivery</label>
+                                    <input type="radio" id="cod" name="payment_option" class="custom-control-input" value="cod">
+                                    <label class="custom-control-label" for="cod"> Cash On Delivery</label>
                                 </div>
                             </li>
                             <li class="list-group-item">
@@ -59,12 +60,13 @@
                         </p> {% endcomment %}
                         {% comment %} <a href="{% url 'checkout_app:checkout_address' %}" class="btn btn-primary btn-block"> Checkout </a> {% endcomment %}
                         {% comment %} <a href="{% url 'store_app:products_by_category' %}" class="btn btn-light btn-block">Continue Shopping</a> {% endcomment %}
-                        <a href="{% url 'checkout_app:order_success' %}" class="btn btn-primary btn-block"> Confirm Order </a>
+                        <a href="{% url 'order_app:place_order_cod' %}" class="btn btn-primary btn-block"> Confirm Order </a>
 
                     </div> <!-- card-body.// -->
                 </div> <!-- card.// -->
             </aside> <!-- col.// -->
         </div>
+    </form>
     </div>
 </section>
 

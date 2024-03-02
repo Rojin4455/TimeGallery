@@ -9,7 +9,7 @@
 		<br>
 		<hr>
 		<div class="text-center">
-			<a href="{% url 'store_app:store' %}" class="btn btn-primary">Continue Shopping</a>
+			<a href="{% url 'store_app:products_by_category' %}" class="btn btn-primary">Continue Shopping</a>
 		</div>
 	{% else %}
         <div class="row">
@@ -83,7 +83,7 @@
                         <p class="text-center mb-3">
                             <img src="{% static 'images/misc/payments.png' %}" height="26">
                         </p>
-                        <a href="{% url 'checkout_app:checkout_address' %}" class="btn btn-primary btn-block"> Checkout </a>
+                        <button onclick="checkoutClicked()" class="btn btn-primary btn-block"> Checkout </button>
                         <a href="{% url 'store_app:products_by_category' %}" class="btn btn-light btn-block">Continue Shopping</a>
                     </div> <!-- card-body.// -->
                 </div> <!-- card.// -->
@@ -108,6 +108,26 @@
         let quantity = parseInt(quantityInput.value);
         quantity++;
         quantityInput.value = quantity;
+    }
+
+    function checkoutClicked() {
+        // Check if user is logged in
+        {% if user.is_authenticated %}
+            window.location.href = "{% url 'checkout_app:checkout_address' %}";
+        {% else %}
+            Swal.fire({
+                title: 'Please Login First!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Login'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'user_app:login' %}?next={% url 'checkout_app:checkout_address' %}";
+                }
+            });
+        {% endif %}
     }
 </script>
 

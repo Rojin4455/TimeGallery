@@ -111,8 +111,13 @@ class Product_Variant(models.Model):
 
             print(f"Image saved: {self.thumbnail_image.path}")  # Add this line for debugging
 
+    def get_product_name(self):
+        return f'{self.product.brand} {self.product.product_name} - {self.attributes}'    
+
+
     def __str__(self):
-        return self.thumbnail_image.url
+        # return self.thumbnail_image.url
+        return self.variant_name
 
 
 # class  Additional_Product_Image(models.Model):

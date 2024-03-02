@@ -3,6 +3,8 @@
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from django.urls import reverse_lazy
+
 
 load_dotenv()
 
@@ -32,6 +34,7 @@ INSTALLED_APPS = [
     'product_management',
     'cart_app',
     'checkout_app',
+    'orders',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -146,5 +149,10 @@ SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_LOGIN_ON_GET=True
 
 AUTH_USER_MODEL = 'admin_app.User'
+
+LOGIN_URL = reverse_lazy('user_app:login')
+# LOGIN_URL_ADMIN = reverse_lazy('admin_app:admin_login')
+
+
 
 

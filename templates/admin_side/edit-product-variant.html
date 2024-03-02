@@ -59,10 +59,11 @@
                         <div class="mb-3">
                             <label for="is_active" class="form-label">Active</label>
                             <select class="form-select" id="is_active" name="is_active">
-                                <option value="1" {% if product_variant.product.is_active %}selected{% endif %}>Active</option>
-                                <option value="0" {% if not product_variant.product.is_active %}selected{% endif %}>Inactive</option>
+                                <option value="1" {% if product_variant.is_active %}selected{% endif %}>Active</option>
+                                <option value="0" {% if not product_variant.is_active %}selected{% endif %}>Inactive</option>
                             </select>
                         </div>
+                        
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                             </a>

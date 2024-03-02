@@ -8,6 +8,10 @@ from .models import User
 from django.contrib.auth.decorators import login_required
 from category.models import Category
 from store.models import Product,Brand
+from django.urls import reverse_lazy
+from .decorators import admin_login_required
+
+
 
 
 # def admin_products_list(request):
@@ -61,7 +65,7 @@ def admin_login(request):
             return redirect('admin_app:admin_login')
     return render(request, 'admin_side/page-account-login.html')
 
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@admin_login_required
 @never_cache
 def admin_logout(request):
     logout(request)
@@ -69,6 +73,8 @@ def admin_logout(request):
 
 
 
+@admin_login_required
+# @login_required(login_url=reverse_lazy('admin_app:admin_login'))
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 # @never_cache
 def admin_dashboard(request):
