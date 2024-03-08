@@ -7,7 +7,7 @@
         <div class="progress mb-4">
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 66%;" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">Step 2 of 3</div>
         </div>
-        <a href="{% url 'checkout_app:checkout_address' %}" class="btn btn-secondary"> Back </a>
+        <a href="{% url 'checkout_app:checkout_payment' %}" class="btn btn-secondary"> Back </a>
 
         {% comment %} {% if not cart_items %}
             <h2 class="text-center">Your Shopping Cart Is Empty<h2>
@@ -44,11 +44,11 @@
                                     <td> 
                                         <div class="col"> 
                                             <div class="input-group input-spinner" style="display: flex; align-items: center;">
-                                                <a href="{% url 'cart_app:remove_cart' cart_item.product.id %}" >
+                                                <a href="{% url 'checkout_app:remove_order_summary' cart_item.product.id %}" >
                                                 <button class="btn btn-light" type="button" onclick="decreaseQuantity({{ cart_item.id }})" style="padding: 5px 10px;"> <i class="fa fa-minus"></i> </button>
                                                 </a>
                                                 <input type="text" class="form-control text-center" id="quantity-{{ cart_item.id }}" value="{{ cart_item.quantity }}" style="text-align: center; padding: 0; width: 50px;" readonly>
-                                                <a href="{% url 'cart_app:update_cart' cart_item.product.id %}" >
+                                                <a href="{% url 'checkout_app:update_order_summary' cart_item.product.id %}" >
                                                 <button class="btn btn-light" type="button" onclick="increaseQuantity({{ cart_item.id }})" style="padding: 5px 10px;"> <i class="fa fa-plus"></i> </button>
                                                 </a>
                                             </div> <!-- input-group.// -->
@@ -61,12 +61,22 @@
                                         </div> <!-- price-wrap .// -->
                                     </td>
                                     <td class="text-right"> 
-                                        <a href="{% url 'cart_app:remove_cart_item' cart_item.product.id %}" class="btn btn-danger"> Remove</a>
+                                        <a href="{% url 'checkout_app:remove_order_summary_item' cart_item.product.id %}" class="btn btn-danger"> Remove</a>
                                     </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+                        {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
                     </div> <!-- card.// -->
                 </aside> <!-- col.// -->
                 <aside class="col-lg-3">
@@ -88,7 +98,7 @@
                             {% comment %} <p class="text-center mb-3">
                                 <img src="{% static 'images/misc/payments.png' %}" height="26">
                             </p> {% endcomment %}
-                            <a href="{% url 'checkout_app:checkout_payment_cod' %}" class="btn btn-primary btn-block"> Continue </a>
+                            <a href="{% url 'checkout_app:checkout_payment' %}" class="btn btn-primary btn-block"> Continue </a>
                             {% comment %} <a href="{% url 'store_app:products_by_category' %}" class="btn btn-light btn-block">Continue Shopping</a> {% endcomment %}
                         </div> <!-- card-body.// -->
                     </div> <!-- card.// -->

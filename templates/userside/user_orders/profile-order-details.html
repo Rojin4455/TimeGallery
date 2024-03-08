@@ -1,0 +1,130 @@
+{% extends "userside/base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Order Details</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Order Number: #{{ order_dtails.order_number }}</h6>
+                    <p><strong>Order Date:</strong> {{ order_dtails.created_at }}</p>
+                    <p><strong>Payment Method:</strong> {{ order_dtails.payment.payment_method.method_name }}</p>
+                    <p><strong>Shipping Address:</strong> {{ order_dtails.shipping_address }}</p>
+                </div>
+                <div class="col-md-6">
+                    {% comment %} <h6>Total: ₹{{ grand_total }}</h6> {% endcomment %}
+                    <p><strong>Grand Total :</strong> ₹{{ order_dtails.order_total }}</p>
+                    {% comment %} <p><strong>Discount:</strong> ₹{{ ordere_dtails.discount }}</p> {% endcomment %}
+                </div>
+            </div>
+            <hr>
+            <h5>Ordered Products</h5>
+            <div class="table-responsive">
+                <style>
+                    .product-details {
+                        font-size: 16px; /* Adjust the font size as needed */
+                    }
+                </style>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Order Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order_products %}
+                        <tr>
+                            <td>
+                                {% if item.images %}
+                                    <img src="{{ item.images.url }}" alt="{{ item.product_variant }}" style="max-width: 100px;">
+                                {% else %}
+                                    No Image
+                                {% endif %}
+                            </td>
+                            
+                            <td class="product-details">{{ item.product_variant }}</td>
+                            <td class="product-details">{{ item.quantity }}</td>
+                            <td class="product-details">₹{{ item.product_price }}</td>
+                            <td class="product-details">{{ item.order_status }}</td>
+
+                            <td>
+                                {% if item.order_status == "New" or item.order_status == "Accepted" %}
+                                    <a href="{% url 'order_app:cancel_product' item.id %}" class="btn btn-danger cancel-product">Cancel</a>
+                                {% elif item.order_status == "Delivered"%}
+                                <a href="{% url 'order_app:return_product' item.id %}" class="btn btn-danger return-product">Return</a>
+
+                                {% else %}
+                                    <button class="btn btn-danger cancel-product" disabled>Cancel</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    
+                    
+                </table>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cancelButtons = document.querySelectorAll('.cancel-product');
+        cancelButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const url = this.getAttribute('href');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You want to cancel this product?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, cancel it!',
+                    cancelButtonText: 'No, keep it'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    });
+
+//return product sweet alert
+    document.addEventListener('DOMContentLoaded', function() {
+        const cancelButtons = document.querySelectorAll('.return-product');
+        cancelButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const url = this.getAttribute('href');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You want to return this product?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, cancel it!',
+                    cancelButtonText: 'No, keep it'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+{% endblock %}

@@ -68,7 +68,9 @@
                                 <tr>
                                     <td>{{forloop.counter}}</td>
                                     {% comment %} <td>{{user.id}}</td> {% endcomment %}
-                                    <td><b>{{user.username}}</b></td>
+                                    
+                                    <td><b><a href="{% url 'order_management_app:order_details' user.id %}">{{user.username}}</a></b></td>
+                                    
                                     <td>{{user.email}}</td>
                                     {% comment %} <td><template class="__cf_email__" data-cfemail="aec3cfdcd8c7c0eecbd6cfc3dec2cb80cdc1c3">[email&#160;protected]</template></td> {% endcomment %}
                                     {% comment %} <td>{{user.is_active}}</td> {% endcomment %}

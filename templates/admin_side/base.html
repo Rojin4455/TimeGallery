@@ -27,13 +27,17 @@
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
-            <a href="index.html" class="brand-wrap">
-                <img src="{% static 'assets_admin/imgs/theme/logo.svg' %}" class="logo" alt="TimeGallery Dashboard">
+            <a href="" class="text-decoration-none">
+                <h1 class="m-0 display-5 font-weight-semi-bold">
+                    <span class="text-primary font-weight-bold border px-2 py-1 mr-2" style="font-size: 1.5rem;">Time</span>
+                    <span class="text-primary font-weight-bold border px-2 py-1" style="font-size: 1.5rem;">Gallery</span>
+                </h1>
             </a>
             <div>
                 <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
             </div>
         </div>
+        
         <nav>
             <ul class="menu-aside">
                 <li class="menu-item ">
@@ -56,6 +60,19 @@
                         <a href="{% url 'product_management_app:admin_products_list' %}">Product List</a>
                         {% comment %} <a href="{% url 'product_management_app:add-product-variant' %}">Add Product Variant</a> {% endcomment %}
                         <a href="{% url 'product_management_app:attribute-values' %}">Add Variant</a>
+
+                        
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href=""> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Order</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="{% url 'order_management_app:order_list' %}">Order List</a>
+                        {% comment %} <a href="{% url 'product_management_app:admin_products_list' %}">Product List</a> {% endcomment %}
+                        {% comment %} <a href="{% url 'product_management_app:add-product-variant' %}">Add Product Variant</a> {% endcomment %}
+                        {% comment %} <a href="{% url 'product_management_app:attribute-values' %}">Add Variant</a> {% endcomment %}
 
                         
                     </div>

@@ -3,7 +3,7 @@ from admin_app.models import User
 
 # Create your models here.
 class Address(models.Model):
-    account         = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    account         = models.ForeignKey(User,on_delete=models.CASCADE,null=True, related_name = "user_address")
     first_name      = models.CharField(max_length=50)
     last_name       = models.CharField(max_length=50)
     phone_number    = models.CharField(max_length=50)

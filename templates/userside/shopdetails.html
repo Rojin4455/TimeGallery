@@ -114,29 +114,7 @@
     <!-- Image previews will be shown here -->
 </div>
 {% if product_variant.stock > 0 %}
-{% comment %} <div class="d-flex align-items-center mb-4 pt-2">
-    <div class="input-group quantity mr-3" style="width: 130px;">
-        <div class="input-group-btn">
-            <button class="btn btn-primary btn-minus">
-                <i class="fa fa-minus"></i>
-            </button>
-        </div>
-        <input type="text" class="form-control bg-secondary text-center" value="1">
-        <div class="input-group-btn">
-            <button class="btn btn-primary btn-plus">
-                <i class="fa fa-plus"></i>
-            </button>
-        </div>
-    </div> {% endcomment %}
 
-        {% comment %} {% if in_cart == True %} {% endcomment %}
-
-        {% comment %} <a href="{% url 'cart_app:add_cart' product_variant.id %}">
-            <button class="btn btn-success"><i class="fas fa-check"></i> Added To Cart</button>
-            <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> View Cart</button>
-
-            </a> {% endcomment %}
-            {% comment %} {% else %} {% endcomment %}
             {% if in_cart %}
             <button class="btn  btn-success"> <span class="text">
                 Added To Cart
@@ -146,11 +124,12 @@
                View Cart
             </span>      
             </a>
-    
+
         {% else %}
         <a href="{% url 'cart_app:add_cart' product_variant.id %}">
         <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
         </a>
+
 
         {% endif %}
     {% endif %}
@@ -327,6 +306,12 @@
 </div>
 
 <!-- Products End -->
+
+<!-- Add these links to your head section -->
+{% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>    
 document.getElementById("add-to-cart-btn").addEventListener("click", function() {

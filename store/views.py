@@ -143,6 +143,98 @@ def user_category_search(request,id):
     return render(request, 'userside/store.html', context)
 
 
+def low_to_high(request):
+    products_list = Product_Variant.objects.filter(is_active=True).order_by('sale_price')
+    categories_with_product_variants = Category.objects.annotate(
+    num_product_variants=models.Count('product__products')
+    ).filter(num_product_variants__gt=0, is_active=True)
+
+    paginator = Paginator(products_list,6)
+    page = request.GET.get('page')
+    paged_products = paginator.get_page(page)    
+
+
+    # products = Product.objects.filter(is_available=True,brand__is_active=True, category__is_active=True,category=id)
+    # product_variants = Product_Variant.objects.filter(product=products)
+    # # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True, category=id)  # Filter out products with no brand and inactive brands
+    # products_list = product_variants
+    context = {
+        'products_list': paged_products,
+        'categories':categories_with_product_variants
+    }
+    return render(request, 'userside/store.html', context)
+
+
+
+def high_to_low(request):
+    products_list = Product_Variant.objects.filter(is_active=True).order_by('-sale_price')
+    categories_with_product_variants = Category.objects.annotate(
+    num_product_variants=models.Count('product__products')
+    ).filter(num_product_variants__gt=0, is_active=True)
+    
+    paginator = Paginator(products_list,6)
+    page = request.GET.get('page')
+    paged_products = paginator.get_page(page)    
+
+
+    # products = Product.objects.filter(is_available=True,brand__is_active=True, category__is_active=True,category=id)
+    # product_variants = Product_Variant.objects.filter(product=products)
+    # # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True, category=id)  # Filter out products with no brand and inactive brands
+    # products_list = product_variants
+    context = {
+        'products_list': paged_products,
+        'categories':categories_with_product_variants
+    }
+    return render(request, 'userside/store.html', context)
+
+
+def aA_to_zZ(request):
+    
+    products_list = Product_Variant.objects.filter(is_active=True).order_by('variant_name')
+    categories_with_product_variants = Category.objects.annotate(
+    num_product_variants=models.Count('product__products')
+    ).filter(num_product_variants__gt=0, is_active=True)
+    
+    paginator = Paginator(products_list,6)
+    page = request.GET.get('page')
+    paged_products = paginator.get_page(page)    
+
+
+    # products = Product.objects.filter(is_available=True,brand__is_active=True, category__is_active=True,category=id)
+    # product_variants = Product_Variant.objects.filter(product=products)
+    # # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True, category=id)  # Filter out products with no brand and inactive brands
+    # products_list = product_variants
+    context = {
+        'products_list': paged_products,
+        'categories':categories_with_product_variants
+    }
+    return render(request, 'userside/store.html', context)
+
+
+def Zz_to_Aa(request):
+
+    products_list = Product_Variant.objects.filter(is_active=True).order_by('-variant_name')
+    categories_with_product_variants = Category.objects.annotate(
+    num_product_variants=models.Count('product__products')
+    ).filter(num_product_variants__gt=0, is_active=True)
+    
+    paginator = Paginator(products_list,6)
+    page = request.GET.get('page')
+    paged_products = paginator.get_page(page)    
+
+
+    # products = Product.objects.filter(is_available=True,brand__is_active=True, category__is_active=True,category=id)
+    # product_variants = Product_Variant.objects.filter(product=products)
+    # # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True, category=id)  # Filter out products with no brand and inactive brands
+    # products_list = product_variants
+    context = {
+        'products_list': paged_products,
+        'categories':categories_with_product_variants
+    }
+    return render(request, 'userside/store.html', context)
+
+
+
 
 
 

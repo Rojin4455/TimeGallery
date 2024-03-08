@@ -27,7 +27,11 @@
                                 <input type="hidden" name="address_id" value="{{ address.id }}">
                                 <button type="submit" class="btn btn-sm btn-danger" onclick="delete_add('{{ address.id }}')">Delete</button>
                             </form>
-                            
+                            {% if messages %}
+                            {% for message in messages %}
+                            <span class="error" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>
+                            {% endfor %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>

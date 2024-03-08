@@ -51,11 +51,10 @@ def global_order_summary(request):
 
     discount = total_with_orginal_price - total
 
-    context = {
+    return {
         'global_order_summary_total': total,
         'global_order_summary_quantity': quantity,
         'global_order_summary_cart_items': cart_items,
         'global_order_summary_discount': discount,
         'global_order_summary_total_with_original_price': total_with_orginal_price,
     }
-    return context

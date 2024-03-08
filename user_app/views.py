@@ -19,6 +19,9 @@ from django.db import models
 from cart_app.views import _cart_id
 from cart_app.models import Cart,CartItem
 from django.core.exceptions import ObjectDoesNotExist
+from orders.models import Payment, PaymentMethod, Order, OrderProduct
+from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
+
 
 
 
@@ -232,7 +235,29 @@ def profile_address(request):
 
 @never_cache
 def profile_orders(request):
-    return render(request,'userside/profile-orders.html')
+    current_user = request.user
+    orders = Order.objects.filter(user=current_user).order_by("-created_at")
+    order_products = []
+
+    for order in orders:
+        order_products.append(OrderProduct.objects.filter(order=order))
+
+    # Now let's print the payment method for each order
+    for order in orders:
+        if order.payment:
+            print(order.payment.payment_method.method_name)
+        else:
+            print("No payment found for order #", order.order_number)
+    
+    paginator = Paginator(orders,6)
+    page = request.GET.get('page')
+    paged_products = paginator.get_page(page)    
+
+    context = {
+        'orders': paged_products,
+        'order_products': order_products
+    }
+    return render(request, 'userside/profile-orders.html', context)
 
 @never_cache
 def create_address(request):

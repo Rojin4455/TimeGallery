@@ -15,6 +15,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = True
 
 ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = ['https://api.razorpay.com']
 
 LOGIN_REDIRECT_URL = '/'
 # ACCOUNT_LOGOUT_REDIRECT_URL = '/'
@@ -35,6 +36,7 @@ INSTALLED_APPS = [
     'cart_app',
     'checkout_app',
     'orders',
+    'order_management',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -152,6 +154,12 @@ AUTH_USER_MODEL = 'admin_app.User'
 
 LOGIN_URL = reverse_lazy('user_app:login')
 # LOGIN_URL_ADMIN = reverse_lazy('admin_app:admin_login')
+
+RAZOR_PAY_KEY_ID = 'rzp_test_dSu8p6gC5RjeXR'
+KEY_SECRET = 'gbLg8Tb8J5mNibxFPEOcrNKX'
+
+SESSION_COOKIE_AGE = 3600  # 1 hour in seconds
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 
 

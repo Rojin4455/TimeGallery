@@ -1,73 +1,312 @@
-{% extends "userside/base.html" %}
-{% load static %}
-{% block content %}
+{% extends "userside/base.html" %} {% load static %} {% block content %}
 
 <section class="section-content padding-y bg">
-    <div class="container">
-        <div class="progress mb-4">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Step 3 of 3</div>
-        </div>
-        <a href="{% url 'checkout_app:order_summary' %}" class="btn btn-secondary"> Back </a>
-        <form method = 'post'>
-            {% csrf_token %}
-        <div class="row">
-            <div class="col-lg-9">
-                <!-- Payment Options -->
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Payment Options</h4>
-                        <ul class="list-group">
-                            <li class="list-group-item">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="cod" name="payment_option" class="custom-control-input" value="cod">
-                                    <label class="custom-control-label" for="cod"> Cash On Delivery</label>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="debitCard" name="payment_option" class="custom-control-input" value="debitCard">
-                                    <label class="custom-control-label" for="debitCard">Debit Card</label>
-                                </div>
-                            </li>
-                            <li class="list-group-item">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" id="paypal" name="payment_option" class="custom-control-input" value="paypal">
-                                    <label class="custom-control-label" for="paypal">PayPal</label>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <aside class="col-lg-3">
-                <div class="card">
-                    <div class="card-body">
-                        <dl class="dlist-align">
-                            <dt>Total price:</dt>
-                            <dd class="text-right">₹{{ global_order_summary_total_with_original_price  }}</dd>
-                        </dl>
-                        <dl class="dlist-align">
-                            <dt>Discount:</dt>
-                            <dd class="text-right"> ₹{{ global_order_summary_discount  }}</dd>
-                        </dl>
-                        <dl class="dlist-align">
-                            <dt>Total:</dt>
-                            <p><dd class="text-right text-dark b"><strong>₹ {{ global_order_summary_total }}</strong></dd></p>
-                        </dl>
-                        <hr>
-                        {% comment %} <p class="text-center mb-3">
-                            <img src="{% static 'images/misc/payments.png' %}" height="26">
-                        </p> {% endcomment %}
-                        {% comment %} <a href="{% url 'checkout_app:checkout_address' %}" class="btn btn-primary btn-block"> Checkout </a> {% endcomment %}
-                        {% comment %} <a href="{% url 'store_app:products_by_category' %}" class="btn btn-light btn-block">Continue Shopping</a> {% endcomment %}
-                        <a href="{% url 'order_app:place_order_cod' %}" class="btn btn-primary btn-block"> Confirm Order </a>
-
-                    </div> <!-- card-body.// -->
-                </div> <!-- card.// -->
-            </aside> <!-- col.// -->
-        </div>
-    </form>
+  <div class="container">
+    <div class="progress mb-4">
+      <div
+        class="progress-bar progress-bar-striped progress-bar-animated"
+        role="progressbar"
+        style="width: 100%"
+        aria-valuenow="100"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+        Step 3 of 3
+      </div>
     </div>
+    <a href="{% url 'checkout_app:order_summary' %}" class="btn btn-secondary">
+      Back
+    </a>
+    <div class="row">
+      <div class="col-lg-9">
+        <!-- Payment Options -->
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Payment Options</h4>
+            <form id="paymentForm" method="post">
+              {% csrf_token %}
+              <ul class="list-group">
+                {% for p in payment %}
+                <li class="list-group-item">
+                  <div class="custom-control custom-radio">
+                    <input
+                      type="radio"
+                      id="payment_option_{{ p.id }}"
+                      name="payment_option"
+                      class="custom-control-input"
+                      value="{{ p.method_name }}"
+                    />
+                    <label
+                      class="custom-control-label"
+                      for="payment_option_{{ p.id }}"
+                      >{{ p.id }}, {{ p.method_name }}</label
+                    >
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                Confirm Order
+              </button>
+            </form>
+            {% if messages %} {% for message in messages %}
+            <div
+              class="alert alert-danger alert-dismissible fade show"
+              role="alert"
+            >
+              {{ message }}
+              <button
+                type="button"
+                class="close"
+                data-dismiss="alert"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            {% endfor %} {% endif %}
+          </div>
+        </div>
+      </div>
+      <aside class="col-lg-3">
+        <div class="card">
+          <div class="card-body">
+            <dl class="dlist-align">
+              <dt>Total price:</dt>
+              <dd class="text-right">
+                ₹{{ global_order_summary_total_with_original_price }}
+              </dd>
+            </dl>
+            <dl class="dlist-align">
+              <dt>Discount:</dt>
+              <dd class="text-right">₹{{ global_order_summary_discount }}</dd>
+            </dl>
+            <dl class="dlist-align">
+              <dt>Total:</dt>
+              <p>
+                <dd class="text-right text-dark b">
+                  <strong>₹ {{ global_order_summary_total }}</strong>
+                </dd>
+              </p>
+            </dl>
+            <hr />
+          </div>
+          <!-- card-body.// -->
+        </div>
+        <!-- card.// -->
+      </aside>
+      <!-- col.// -->
+    </div>
+  </div>
 </section>
+{% comment %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  document
+    .getElementById("paymentForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent form submission
+      console.log("SSSSSSSSSSSSSSSSSSD");
+
+      // Get the selected payment option
+      var selectedOption = document.querySelector(
+        'input[name="payment_option"]:checked'
+      );
+      console.log("selectedOption", selectedOption);
+
+      if (!selectedOption) {
+        alert("Please select a payment option.");
+        return; // Exit function if no option selected
+      }
+
+      // Get the CSRF token
+      var csrftoken = document.querySelector('meta[name="csrf-token"]').content;
+
+      if (selectedOption.value == "RAZORPAY") {
+        // Create the fetch request
+        fetch('{% url "checkout_app:checkout_payment" %}', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken,
+            // Add any additional headers if needed
+          },
+          body: JSON.stringify({
+            selected_payment_method: selectedOption.value,
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json(); // Parse response JSON
+          })
+          .then((data) => {
+            console.log("Received data:", data);
+
+            var options = {
+              key: "rzp_test_dSu8p6gC5RjeXR", // Enter the Key ID generated from the Dashboard
+              amount: data.context.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+              currency: "INR",
+              name: "Acme Corp",
+              description: "Test Transaction",
+              image: "https://example.com/your_logo",
+              order_id: data.context.order_id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+              callback_url: "http://127.0.0.1:8000/place_order_razpay/",
+              prefill: {
+                name: "{{request.user.get_usernme}}",
+                email: "{{request.user.email}}",
+                contact: "{{request.user.phone_number}}",
+              },
+              notes: {
+                address: "Razorpay Corporate Office",
+              },
+              theme: {
+                color: "#3399cc",
+              },
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.on("payment.failed", function (response) {
+              alert(response.error.code);
+            });
+
+            rzp1.open();
+            event.preventDefault(); // Prevent default form submission
+            // Handle the response, perhaps redirect based on success
+          })
+
+          .catch((error) => {
+            console.error(
+              "There was a problem with the fetch operation:",
+              error
+            );
+          });
+      } else {
+        window.location.href = "{% url 'order_app:place_order_cod' %}";
+      }
+    });
+</script>
+{% endcomment %}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  const csrftoken = getCookie("csrftoken");
+  document
+    .getElementById("paymentForm")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent form submission
+      console.log("SSSSSSSSSSSSSSSSSSD");
+
+      // Get the selected payment option
+      var selectedOption = document.querySelector(
+        'input[name="payment_option"]:checked'
+      );
+      console.log("selectedOption", selectedOption);
+
+      if (!selectedOption) {
+        alert("Please select a payment option.");
+        return; // Exit function if no option selected
+      }
+
+      // Get the CSRF token
+      //var csrftoken = document.querySelector('meta[name="csrf-token"]').content;
+
+      if (selectedOption.value == "RAZORPAY") {
+        // Create the fetch request
+        fetch('{% url "checkout_app:checkout_payment" %}', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken,
+            // Add any additional headers if needed
+          },
+          body: JSON.stringify({
+            selected_payment_method: selectedOption.value,
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json(); // Parse response JSON
+          })
+          .then((data) => {
+            console.log("Received data:", data);
+            var csrftoken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+            console.log("CSRF token from form:", csrftoken);
+            console.log("CSRF token from server:", "{{ csrf_token }}");
+
+
+            var options = {
+              key: "rzp_test_dSu8p6gC5RjeXR", // Enter the Key ID generated from the Dashboard
+              amount: data.context.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+              currency: "INR",
+              name: "Acme Corp",
+              description: "Test Transaction",
+              image: "https://example.com/your_logo",
+              order_id: data.context.order_id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+              callback_url: "http://127.0.0.1:8000/place_order_razpay/",
+              handler: function (response) {
+                // Handle Razorpay response
+               
+
+                window.location.reload();
+
+            },
+              prefill: {
+                name: "{{ request.user.get_username }}", // Corrected username
+                email: "{{ request.user.email }}",
+                contact: "{{ request.user.phone_number }}",
+              },
+              notes: {
+                address: "Razorpay Corporate Office",
+              },
+              theme: {
+                color: "#3399cc",
+              },
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.on("payment.failed", function (response) {
+              alert(response.error.code);
+            });
+
+            rzp1.on("payment.success", function (response) {
+              window.location.reload(); // Reload the page after successful payment
+            });
+
+            rzp1.open();
+
+
+            //to allow the form to submit
+            // Handle the response, perhaps redirect based on success
+          })
+
+          .catch((error) => {
+            console.error(
+              "There was a problem with the fetch operation:",
+              error
+            );
+          });
+      } else {
+        window.location.href = "{% url 'order_app:place_order_cod' %}";
+      }
+    });
+
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      var cookies = document.cookie.split(";");
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i].trim();
+        // Check if the cookie name matches the provided name
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
 
 {% endblock %}

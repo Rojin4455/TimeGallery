@@ -1,0 +1,61 @@
+{% extends "userside/base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="section-content padding-y bg">
+    <div class="container">
+        <div class="progress mb-4">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Step 3 of 3</div>
+        </div>
+        <a href="{% url 'checkout_app:order_summary' %}" class="btn btn-secondary"> Back </a>
+        <div class="row">
+            <div class="col-lg-9">
+                <!-- Razorpay Payment -->
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Pay with Razorpay</h4>
+                        <form>
+                            <script
+                                src="https://checkout.razorpay.com/v1/checkout.js"
+                                data-key="{{ key_id }}"
+                                data-amount="{{ amount }}"
+                                data-currency="{{ currency }}"
+                                data-order_id="{{ order_id }}"
+                                data-buttontext="Pay with Razorpay"
+                                data-name="Your Company Name"
+                                data-description="Order Transaction"
+                                data-image="https://example.com/your_logo.jpg"
+                                data-prefill.name="{{ user.get_full_name }}"
+                                data-prefill.email="{{ user.email }}"
+                                data-prefill.contact="{{ user.profile.phone_number }}"
+                                data-theme.color="#3399cc"
+                            >
+                            </script>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <aside class="col-lg-3">
+                <div class="card">
+                    <div class="card-body">
+                        <dl class="dlist-align">
+                            <dt>Total price:</dt>
+                            <dd class="text-right">₹{{ total_with_original_price }}</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>Discount:</dt>
+                            <dd class="text-right"> ₹{{ discount }}</dd>
+                        </dl>
+                        <dl class="dlist-align">
+                            <dt>Total:</dt>
+                            <p><dd class="text-right text-dark b"><strong>₹ {{ total }}</strong></dd></p>
+                        </dl>
+                        <hr>
+                    </div> <!-- card-body.// -->
+                </div> <!-- card.// -->
+            </aside> <!-- col.// -->
+        </div>
+    </div>
+</section>
+
+{% endblock %}

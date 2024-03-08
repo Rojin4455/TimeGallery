@@ -28,9 +28,17 @@ class Payment(models.Model):
     payment_status =    models.CharField(choices = PAYMENT_STATUS_CHOICES,max_length=20)
     is_paid = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    payment_signature   = models.CharField(max_length=100, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        # Check if payment status is 'SUCCESS'
+        if self.payment_status == 'SUCCESS':
+            # If yes, set is_paid to True
+            self.is_paid = True
+        super().save(*args, **kwargs)
     
     def __str__(self):
-        return self.payment_id
+        return str(self.payment_id)
     
 
 
@@ -45,7 +53,7 @@ class Order(models.Model):
         ("Returned_User", "Returned User"),
         )
     user = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
-    payment = models.OneToOneField(Payment,on_delete=models.SET_NULL,null=True,blank=True)
+    payment = models.OneToOneField(Payment,on_delete=models.SET_NULL,null=True,blank=True,related_name='order')
     order_number = models.CharField(max_length=100,null=True)
     shipping_address = models.TextField()
     # coupon_code = models.ForeignKey(Coupon,on_delete=models.SET_NULL,null=True,blank=True)
@@ -68,23 +76,18 @@ class Order(models.Model):
         if last_order :
             sequence_number = int(last_order.order_number[-6:]) + 1
             print(sequence_number)
-            print('workiing')
+            print('working')
         else:
             print('No work')
             sequence_number = 1
 
         return f"ORD{current_date}{sequence_number:06d}"
 
-
     def save(self, *args, **kwargs):
         if not self.order_number:
             self.order_number = self.generate_order_number()
         super().save(*args, **kwargs)
 
-
-    # def __str__(self):
-    #     return str(self.order_number) if self.order_number else "Default Value"
-        
     def __str__(self):
         if self.order_number:
             return str(self.order_number)
@@ -107,9 +110,10 @@ class OrderProduct(models.Model):
         ("Return_pending", "Returned pending"),
 
         )
-    order           = models.ForeignKey(Order,on_delete=models.CASCADE)
-    user            = models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
+    order           = models.ForeignKey(Order,on_delete=models.CASCADE, related_name='order_product')
+    user            = models.ForeignKey(User,on_delete=models.SET_NULL,null=True, related_name='user')
     product_variant = models.CharField(max_length=255, null=True)
+    product_id      = models.CharField(max_length=25, null=True)
     quantity        = models.IntegerField()
     product_price   = models.DecimalField(max_digits=12, decimal_places=2)
     grand_totol     = models.DecimalField(max_digits=12, decimal_places=2,null=True)
@@ -126,4 +130,4 @@ class OrderProduct(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.order)
+        return f"{str(self.order)}  {self.product_variant}"
