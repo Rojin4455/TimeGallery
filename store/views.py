@@ -4,11 +4,12 @@ from category.models import Category
 from django.contrib import messages
 from . models import Additional_Product_Image
 from django.views.decorators.cache import never_cache
-from cart_app.views import CartItem,_cart_id
+from cart_app.views import CartItem,_cart_id,Cart
 from django.http import HttpResponse
 from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
 from django.db import models
-
+from .models import Wishlist,WishlistItem
+from admin_app.models import User
 
 def store(request, category_slug=None):
     # Assuming this is the initial retrieval of products without category filter
@@ -234,7 +235,60 @@ def Zz_to_Aa(request):
     return render(request, 'userside/store.html', context)
 
 
+def pricebar(request):
+    return render(request,'userside/pricebar_sample.html')
 
+
+def wishlist(request):
+    user_id = request.user.id
+
+    user = User.objects.get(id = user_id)
+    try:
+        user_wishlist = Wishlist.objects.get(user=user)
+    except:
+        user_wishlist = Wishlist.objects.create(user=user)
+
+    wishlist_items = WishlistItem.objects.filter(wishlist=user_wishlist)
+    # cart = Cart.objects.get(cart_id=_cart_id(request))
+    # cart_items = CartItem.objects.filter(cart=cart, is_active=True,user=user)
+    # for i in cart_items:
+    #     print(i)
+    
+    context = {
+       'wishlist_items':wishlist_items ,
+    #    'cart_items':cart_items
+    }
+    return render(request,'userside/wishlist.html',context)
+
+
+def add_wishlist(request,id):
+    user_id = request.user.id
+
+    user = User.objects.get(id = user_id)
+    product_variant = Product_Variant.objects.get(id=id)
+    try:
+        user_wishlist = Wishlist.objects.get(user=user)
+    except:
+        user_wishlist = Wishlist.objects.create(user=user)
+
+    wishlist_items = WishlistItem.objects.filter(wishlist=user_wishlist,product = product_variant)
+    if not wishlist_items:
+       WishlistItem.objects.create(wishlist=user_wishlist,product = product_variant)
+    else:
+        messages.error(request,'item is already in your wishlist')
+        id = product_variant.id
+        return redirect('store_app:product_details',id)
+    return redirect('store_app:wishlist')
+
+
+def wishlist_remove(request,id):
+    user_id = request.user.id
+    user = User.objects.get(id = user_id)
+    product_variant = Product_Variant.objects.get(id=id)
+    user_wishlist = Wishlist.objects.get(user=user)
+    wishlist_items = WishlistItem.objects.get(wishlist=user_wishlist,product = product_variant)
+    wishlist_items.delete()
+    return redirect('store_app:wishlist')
 
 
 

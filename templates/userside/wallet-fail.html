@@ -1,0 +1,15 @@
+{% extends "userside/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3 text-center">
+      <h1 class="mt-5" style="color:red">Transaction Failed!</h1>
+      <p class="lead">We're sorry, but your payment was unsuccessful.</p>
+      <p>Please check your payment details and try again. If you continue to experience issues, please contact customer support.</p>
+      <a href="{% url 'user_app:userhome' %}" class="btn btn-primary mt-3">Back to Home</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

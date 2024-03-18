@@ -5,7 +5,7 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth import authenticate, login as user_login, logout as user_logout
 from django.http import HttpResponse
 # from TimeGallery.admin_app import models
-from admin_app.models import User
+from admin_app.models import User,UserImage
 from django.db.models import Q
 import random 
 from django.core.mail import send_mail
@@ -21,6 +21,14 @@ from cart_app.models import Cart,CartItem
 from django.core.exceptions import ObjectDoesNotExist
 from orders.models import Payment, PaymentMethod, Order, OrderProduct
 from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
+from wallet.models import Wallet,WalletTransaction
+from store.models import Wishlist,WishlistItem
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.contrib.auth.hashers import make_password
+
+
+
 
 
 
@@ -80,7 +88,7 @@ def signup(request):
 
         send_mail(subject,otp,sendermail,[email],fail_silently=True)
         
-
+        print("yessssssssssssssssssssssssss")
         return render(request,'userside/otp.html')
     return render(request,'userside/usersignup.html')
 
@@ -101,6 +109,12 @@ def otp(request):
             customer.save()
             customer = authenticate(request, email=email, password=password)
             user_login(request,customer)
+            user = request.user
+            user_wallet = Wallet.objects.create(user = user,balance = 0)
+            user_wallet.save()
+            # user = request.user.id
+
+            Wishlist.objects.create(user = customer)
             return redirect('user_app:userhome')
         else:
             messages.error(request,"Invalid OTP")
@@ -141,12 +155,10 @@ def login(request):
                 try:
                     cart = Cart.objects.get(cart_id=_cart_id(request))
                     is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+
                     if is_cart_item_exists:
                         cart_items = CartItem.objects.filter(cart=cart)
-                        # try:
-                        #     user_cart = CartItem.objects.filter(user=user_details)
-                        #     if user_cart.exists():
-                        #         current_user_cart = user_cart[0].cart  # user's current cart
+
                         for item in cart_items:
                             item.user = user_details
                             item.save()
@@ -208,14 +220,24 @@ def logout(request):
 def base_profile(request):
     return render(request,'userside/base-profile.html')
 
+@login_required
 @never_cache
 def profile_details(request):
 
-    
+
+        # get the image from the frontent and save it to the userimage table and send the response here
+    user = request.user
+    print(user)
+    try:
+        profile = UserImage.objects.get(user = user)
+    except ObjectDoesNotExist:
+        profile = UserImage.objects.create(user=user)
+        
+
     # return render(request, 'user_addresses.html', {'user_addresses': dummy_addresses})
 
 
-    return render(request,'userside/profile-details.html')
+    return render(request,'userside/profile-details.html',{'profile':profile})
         
 
 
@@ -223,7 +245,7 @@ def profile_details(request):
 
 def account_settings(request):
     return render(request,'')
-
+@login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def profile_address(request):
     user = request.user
@@ -233,6 +255,8 @@ def profile_address(request):
     }
     return render(request, 'userside/profile-address.html', context)
 
+
+@login_required
 @never_cache
 def profile_orders(request):
     current_user = request.user
@@ -259,6 +283,7 @@ def profile_orders(request):
     }
     return render(request, 'userside/profile-orders.html', context)
 
+@login_required
 @never_cache
 def create_address(request):
 
@@ -287,6 +312,7 @@ def create_address(request):
     return render(request,'userside/profile-address-create.html')
 
 
+@login_required
 @never_cache
 def edit_address(request, id):
     user = request.user
@@ -321,6 +347,7 @@ def edit_address(request, id):
     }
     return render(request, 'userside/profile-address-edit.html', context)
 
+@login_required
 @never_cache
 def set_default_address(request):
     if request.method == 'POST':
@@ -352,3 +379,91 @@ def delete_address(request):
     user_address.delete()
     messages.success(request, 'Address deleted successfully.')
     return redirect('myaddress')
+
+@login_required
+@require_POST
+def upload_profile_image(request):
+    user = request.user
+
+    try:
+        user_image = UserImage.objects.get(user=user)
+    except ObjectDoesNotExist:
+        user_image = UserImage(user=user)
+
+    user_image.image = request.FILES.get('image')
+    user_image.save()
+
+    return JsonResponse({'message': 'Image uploaded successfully'})
+
+
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth import get_user_model
+
+# User = get_user_model()
+
+def forgot_password(request):
+    if request.method == "POST":
+        email = request.POST.get('email')
+        passw = request.POST.get('new_password')
+
+        try:
+            user = User.objects.get(email=email)
+            randomotp = str(random.randint(1000, 9999))
+            request.session['otp_key'] = randomotp
+            request.session['email'] = email
+            request.session.modified = True
+            request.session.set_expiry(300)
+
+            # Save new password to session
+            request.session['password'] = passw
+
+            subject = "Verify Your One-Time Password (OTP) - Time Gallery Ecommerce Store"
+            sendermail = "timegalleryt.com"
+            otp = f"Hello,\n\nYour One-Time Password (OTP) for verification at Time Gallery Ecommerce Store is: {randomotp}\n\nThank you for choosing Time Gallery Ecommerce Store.\n\nBest regards,\nTime Gallery Ecommerce Store Team"
+
+            send_mail(subject, otp, sendermail, [email], fail_silently=True)
+
+            return render(request, 'userside/forgot_otp.html')
+        except User.DoesNotExist:
+            messages.error(request, "Email does not exist")
+            return redirect("user_app:forgot_password")
+
+    return render(request, 'userside/forgotpassword.html')
+
+
+def forgot_password_otp(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            return redirect('admin_app:dashboard')
+        return redirect('user_app:userhome')
+
+    email = request.session.get('email')
+    password = request.session.get('password')
+    print("email",email)
+    print("password",password)
+    print("type of passsword",type(password))
+
+
+    if request.method == 'POST':
+        if str(request.session['otp_key']) == str(request.POST['otp']):
+            try:
+                user = User.objects.get(email=email)
+                new_password = password  # Change this to a known password
+                hashed_password = make_password(new_password)
+                print("before user password and hashed passwoed",user.password,hashed_password)
+                user.password = hashed_password
+                user.save()
+                print("after user password",user.password)
+
+                messages.success(request,"Password updated successfully.")
+                return redirect("user_app:login")
+            except User.DoesNotExist:
+                print("User does not exist")
+                return redirect('user_app:forgot_password_otp')
+        else:
+            messages.error(request, "Invalid OTP")
+            return redirect('user_app:forgot_password_otp')
+
+    return render(request, 'userside/forgot_otp.html')
+
+

@@ -16,6 +16,14 @@ urlpatterns = [
     path('high_to_low/',views.high_to_low, name='high_to_low'),
     path('aA_to_zZ/',views.aA_to_zZ, name='aA_to_zZ'),
     path('Zz_to_Aa/',views.Zz_to_Aa, name='Zz_to_Aa'),
+    path('pricebar/',views.pricebar, name='pricebar'),
+    path('wishlist/',views.wishlist, name='wishlist'),
+    path('add_wishlist/<int:id>/',views.add_wishlist, name='add_wishlist'),
+    path('wishlist_remove/<int:id>/',views.wishlist_remove, name='wishlist_remove'),
+
+
+
+
 
 
 

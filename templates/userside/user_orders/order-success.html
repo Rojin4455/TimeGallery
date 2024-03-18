@@ -39,7 +39,13 @@
                         </div>
                         <p><strong>Total Price:</strong> ₹{{ total_with_orginal_price }}</p>
                         <p><strong>Discount:</strong> ₹{{ discount }}</p>
+                        {% if coupon_discount %}
+                        <p><strong>Coupon Discount:</strong> ₹{{ coupon_discount }}</p>
+
                         <p class="text-success"><strong>Order Total: ₹{{ grand_total }}</strong></p>
+                        {% else %}
+                        <p class="text-success"><strong>Order Total: ₹{{ grand_total }}</strong></p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -55,11 +61,22 @@
                             <span>Discount:</span>
                             <span class="text-danger font-weight-bold">- ₹{{ discount }}</span>
                         </div>
+                        {% if coupon_discount %}
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <span>Coupon Discount:</span>
+                            <span class="text-danger font-weight-bold">- ₹{{ coupon_discount }}</span>
+                        </div>
                         <hr>
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h5 class="font-weight-bold">Total:</h5>
                             <h5 class="text-dark font-weight-bold">₹{{ grand_total }}</h5>
                         </div>
+                        {% else %}
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h5 class="font-weight-bold">Total:</h5>
+                            <h5 class="text-dark font-weight-bold">₹{{ grand_total }}</h5>
+                        </div>
+                        {% endif %}
                         <hr>
                         {% comment %} <div class="text-center mb-3">
                             <img src="https://svgsilh.com/svg/304167.svg" height="50" alt="Thank You">

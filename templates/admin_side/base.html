@@ -66,6 +66,19 @@
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href=""> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Coupon</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="{% url 'product_management_app:add_coupon' %}">Add Coupon</a>
+                        <a href="{% url 'product_management_app:coupon_list' %}">List Coupon</a>    
+                        {% comment %} <a href="{% url 'product_management_app:add-product-variant' %}">Add Product Variant</a> {% endcomment %}
+                        {% comment %} <a href="{% url 'product_management_app:attribute-values' %}">Add Variant</a> {% endcomment %}
+
+                        
+                    </div>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href=""> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Order</span>
                     </a>
                     <div class="submenu">

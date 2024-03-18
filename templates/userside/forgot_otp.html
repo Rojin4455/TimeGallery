@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f9f4;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .otp-container {
+            max-width: 410px;
+            width: 100%;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .otp-input {
+            width: 40px;
+            height: 40px;
+            margin: 0 10px;
+            font-size: 18px;
+            text-align: center;
+            border: 2px solid #8bc34a;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .otp-input:focus {
+            border-color: #558b2f;
+        }
+
+        .submit-btn {
+            background-color: #8bc34a;
+            color: #ffffff;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease-in-out;
+            margin-top: 30px;
+        }
+
+        .submit-btn:hover {
+            background-color: #558b2f;
+        }
+
+        h2 {
+            color: #558b2f;
+        }
+
+        p {
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="otp-container">
+    <h2>Enter OTP</h2>
+    <p>We've sent an OTP to your registered email address.</p>
+    
+    <form action="{% url 'user_app:forgot_password_otp' %} " method = 'POST'>
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" required="" name="otp" placeholder="OTP" />
+          </div>
+        <button type="submit" class="submit-btn">Verify OTP</button>
+    </form>
+</div>
+
+</body>
+</html>
+
+{% comment %} 
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-10 m-auto">
+            <div class="row justify-content-center">
+              <div class="col-lg-5">
+                <div class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5">
+                  <div class="padding_eight_all bg-white">
+                    <div class="heading_s1">
+                      <h3 class="mb-30">Email varification</h3>
+                    </div>
+                    <form action="{% url 'user_app:otp' %}" method="post">
+                      {% csrf_token %}
+                      <div class="form-group">
+                        <input type="text" required="" name="otp" placeholder="OTP" />
+                      </div>
+                      <div class="form-group">
+                        <button type="submit" class="btn btn-fill-out btn-block hover-up w-100" name="login">Verify OTP</button>
+                      </div>
+                    </form>
+                   
+                    <p class="text-center mb-4">
+                      <a href="{% url 'user_app:otp_verification' %}">Rend OTP?</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> {% endcomment %}

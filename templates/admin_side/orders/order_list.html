@@ -45,33 +45,31 @@
                             <th>#ID</th>
                             <th scope="col">Name</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">Status</th>
+                            <th scope="col">Order Total</th>
+                            {% comment %} <th scope="col">Status</th> {% endcomment %}
                             <th scope="col">Date</th>
-                            <th scope="col" class="text-end"> Action </th>
+                            <th scope="col" class="text-end"> Detail </th>
                         </tr>
                     </thead>
                     {% for order_list in paged_orders %}
                     <tbody>
                         <tr>
-                            <td>{{ order_list.order.order_number }}</td>
+                            <td>{{ order_list.order_number }}</td>
                             {% comment %} <td><b><a "{% url 'order_management_app:order_details' order_list.user.id %}">{{ order_list.user.username }}</a></b></td> {% endcomment %}
                             <td><b><a href="{% url 'order_management_app:order_details' order_list.user.id %}">{{order_list.user.username}}</a></b></td>
 
                             <td>{{ order_list.user.email }}</td>
-                            <td>₹ {{ order_list.grand_totol }}</td>
-                            <td><span class="badge rounded-pill alert-warning">{{ order_list.order_status }}</span></td>
+                            <td>₹ {{ order_list.order_total }}</td>
+                            {% comment %} <td><span class="badge rounded-pill alert-warning">{{ order_list.order_status }}</span></td> {% endcomment %}
                             <td>{{ order_list.created_at }}</td>
                             <td class="text-end">
-                                <a href="#" class="btn btn-md rounded font-sm">Detail</a>
-                                <div class="dropdown">
-                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">View detail</a>
+                                <a href="{% url 'order_management_app:order_list_details' order_list.id %}" class="btn btn-md rounded font-sm">View Order</a>
+                                    {% comment %} <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="{% url 'order_management_app:order_list_details' order_list.id %}">View detail</a>
                                         <a class="dropdown-item" href="#">Edit info</a>
                                         <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div>
-                                </div> <!-- dropdown //end -->
+                                    </div> {% endcomment %}
+                                <!-- dropdown //end -->
                             </td>
                         </tr>
                     </tbody>

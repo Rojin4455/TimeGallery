@@ -14,6 +14,12 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from admin_app.decorators import admin_login_required
 from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
+from store.models import Coupon
+from django.utils import timezone
+from datetime import datetime
+from django.http import JsonResponse
+import json
+
 
 
 
@@ -276,6 +282,8 @@ def add_product_variant(request,id):
             product=product,
             thumbnail_image=thumbnail_image,
         )   
+        discount_amount = p.apply_category_offer_discount()
+        print("category offer discount amount in creating a product",discount_amount)
 
         # Add the attribute to the Product_Variant
         p.attributes.add(attribute)
@@ -287,7 +295,7 @@ def add_product_variant(request,id):
                 image=image,
             )
             additional_image.save()
-            return redirect(reverse('product_management_app:product-variant-list', kwargs={'id': product.id}))
+        return redirect(reverse('product_management_app:product-variant-list', kwargs={'id': product.id}))
         print('Product Variant created successfully')
         # Redirect or render a success message
 
@@ -297,7 +305,8 @@ def add_product_variant(request,id):
 
     context = {
         'products': products,
-        'attribute_values': attribute_values
+        'attribute_values': attribute_values,
+        
     }
 
     return render(request, 'admin_side/add-product-variant.html', context)
@@ -456,6 +465,81 @@ def delete_product_variant(request,id):
     product_variant.delete()
 
     return redirect(reverse('product_management_app:product-variant-list', kwargs={'id': product.id}))
+
+
+
+def add_coupon(request):
+    if request.method == 'POST':
+        coupon_code = request.POST.get('coupon_code')
+        discount_percentage = request.POST.get('discount_percentage')
+        minimum_amount = request.POST.get('minimum_amount')
+        max_uses = request.POST.get('max_uses')
+        expire_date = request.POST.get('expire_date')
+        total_coupons = request.POST.get('total_coupons')
+        
+        # Validate data
+        try:
+            discount_percentage = int(discount_percentage)
+            minimum_amount = int(minimum_amount)
+            max_uses = int(max_uses)
+            total_coupons = int(total_coupons)
+        except ValueError:
+            messages.error(request, 'Invalid input. Please enter valid numbers.')
+            return redirect('product_management_app:add_coupon')
+
+        # Check if expire_date is a valid date
+        try:
+            expire_date = timezone.datetime.strptime(expire_date, '%Y-%m-%d').date()
+        except ValueError:
+            messages.error(request, 'Invalid date format. Please use YYYY-MM-DD format.')
+            return redirect('product_management_app:add_coupon')
+
+        # Create the coupon
+        try:
+            new_coupon = Coupon.objects.create(
+                coupon_code=coupon_code,
+                discount_percentage=discount_percentage,
+                minimum_amount=minimum_amount,
+                max_uses=max_uses,
+                expire_date=expire_date,
+                total_coupons=total_coupons
+            )
+            messages.success(request, 'Coupon added successfully.')
+        except Exception as e:
+            messages.error(request, f'An error occurred: {e}')
+        
+        return redirect('product_management_app:add_coupon')
+
+    return render(request, 'admin_side/coupon/add-coupon.html')
+
+
+def coupon_list(request):
+    coupons = Coupon.objects.all().order_by('id')
+
+    return render(request,'admin_side/coupon/coupon_list.html',{'coupons':coupons})
+
+
+
+@require_POST
+def toggle_coupon_status(request):
+    data = json.loads(request.body)
+    coupon_id = data.get('coupon_id')
+    activate = data.get('activate')
+    print("activate",activate)
+    print("jijeofjjjjjjjjjj")
+    print("coupon id = ",coupon_id)
+    
+    try:
+        print("fqewfwe")
+        coupon = Coupon.objects.get(id=coupon_id)
+        print(coupon.id)
+        coupon.is_active = activate
+        coupon.save()
+        return JsonResponse({'success': True, 'active': coupon.is_active})
+    except Coupon.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Coupon not found'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
 
     
 

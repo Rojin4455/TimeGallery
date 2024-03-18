@@ -21,10 +21,13 @@ urlpatterns = [
     path('create-address',views.create_address,name='create_address'),
     path('edit-address/<int:id>/',views.edit_address,name='edit_address'),
     path('edit-address/',views.delete_address,name='deleteaddress'),
-
+    path('upload-profile-image', views.upload_profile_image, name='upload-profile-image'),
 
 
     path('set-default-address/', views.set_default_address, name='set_default_address'),
+    path('forgot_password/', views.forgot_password, name='forgot_password'),
+    path('forgot_password_otp/', views.forgot_password_otp, name='forgot_password_otp'),
+
     # path('user-cart/',views.user_cart,name='user_cart'),
 
     

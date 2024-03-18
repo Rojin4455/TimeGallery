@@ -38,3 +38,11 @@ class User(AbstractBaseUser,PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+
+class UserImage(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='media/photos/userphotos', null=True)
+
+    def __str__(self):
+        return self.user.username

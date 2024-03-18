@@ -4,6 +4,15 @@ from django.utils.text import slugify
 from django.db.models import UniqueConstraint, Q, F, Avg, Count
 from django.urls import reverse
 from PIL import Image, ImageOps
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
+from admin_app.models import User
+from django.db import models
+from django.utils import timezone
+from django.utils import timezone
+from decimal import Decimal
+
+
 
 
 class Brand(models.Model):
@@ -67,6 +76,9 @@ class Product_Variant(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    offer = models.BooleanField(default=False,null = True)
+    offer_discount =  models.DecimalField(max_digits=8, decimal_places=2,default=0, null=True)
+
     # k = 5
     def save(self, *args, **kwargs):
         if not self.sku_id:
@@ -110,6 +122,50 @@ class Product_Variant(models.Model):
             new_img.save(self.thumbnail_image.path)
 
             print(f"Image saved: {self.thumbnail_image.path}")  # Add this line for debugging
+
+
+
+
+    def apply_category_offer_discount(self):
+        from offer_management.models import CategoryOffer
+        from category.models import Category
+
+        category = self.product.category
+        category_offer = CategoryOffer.objects.filter(category=category, is_active=True).order_by('-id').first()
+        
+        if category_offer:
+            print("Category offer triggered:", category_offer.discount_percentage)
+            discount_decimal = Decimal(category_offer.discount_percentage) / 100
+            print("Discount decimal:", discount_decimal)
+            
+            try:
+                # Convert sale_price to Decimal
+                sale_price_decimal = Decimal(str(self.sale_price))
+                discount_amount = sale_price_decimal * discount_decimal
+                print("Discount amount:", discount_amount)
+            except Exception as e:
+                print("Exception while calculating discount amount:", e)
+                return 0
+            
+            # Apply the discount
+            self.sale_price = str(sale_price_decimal - discount_amount)  # Convert back to str
+            self.offer = True
+            self.offer_discount = discount_amount
+            self.save()
+            print("Discount amount applied:", discount_amount)
+            return discount_amount
+        else:
+            print("No category offer found")
+            return 0
+
+
+
+            
+    def get_product_name(self):
+        return f'{self.product.product_brand} {self.product.product_name} - {", ".join([value[0] for value in self.atributes.all().values_list("atribute_value")])}'    
+
+    def __str__(self):
+        return self.product_variant_slug
 
     def get_product_name(self):
         return f'{self.product.product_name}'    
@@ -159,3 +215,105 @@ class Additional_Product_Image(models.Model):
 
     def __str__(self):
         return self.image.url
+    
+
+
+
+    ################## COUPON ######################
+# class Coupon(models.Model):
+#     coupon_code         = models.CharField(max_length=100)
+#     is_expired          = models.BooleanField(default=False)
+#     discount_percentage = models.IntegerField(default=10, validators=[MinValueValidator(0), MaxValueValidator(100)])
+#     minimum_amount      = models.IntegerField(default=400)
+#     max_uses            = models.IntegerField(default=10, validators=[MinValueValidator(0)])
+#     expire_date         = models.DateField()
+#     total_coupons       = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+
+    
+#     # if number of the coupon is 0 or the expired date is over set it as expired
+
+#     def save(self, *args, **kwargs):
+#         # Get the current date
+#         current_date = timezone.now().date()
+        
+#         # Compare expire_date with current_date
+#         if self.total_coupons <= 0 or self.expire_date < current_date:
+#             self.is_expired = True
+#         else:
+#             self.is_expired = False
+#         # Save the instance
+#         super().save(*args, **kwargs)
+
+
+#     def __str__(self):
+#         return self.coupon_code
+    
+
+
+
+class Coupon(models.Model):
+    coupon_code = models.CharField(max_length=100)
+    is_expired = models.BooleanField(default=False)
+    discount_percentage = models.IntegerField(default=10)
+    minimum_amount = models.IntegerField(default=400)
+    max_uses = models.IntegerField(default=10)
+    expire_date = models.DateField()
+    total_coupons = models.IntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    def save(self, *args, **kwargs):
+        # Get the current date
+        current_date = timezone.now().date()
+        
+        # Compare expire_date with current_date
+        if self.total_coupons <= 0 or self.expire_date < current_date:
+            self.is_expired = True
+        else:
+            self.is_expired = False
+        
+        # Call the parent class's save method
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.coupon_code
+
+
+class UserCoupon(models.Model):
+    user        = models.ForeignKey(User,on_delete=models.CASCADE)
+    coupon      = models.ForeignKey(Coupon, on_delete=models.CASCADE)
+    usage_count = models.IntegerField(default=0, blank=True)
+
+    def apply_coupon(self):
+        if self.coupon.is_expired:
+            print('Coupon is expired')
+            return False  # Coupon i
+        if self.usage_count >= self.coupon.max_uses:
+            print('Maximum uses reached')
+            return False
+        
+        # self.usage_count += 1
+        # self.save()
+        print('Coupon applied successfully In UserCoupon')
+        return True
+
+
+
+
+class Wishlist(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    date_added = models.DateField(auto_now_add=True)
+    
+    
+    def __str__(self): 
+        return str(self.user)
+    
+    def get_items_count(self):
+       return self.wishlistitem_set.filter(is_active=True).count()
+
+class WishlistItem(models.Model):
+    wishlist = models.ForeignKey(Wishlist,on_delete=models.CASCADE)
+    product = models.ForeignKey(Product_Variant,on_delete=models.CASCADE, related_name = 'wishlist')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return str(self.product)

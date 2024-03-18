@@ -16,6 +16,8 @@ urlpatterns = [
     # path('razorpay_payment/',views.razorpay_payment,name='razorpay_payment'),
 
     path('payment/', views.checkout_payment, name='checkout_payment'),
+    path('apply_coupon/', views.apply_coupon, name='apply_coupon'),
+
     # Other URLs
 ]
 

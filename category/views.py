@@ -5,12 +5,13 @@ from django.utils.text import slugify
 from django.db import IntegrityError
 from store.models import Brand
 from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
+from admin_app.decorators import admin_login_required
 
 
 
 
 
-
+@admin_login_required
 def categories(request):
     if request.user.is_authenticated and request.user.is_superuser:
         if request.method == 'POST':
@@ -43,7 +44,7 @@ def categories(request):
     return redirect('admin_app:admin_login')
 
 
-
+@admin_login_required
 def edit_category(request,id):
     if request.user.is_authenticated and request.user.is_superuser:
         if request.method == 'POST':
@@ -84,7 +85,7 @@ def edit_category(request,id):
 
         return redirect('admin_app:admin_login')
     
-
+@admin_login_required
 def delete_category(request,id):
     if request.user.is_authenticated and request.user.is_superuser:
         category = Category.objects.get(id=id)
@@ -94,7 +95,7 @@ def delete_category(request,id):
 
 #brand management
 
-
+@admin_login_required
 def create_brand(request):
     if request.user.is_authenticated and request.user.is_superuser:
         if request.method == 'POST':
@@ -126,7 +127,7 @@ def create_brand(request):
 
     return redirect('admin_app:admin_login')
 
-
+@admin_login_required
 def delete_brand(request,id):
     if request.user.is_authenticated and request.user.is_superuser:
         brand = Brand.objects.get(id=id)

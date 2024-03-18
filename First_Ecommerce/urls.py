@@ -35,6 +35,10 @@ urlpatterns = [
     path('', include('checkout_app.urls')),
     path('', include('orders.urls')),
     path('', include('order_management.urls')),
+    path('', include('wallet.urls')),
+    path('', include('admin_dashboard.urls')),
+    path('', include('offer_management.urls')),
+
 
 
     path('accounts/', include('allauth.urls')),

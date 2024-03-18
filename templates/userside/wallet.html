@@ -1,0 +1,121 @@
+{% extends "userside/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="d-flex justify-content-around w-100">
+
+    {% include "userside/base-profile.html" %}
+
+    <div class="container">
+        <div class="row justify-content-center">
+
+            <div class="col-md-6">
+                {% include 'userside/alert.html' %}
+
+                <div class="card">
+                    
+                    <div class="card-header">
+                        Wallet Balance
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Your Current Wallet Balance: ₹{{ user_wallet.balance }}</h5>
+                        <hr>
+                        <form method="post" id="addFundsForm">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="amount">Enter Amount to Add:</label>
+                                <input type="number" class="form-control" id="amount" name="amount" placeholder="Amount" required>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="addFundsBtn">Add Funds</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Transaction History Section -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        Transaction History
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for transaction in wallet_transaction %}
+                            <li class="list-group-item">
+                                {% if transaction.transaction_type == 'CREDIT' %}
+                                    <strong style="color: green;">{{ transaction.amount }}</strong> - {{ transaction.created_at }} - {{ transaction.transaction_type }} <span style="color:red"> <p>{{ transaction.transaction_detail }}<p></span>
+                                {% elif transaction.transaction_type == 'DEBIT' %}
+                                    <strong style="color: red;">{{ transaction.amount }}</strong> - {{ transaction.created_at }} - {{ transaction.transaction_type }}
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                        
+                        </ul>
+                    </div>
+                </div>
+                <!-- End Transaction History Section -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% comment %} {% block script %} {% endcomment %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.getElementById("addFundsBtn").addEventListener("click", function(event) {
+        event.preventDefault();
+        const amount = document.getElementById("amount").value;
+
+        fetch("{% url 'wallet_app:wallet' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Accept': 'application/json',
+            },
+            body: 'amount=' + amount
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("data :",data)
+            if (data.success) {
+                console.log("data success")
+                var options = {
+                    key: "rzp_test_dSu8p6gC5RjeXR",
+                    amount: data.amount,
+                    currency: "INR",
+                    name: "Time Gallery",
+                    description: "Add Funds to Wallet",
+                    order_id: data.order_id,
+                    callback_url: "http://127.0.0.1:8000/wallet_handler/?amount=" + amount,
+                    handler: function(response) {
+                        // Handle successful payment
+                        alert("Payment successful!");
+                        window.location.reload();
+                    },
+                    "prefill": {
+                        "name": "{{ request.user.get_username }}",
+                        "email": "{{ request.user.email }}",
+                        // You can prefill other fields if needed
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+            } else {
+                console.log("data fail")
+
+                alert("Failed to create Razorpay order. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred while processing payment.");
+        });
+    });
+</script>
+{% comment %} {% endblock %} {% endcomment %}
+
+{% endblock %}
+

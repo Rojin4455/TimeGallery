@@ -7,7 +7,7 @@
         <div class="progress mb-4">
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 66%;" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">Step 2 of 3</div>
         </div>
-        <a href="{% url 'checkout_app:checkout_payment' %}" class="btn btn-secondary"> Back </a>
+        <a href="{% url 'checkout_app:checkout_address' %}" class="btn btn-secondary"> Back </a>
 
         {% comment %} {% if not cart_items %}
             <h2 class="text-center">Your Shopping Cart Is Empty<h2>
@@ -17,6 +17,19 @@
                 <a href="{% url 'store_app:store' %}" class="btn btn-primary">Continue Shopping</a>
             </div>
         {% else %} {% endcomment %}
+        <form method="post" id="couponForm">
+            {% csrf_token %}
+            <div class="input-group mb-3 col-lg-3 mt-4 pl-0">
+                <input type="text" class="form-control" id="inputField" name="coupencode" placeholder="Enter code">
+                <div class="input-group-append" id="applybutton">
+                    <button type="submit" class="btn btn-outline-info" id="applyButton">Apply</button>
+                </div>
+            </div>
+        </form>
+        {% comment %} <button type="button" class="btn btn-primary" style="width:5%" id="applyCouponBtn">Coupon Applied</button> {% endcomment %}
+        <div class="input-group-append mb-3">
+            <button type="button" class="btn btn-outline-info" id="applyCouponBtn">Show Coupons</button>
+        </div>
             <div class="row">
                 <aside class="col-lg-9">
                     <div class="card">
@@ -24,9 +37,9 @@
                             <thead class="text-muted">
                                 <tr class="small text-uppercase">
                                     <th scope="col">Product</th>
-                                    <th scope="col" width="120">Quantity</th>
+                                    {% comment %} <th scope="col" width="120">Quantity</th> {% endcomment %}
                                     <th scope="col" width="120">Price</th>
-                                    <th scope="col" class="text-right" width="200">Actions</th>
+                                    {% comment %} <th scope="col" class="text-right" width="200">Actions</th> {% endcomment %}
                                 </tr>
                             </thead>
                             <tbody>
@@ -41,7 +54,7 @@
                                             </figcaption>
                                         </figure>
                                     </td>
-                                    <td> 
+                                    {% comment %} <td> 
                                         <div class="col"> 
                                             <div class="input-group input-spinner" style="display: flex; align-items: center;">
                                                 <a href="{% url 'checkout_app:remove_order_summary' cart_item.product.id %}" >
@@ -53,16 +66,16 @@
                                                 </a>
                                             </div> <!-- input-group.// -->
                                         </div> <!-- col.// -->
-                                    </td>
+                                    </td> {% endcomment %}
                                     <td> 
                                         <div class="price-wrap"> 
                                             <var class="price">${{ cart_item.subtotal }}</var> 
                                             <small class="text-muted"> ${{ cart_item.product.sale_price }} each </small> 
                                         </div> <!-- price-wrap .// -->
                                     </td>
-                                    <td class="text-right"> 
+                                    {% comment %} <td class="text-right"> 
                                         <a href="{% url 'checkout_app:remove_order_summary_item' cart_item.product.id %}" class="btn btn-danger"> Remove</a>
-                                    </td>
+                                    </td> {% endcomment %}
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -84,15 +97,21 @@
                         <div class="card-body">
                             <dl class="dlist-align">
                                 <dt>Total price:</dt>
-                                <dd class="text-right">₹{{ total_with_orginal_price }}</dd>
+                                <dd id="totalPrice" class="text-right">₹{{ total_with_orginal_price }}</dd>
                             </dl>
                             <dl class="dlist-align">
                                 <dt>Discount:</dt>
                                 <dd class="text-right"> ₹{{ discount }}</dd>
                             </dl>
+                            {% if coupon_discount %}
+                            <dl class="dlist-align">
+                                <dt>Coupon Discount:</dt>
+                                <dd id="couponDiscount" class="text-right"> ₹{{ coupon_discount }}</dd>
+                            </dl>
+                            {% endif %}
                             <dl class="dlist-align">
                                 <dt>Total:</dt>
-                                <p><dd class="text-right text-dark b"><strong>₹ {{ total }}</strong></dd></p>
+                                <p><dd id="finalTotal" class="text-right text-dark b"><strong>₹ {{ total }}</strong></dd></p>
                             </dl>
                             <hr>
                             {% comment %} <p class="text-center mb-3">
@@ -106,6 +125,186 @@
             </div> <!-- row.// -->
             {% comment %} {% endif %} {% endcomment %}
         </div> <!-- container .//  -->
+
 </section>
 
+<!-- Coupon Popup Modal -->
+<div class="modal" tabindex="-1" role="dialog" id="couponModal">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Available Coupons</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% for i in coupens %}
+            <div class="modal-body">
+                <!-- List of available coupons -->
+                <ul class='d-flex justify-content-between'>
+                    <li><span  id="{{i.id}}">{{i.coupon_code}}</span>  {{i.discount_percentage}}% off <span>Min Amount{{i.minimum_amount}}</span></li>
+                    <li><button onClick = 'copycoupen("{{ i.id }}")' class='rounded-3 px-2 py-1' style="font-size: 12px; border:none">copy</button></li>
+                    <!-- Add more coupons as needed -->
+                </ul>
+            </div>
+            {%endfor%}
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <!-- Apply coupon button -->
+                {% comment %} <button type="button" class="btn btn-primary" id="applyCouponModalBtn">Apply Coupon</button> {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Messages -->
+<div id="toast-container" class="toast-top-right">
+    <!-- Toast will be shown here -->
+</div>
+
+<script>
+
+
+    var total_with_orginal_price = document.getElementById('totalPrice').textContent;
+var numeric_total_with_orginal_price = total_with_orginal_price.replace(/[^\d.-]/g, ''); // Remove non-numeric characters
+
+// Apply Coupon button click handler
+document.getElementById('applyCouponBtn').addEventListener('click', function() {
+    // Show the coupon modal
+    $('#couponModal').modal('show');
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const couponForm = document.getElementById("couponForm");
+
+    couponForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        const formData = new FormData(couponForm); // Get form data
+        const coupencode = formData.get("coupencode");
+
+        // Check if the coupon has already been applied
+
+
+        // Fetch request to handle form submission
+        fetch("{% url 'checkout_app:apply_coupon' %}", {
+            method: "POST",
+            body: JSON.stringify({ coupencode: coupencode }),
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"), // Function to get CSRF token
+            },
+        })
+        .then((response) => {
+            console.log(response)
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            // Handle response data
+            console.log("data",data)
+            if (data.success) {
+                // Mark coupon as applied
+
+
+                // Update total and coupon discount
+                console.log(total_with_orginal_price)
+                document.getElementById("totalPrice").innerText = total_with_orginal_price;
+                document.getElementById("couponDiscount").innerText = '₹' + parseInt(data.discount_amount);
+                document.getElementById("finalTotal").innerText = '₹' + data.total;
+
+                // Show success toast
+                showToast("Success! Coupon applied successfully.", "toast-success");
+            } else {
+                // Show error toast
+                showToast("Error: " + data.message, "toast-error");
+            }
+        })
+        .catch((error) => {
+            // Handle errors
+            console.error("Error:", error);
+            showToast("An error occurred. Please try again.", "toast-error");
+        });
+    });
+
+    // Function to get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Function to show toast messages
+    function showToast(message, type) {
+        const toastContainer = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.classList.add("toast", "show", type);
+        toast.innerHTML = message;
+        toastContainer.appendChild(toast);
+
+        setTimeout(function () {
+            toast.classList.remove("show");
+            toastContainer.removeChild(toast);
+        }, 3000);
+    }
+});
+
+
+</script>
+
+
+<style>
+    /* CSS for the toast messages */
+.toast {
+    position: fixed;
+    top: 20px; /* Adjust this value to change the vertical position */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 15px;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    max-width: 300px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.toast-success {
+    background-color: #28a745; /* Green color for success */
+}
+
+.toast-error {
+    background-color: #dc3545; /* Red color for errors */
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+/* Container for toast messages */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: 100%;
+    max-width: 400px;
+    padding: 0 10px;
+}
+</style>
 {% endblock %}

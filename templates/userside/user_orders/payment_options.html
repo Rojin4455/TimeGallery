@@ -73,123 +73,53 @@
           <div class="card-body">
             <dl class="dlist-align">
               <dt>Total price:</dt>
-              <dd class="text-right">
+              <dd class="text-right" style="color: black; font-weight: bold;">
                 ₹{{ global_order_summary_total_with_original_price }}
               </dd>
             </dl>
             <dl class="dlist-align">
               <dt>Discount:</dt>
-              <dd class="text-right">₹{{ global_order_summary_discount }}</dd>
+              <dd class="text-right" style="color: red; font-weight: bold;">
+                ₹{{ global_order_summary_discount }}
+              </dd>
+            </dl>
+            {% if coupon_discount %}
+            <dl class="dlist-align">
+              <dt>Coupon Discount:</dt>
+              <dd class="text-right" style="color: red; font-weight: bold;">
+                ₹{{ coupon_discount }}
+              </dd>
             </dl>
             <dl class="dlist-align">
               <dt>Total:</dt>
-              <p>
-                <dd class="text-right text-dark b">
-                  <strong>₹ {{ global_order_summary_total }}</strong>
-                </dd>
-              </p>
+              <dd class="text-right text-dark b" style="font-weight: bold;">
+                ₹{{ total }}
+              </dd>
             </dl>
-            <hr />
+            {% else %}
+            <dl class="dlist-align">
+              <dt>Total:</dt>
+              <dd class="text-right text-dark b" style="font-weight: bold;">
+                ₹{{ global_order_summary_total }}
+              </dd>
+            </dl>
+            {% endif %}
+            <hr style="border-top: 1px solid rgba(0, 0, 0, 0.1);" />
           </div>
           <!-- card-body.// -->
         </div>
         <!-- card.// -->
       </aside>
-      <!-- col.// -->
+      
     </div>
   </div>
 </section>
-{% comment %}
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-  document
-    .getElementById("paymentForm")
-    .addEventListener("submit", function (event) {
-      event.preventDefault(); // Prevent form submission
-      console.log("SSSSSSSSSSSSSSSSSSD");
 
-      // Get the selected payment option
-      var selectedOption = document.querySelector(
-        'input[name="payment_option"]:checked'
-      );
-      console.log("selectedOption", selectedOption);
-
-      if (!selectedOption) {
-        alert("Please select a payment option.");
-        return; // Exit function if no option selected
-      }
-
-      // Get the CSRF token
-      var csrftoken = document.querySelector('meta[name="csrf-token"]').content;
-
-      if (selectedOption.value == "RAZORPAY") {
-        // Create the fetch request
-        fetch('{% url "checkout_app:checkout_payment" %}', {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrftoken,
-            // Add any additional headers if needed
-          },
-          body: JSON.stringify({
-            selected_payment_method: selectedOption.value,
-          }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json(); // Parse response JSON
-          })
-          .then((data) => {
-            console.log("Received data:", data);
-
-            var options = {
-              key: "rzp_test_dSu8p6gC5RjeXR", // Enter the Key ID generated from the Dashboard
-              amount: data.context.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-              currency: "INR",
-              name: "Acme Corp",
-              description: "Test Transaction",
-              image: "https://example.com/your_logo",
-              order_id: data.context.order_id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-              callback_url: "http://127.0.0.1:8000/place_order_razpay/",
-              prefill: {
-                name: "{{request.user.get_usernme}}",
-                email: "{{request.user.email}}",
-                contact: "{{request.user.phone_number}}",
-              },
-              notes: {
-                address: "Razorpay Corporate Office",
-              },
-              theme: {
-                color: "#3399cc",
-              },
-            };
-            var rzp1 = new Razorpay(options);
-            rzp1.on("payment.failed", function (response) {
-              alert(response.error.code);
-            });
-
-            rzp1.open();
-            event.preventDefault(); // Prevent default form submission
-            // Handle the response, perhaps redirect based on success
-          })
-
-          .catch((error) => {
-            console.error(
-              "There was a problem with the fetch operation:",
-              error
-            );
-          });
-      } else {
-        window.location.href = "{% url 'order_app:place_order_cod' %}";
-      }
-    });
-</script>
-{% endcomment %}
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+  var globalOrderSummaryTotal = "{{ global_order_summary_total }}";
+  var walletBalance = parseFloat("{{ wallet_balance }}");
   const csrftoken = getCookie("csrftoken");
   document
     .getElementById("paymentForm")
@@ -241,7 +171,7 @@
               key: "rzp_test_dSu8p6gC5RjeXR", // Enter the Key ID generated from the Dashboard
               amount: data.context.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
               currency: "INR",
-              name: "Acme Corp",
+              name: "TimeGallery",
               description: "Test Transaction",
               image: "https://example.com/your_logo",
               order_id: data.context.order_id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
@@ -287,8 +217,24 @@
               error
             );
           });
-      } else {
+      } else if(selectedOption.value == "CASH ON DELIVERY"){
         window.location.href = "{% url 'order_app:place_order_cod' %}";
+      }else{
+        console.log("wallet_balance",walletBalance)
+        console.log("globalOrderSummaryTotal",globalOrderSummaryTotal)
+
+        if (walletBalance < globalOrderSummaryTotal) {
+          Swal.fire({
+              title: 'Insufficient Balance',
+              text: 'You do not have enough balance in your wallet.',
+              icon: 'error',
+              confirmButtonText: 'OK'
+          });
+          return;
+        }else{var url = "{% url 'order_app:wallet_order' %}?amount=" + globalOrderSummaryTotal;
+        window.location.href = url;
+      }
+        
       }
     });
 

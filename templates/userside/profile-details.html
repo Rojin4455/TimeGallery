@@ -1,4 +1,21 @@
 {% extends "userside/base.html" %}
+
+.mb-5 .profile-image-label {
+    display: block;
+    width: 80px; /* Set the size you want */
+    height: 80px; /* Set the size you want */
+    overflow: hidden;
+    border-radius: 50%; /* Makes the image rounded */
+    border: 2px solid #ccc; /* Optional: Add a border */
+}
+
+.mb-5 .profile-image {
+    width: 100%; /* Ensure the image takes up the full space of the label */
+    height: 100%; /* Ensure the image takes up the full space of the label */
+    object-fit: cover; /* Cover the entire area of the label */
+}
+
+
 {% load static %}
 
 {% block content %}
@@ -11,19 +28,42 @@
     <div class="card-body">
         <!-- Profile photo -->
         <div class="mb-5">
-            <img src="https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/profile-pic-male_4811a1.svg" class="rounded-circle" alt="Profile Photo" width="80">
-            {% comment %} <button type="button" class="btn btn-link"><i class="fas fa-plus"></i> Change Photo</button> {% endcomment %}
+            <label for="image" style="cursor: pointer;">
+                {% if profile.image %}
+                    <img id="profileImage" src="{{ profile.image.url }}" alt="Profile Photo" class="profile-image rounded-circle" width="80">
+                {% else %}
+                    <img id="profileImage" src="https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/profile-pic-male_4811a1.svg" alt="Default Profile Photo" class="profile-image rounded-circle" width="80">
+                {% endif %}
+            </label>
+            <form id="imageForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" class="form-control visually-hidden" id="image" name="image" accept="image/*" onchange="uploadImage()">
+                <button type="submit" class="btn btn-primary visually-hidden">Upload Image</button>
+            </form>
         </div>
+        <style>
+            .profile-image {
+                width: 80px; /* Set the desired width */
+                height: 80px; /* Set the desired height */
+                border-radius: 50%; /* Make it rounded */
+                object-fit: cover; /* Maintain aspect ratio and cover area */
+            }
+        
+            .mb-5 label {
+                cursor: pointer;
+            }
+        </style>
+        
         
         <!-- User information -->
         <div class="user-details">
             <div class="field">
-                <label for="username">Username:</label>
-                <p id="username">{{user.username}}</p>
+                <span><label for="username">Name:</label>
+                <h4 id="username">{{user.username}}</h4></span>
             </div>
             <div class="field">
                 <label for="email">Email:</label>
-                <p id="email">{{user.email}}</p>
+                <h4 id="email">{{user.email}}</h4>
             </div>
             {% if user.phone_number %}
             <div class="field">
@@ -43,4 +83,38 @@
 </div>
 </div>
 </div>
+
+
+<script>
+function previewImage(event) {
+    var image = document.getElementById('profileImage');
+    image.src = URL.createObjectURL(event.target.files[0]);
+}
+
+
+
+    function uploadImage() {
+        const formData = new FormData();
+        
+        const imageInput = document.getElementById('image');
+        const profileImage = document.getElementById('profileImage');
+
+       formData.append('image', imageInput.files[0]);
+
+        fetch('{% url "user_app:upload-profile-image" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            profileImage.src = URL.createObjectURL(imageInput.files[0]);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+</script>
 {% endblock %}

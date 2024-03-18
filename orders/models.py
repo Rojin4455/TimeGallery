@@ -66,7 +66,7 @@ class Order(models.Model):
     is_ordered = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+    order_grandtotal = models.DecimalField(max_digits=12, decimal_places=2, null=True)
 
     
     

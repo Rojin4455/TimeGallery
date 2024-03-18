@@ -16,8 +16,14 @@
                     <p><strong>Shipping Address:</strong> {{ order_dtails.shipping_address }}</p>
                 </div>
                 <div class="col-md-6">
+                    {% if coupon_discount %}
+                    <p><strong>Actual Total :</strong> ₹{{ product_total }}</p>
+                    <p><strong>Coupon Discount :</strong> ₹{{ coupon_discount }}</p>
+                    <p><strong>Grand Total :</strong> ₹{{ grand_total }}</p>
+                    {% else %}
                     {% comment %} <h6>Total: ₹{{ grand_total }}</h6> {% endcomment %}
                     <p><strong>Grand Total :</strong> ₹{{ order_dtails.order_total }}</p>
+                    {% endif %}
                     {% comment %} <p><strong>Discount:</strong> ₹{{ ordere_dtails.discount }}</p> {% endcomment %}
                 </div>
             </div>

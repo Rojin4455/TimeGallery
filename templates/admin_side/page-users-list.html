@@ -1,80 +1,41 @@
 {% extends 'admin_side/base.html' %}
 {% load static %}
 
-{% block content%}
-        <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">User List </h2>
-                    <p>Lorem ipsum dolor sit amet.</p>
-                </div>
-                <form class="d-flex" action="{% url 'user_management_app:search_user' %}" method="post">
-                    {% csrf_token %}
-                    <input name="search"  type="text" placeholder="Search..." class="form-control bg-grey" />
-                    <button type="submit" class="btn btn-secondary ms-2">Search</button>
-                  </form>
-                  {% comment %} <div class="col-lg-2 col-md-12 text-end">
-                    <a href="" class="btn btn-primary">Add User</a>
-                </div> {% endcomment %}
+{% block content %}
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">User List</h2>
+                <p>Lorem ipsum dolor sit amet.</p>
             </div>
-            <div class="card mb-4">
-                <header class="card-header">
-                    <div class="row gx-3">
-                        {% comment %} <div class="col-lg-4 col-md-6 me-auto">
-                            <input type="text" placeholder="Search..." class="form-control">
-                        </div> {% endcomment %}
-                        {% comment %} <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Status</option>
-                                <option>Active</option>
-                                <option>Disabled</option>
-                                <option>Show all</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Show 20</option>
-                                <option>Show 30</option>
-                                <option>Show 40</option>
-                            </select>
-                        </div> {% endcomment %}
-                        {% comment %} <div class="col-lg-2 col-6 col-md-5">
-                        <form class="d-flex" action="{% url 'user_management_app:search_user' %}" method="post">
-                            {% csrf_token %}
-                            <input name="search"  type="text" placeholder="Search..." class="form-control-sm bg-grey" />
-                            <button type="submit" class="btn btn-secondary ms-2">Search</button>
-                          </form>
-                        </div> {% endcomment %}
-                    </div>
-                </header> <!-- card-header end// -->
-                <div class="card-body">
-                    <div class="table-responsive">
+            <form class="d-flex" action="{% url 'user_management_app:search_user' %}" method="post">
+                {% csrf_token %}
+                <input name="search" type="text" placeholder="Search..." class="form-control bg-grey" />
+                <button type="submit" class="btn btn-secondary ms-2">Search</button>
+            </form>
+        </div>
+        <div class="card mb-4">
+            <header class="card-header">
+                <div class="row gx-3">
+                    <div class="col-12">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>SL no.</th>
-
-                                    {% comment %} <th>#ID</th> {% endcomment %}
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Active</th>
                                     <th scope="col">Last Login</th>
                                     <th scope="col">Joined Date</th>
-                                    <th scope="col" class="text-end"> Action </th>
+                                    <th scope="col" class="text-end">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for user in users%}
+                                {% for user in users %}
                                 <tr>
-                                    <td>{{forloop.counter}}</td>
-                                    {% comment %} <td>{{user.id}}</td> {% endcomment %}
-                                    
-                                    <td><b><a href="{% url 'order_management_app:order_details' user.id %}">{{user.username}}</a></b></td>
-                                    
-                                    <td>{{user.email}}</td>
-                                    {% comment %} <td><template class="__cf_email__" data-cfemail="aec3cfdcd8c7c0eecbd6cfc3dec2cb80cdc1c3">[email&#160;protected]</template></td> {% endcomment %}
-                                    {% comment %} <td>{{user.is_active}}</td> {% endcomment %}
-
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><b><a href="{% url 'order_management_app:order_details' user.id %}">{{ user.username }}</a></b></td>
+                                    <td>{{ user.email }}</td>
                                     <td>
                                         {% if user.is_active %}
                                             <span class="badge rounded-pill alert-success">Active</span>
@@ -82,80 +43,107 @@
                                             <span class="badge rounded-pill alert-danger">Inactive</span>
                                         {% endif %}
                                     </td>
-
-                                    <td><span class="badge rounded-pill alert-warning">{{user.last_login}}</span></td>
-                                    <td>{{user.joined_on}}</td>
-                                    {% comment %} <td class="text-end"> {% endcomment %}
-                                        {% comment %} <div class="dropdown"> {% endcomment %}
-                                            {% comment %} <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a> {% endcomment %}
-                                            {% comment %} <div class="dropdown-menu"> {% endcomment %}
-                                                {% comment %} <a class="dropdown-item" href="#">View detail</a> {% endcomment %}
-                                                {% comment %} <a class="dropdown-item" href="{% url 'user_management_app:edit_user' user.id%}">Edit info</a> {% endcomment %}
-                                                {% comment %} <a class="dropdown-item text-danger" href="#">Delete</a> {% endcomment %}
-                                            {% comment %} </div> {% endcomment %}
-                                        {% comment %} </div> <!-- dropdown //end --> {% endcomment %}
-                                    {% comment %} </td> {% endcomment %}
+                                    <td><span class="badge rounded-pill alert-warning">{{ user.last_login }}</span></td>
+                                    <td>{{ user.joined_on }}</td>
                                     <td class="text-end">
-                                        {% comment %} <a href="#" class="btn btn-md rounded font-sm">Block</a> {% endcomment %}
-                                        {% if  user.is_active %}
-                                        <a   href="{% url 'user_management_app:deactivate_user' user.id %}"  class="btn btn-sm font-sm alert-danger rounded block-user-btn">
-                                            Block
-                                        </a>
+                                        {% if user.is_active %}
+                                            <a href="#blockModal{{ user.id }}" class="btn btn-sm font-sm alert-danger rounded block-user-btn" data-bs-toggle="modal" data-bs-target="#blockModal{{ user.id }}">Block</a>
                                         {% else %}
-                                        <a   href="{% url 'user_management_app:activate_user' user.id %}" class="btn btn-sm font-sm alert-success rounded unblock-user-btn">
-                                            Unblock
-                                        </a>
-                                        {% endif %} 
-                                  
+                                            <a href="#unblockModal{{ user.id }}" class="btn btn-sm font-sm alert-success rounded unblock-user-btn" data-bs-toggle="modal" data-bs-target="#unblockModal{{ user.id }}">Unblock</a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
-                    </div> <!-- table-responsive //end -->
-                </div> <!-- card-body end// -->
-            </div> <!-- card end// -->
-            <div class="col-12 pb-1">
-                <nav aria-label="Page navigation">
-                {% if users.has_other_pages %}
-                  <ul class="pagination justify-content-center mb-3">
-                    {% if users.has_previous %}
-                    <li class="page-item"><a class='page-link' href="?page={{ users.previous_page_number }}">Previous</a></li>
-                    {% else %}
-                    <li class="page-item disabled"><a class='page-link' href="#">Previous</a></li>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div class="col-12 pb-1">
+            <nav aria-label="Page navigation">
+            {% if users.has_other_pages %}
+              <ul class="pagination justify-content-center mb-3">
+                {% if users.has_previous %}
+                <li class="page-item"><a class='page-link' href="?page={{ users.previous_page_number }}">Previous</a></li>
+                {% else %}
+                <li class="page-item disabled"><a class='page-link' href="#">Previous</a></li>
 
-                    {% endif %}
-
-                    {% for i in users.paginator.page_range %}
-                        {% if users.number == i %}
-                            <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
-                        {% else %}
-                            <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if users.has_next %}
-                    <li class="page-item"><a class='page-link' href="?page={{ users.next_page_number }}">Next</a></li>
-                    {% else %}
-                    <li class="page-item disabled"><a class='page-link' href="#">Next</a></li>
-
-                    {% endif %}
-                    {% comment %} <li class="page-item"><a class="page-link" href="#">Next</a></li> {% endcomment %}
-
-                        {% comment %} <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                      <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                        <span class="sr-only">Next</span>
-                      </a>
-                    </li> {% endcomment %}
-                  </ul>
                 {% endif %}
-                </nav>
-            </div> 
-        </section> <!-- content-main end// -->
 
-{% endblock %} 
+                {% for i in users.paginator.page_range %}
+                    {% if users.number == i %}
+                        <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                    {% endif %}
+                {% endfor %}
 
+                {% if users.has_next %}
+                <li class="page-item"><a class='page-link' href="?page={{ users.next_page_number }}">Next</a></li>
+                {% else %}
+                <li class="page-item disabled"><a class='page-link' href="#">Next</a></li>
+
+                {% endif %}
+                {% comment %} <li class="page-item"><a class="page-link" href="#">Next</a></li> {% endcomment %}
+
+                    {% comment %} <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </li> {% endcomment %}
+              </ul>
+            {% endif %}
+            </nav>
+        </div> 
+    </section>
+
+    <!-- Block Modal -->
+    {% for user in users %}
+    <div class="modal fade" id="blockModal{{ user.id }}" tabindex="-1" aria-labelledby="blockModalLabel{{ user.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="blockModalLabel{{ user.id }}">Block User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to block this user?</p>
+                    <!-- Add more content here as needed -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="{% url 'user_management_app:deactivate_user' user.id %}" class="btn btn-danger">Block</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Unblock Modal -->
+    {% for user in users %}
+    <div class="modal fade" id="unblockModal{{ user.id }}" tabindex="-1" aria-labelledby="unblockModalLabel{{ user.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="unblockModalLabel{{ user.id }}">Unblock User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to unblock this user?</p>
+                    <!-- Add more content here as needed -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="{% url 'user_management_app:activate_user' user.id %}" class="btn btn-success">Unblock</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% endfor %}
+{% endblock %}

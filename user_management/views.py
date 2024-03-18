@@ -5,12 +5,13 @@ from django.db.models import Q
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
+from admin_app.decorators import admin_login_required
 
 
 
 
 
-
+@admin_login_required
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def users_list(request):
     if request.user.is_superuser:
@@ -25,6 +26,7 @@ def users_list(request):
             return render(request,'admin_side/page-users-list.html',user_all)
         return redirect('admin_app:admin_login')
 
+@admin_login_required
 def search_user(request):
     if request.user.is_superuser:
         if request.user.is_authenticated:
@@ -40,7 +42,7 @@ def search_user(request):
                 else:
                     return redirect('user_management_app:users_list')
                 
-
+@admin_login_required
 def edit_user(request,id):
     if request.user.is_superuser:
         if request.user.is_authenticated:
@@ -73,7 +75,7 @@ def edit_user(request,id):
     else:
         return render(request,'userside/userlogin.html')
     
-
+@admin_login_required
 @never_cache
 def activate_user(request, id):
     current = get_object_or_404(User, id=id)
@@ -81,6 +83,8 @@ def activate_user(request, id):
     current.save()
     return redirect('user_management_app:users_list')
 
+
+@admin_login_required
 @never_cache
 def deactivate_user(request, id):
     current = get_object_or_404(User, id=id)

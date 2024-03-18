@@ -31,7 +31,13 @@ urlpatterns = [
 
 
     path('edit-product-variant/<int:id>/', views.edit_product_variant, name='edit-product-variant'),
-    path('delete-product-variant/<int:id>/', views.delete_product_variant, name='delete-product-variant')
+    path('delete-product-variant/<int:id>/', views.delete_product_variant, name='delete-product-variant'),
+    path('add_coupon/', views.add_coupon, name='add_coupon'),
+    path('coupon_list/', views.coupon_list, name='coupon_list'),
+    path('toggle_coupon_status/', views.toggle_coupon_status, name='toggle_coupon_status'),
+
+
+
 
 
 
