@@ -10,6 +10,7 @@ from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
 from django.db import models
 from .models import Wishlist,WishlistItem
 from admin_app.models import User
+from offer_management.models import ReferralOffer,ReferralUser
 
 def store(request, category_slug=None):
     # Assuming this is the initial retrieval of products without category filter
@@ -59,12 +60,19 @@ def store(request, category_slug=None):
     return render(request, 'userside/store.html', context)
 
 
-
+from offer_management.models import ReferralOffer,ReferralUser
 def product_details(request, id):
-    # print(id)
+
+    # users = User.objects.all()
+    # for i in users:
+    #     ReferralUser.objects.create(user = i,count = 0)
+
+    
     product_variant = Product_Variant.objects.get(id=id)
     p_id = product_variant.product_id
     product_variant_select = Product_Variant.objects.filter(product_id=p_id)
+    for i in product_variant_select:
+        i.apply_category_offer_discount()
     # for variant in product_variant_select:
     #     print(variant.thumbnail_image.url)
     # print(p_id)
@@ -73,6 +81,17 @@ def product_details(request, id):
     # print("its the product variant product id: ", product_variant.product)
     # product = product_variant.product  # Use the product foreign key of the product_variant
     # print(product)
+    # p = Product_Variant.objects.all()
+    # for i in p:
+    #     try:
+    #         i.offer_price = i.sale_price
+        
+    #         i.save()
+    #     except:
+    #         pass
+        
+
+    
 
     product = Product.objects.filter(is_available=True,id=id)
     product_all = Product.objects.filter(is_available=True)
@@ -289,6 +308,15 @@ def wishlist_remove(request,id):
     wishlist_items = WishlistItem.objects.get(wishlist=user_wishlist,product = product_variant)
     wishlist_items.delete()
     return redirect('store_app:wishlist')
+
+
+def referral(request):
+    user = request.user
+    user_referral = ReferralUser.objects.get(user = user)
+    context = {
+        'user_referral':user_referral,
+    } 
+    return render(request,'userside/referral.html',context)
 
 
 

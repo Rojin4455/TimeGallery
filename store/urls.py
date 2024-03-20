@@ -20,6 +20,8 @@ urlpatterns = [
     path('wishlist/',views.wishlist, name='wishlist'),
     path('add_wishlist/<int:id>/',views.add_wishlist, name='add_wishlist'),
     path('wishlist_remove/<int:id>/',views.wishlist_remove, name='wishlist_remove'),
+    path('referral/',views.referral, name='referral'),
+
 
 
 

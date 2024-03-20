@@ -316,6 +316,9 @@ def add_product_variant(request,id):
 @admin_login_required
 def product_variant_list(request,id):
     product_variants = Product_Variant.objects.filter(product=id)
+    for i in product_variants:
+        i.apply_category_offer_discount()
+        i.save()
     # product_variants = get_object_or_404(Product_Variant,Product=id)
     selected_product = Product.objects.get(id=id)
     context = {
@@ -443,7 +446,17 @@ def edit_product_variant(request, id):
         if additional_image_1:
             for image in additional_image_1:
                 Additional_Product_Image.objects.create(product_variant=product_variant,image=image)
-        product_variant.save()
+        product_variant.apply_category_offer_discount()
+        # p = Product_Variant.objects.all()
+        # for i in p:
+        #     try:
+        #         i.offer_price = i.sale_price
+            
+        #         i.save()
+        #     except:
+        #         pass
+        # product_variant.offer_price = product_variant.sale_price
+        # product_variant.save()
         return redirect(reverse('product_management_app:product-variant-list', kwargs={'id': product_variant.product.id}))
 
 

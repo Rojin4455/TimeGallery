@@ -198,7 +198,7 @@ def profile_order_details(request, id):
 
 
     print("ORDer total",order.order_total)
-
+    
     coupon_discount = product_total-order.order_total
     grand_total = product_total-coupon_discount
     print("coupon",coupon_discount)
@@ -631,6 +631,13 @@ def paymentfail(request):
 
 
 def wallet_order(request):
+    cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+
+    for i in cart_items:
+
+        if i.product.stock < 1:
+            messages.error(request,"Product Variant is Out Of Stock")
+            return redirect('checkout_app:checkout_payment')
     if 'discount' in request.session:
         coupon_discount = int(request.session['discount'])
         print("yessssssssssss",coupon_discount)

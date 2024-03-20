@@ -6,6 +6,9 @@ from django.db import IntegrityError
 from store.models import Brand
 from django.core.paginator import EmptyPage,PageNotAnInteger, Paginator
 from admin_app.decorators import admin_login_required
+from offer_management.models import CategoryOffer
+from .forms import CategoryOfferForm
+
 
 
 
@@ -133,6 +136,59 @@ def delete_brand(request,id):
         brand = Brand.objects.get(id=id)
         brand.delete()
         return redirect('category_app:create_brand')
+
+
+
+
+def category_offer(request):
+    if request.method == 'POST':
+        form = CategoryOfferForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category offer created successfully.')
+            return redirect('category_app:category_offer')
+        else:
+            # Form is not valid, handle errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+    else:
+        form = CategoryOfferForm()
+
+    category_offers = CategoryOffer.objects.all().order_by("id")
+    categories = Category.objects.all()
+    context = {
+        'form': form,
+        'category_offers': category_offers,
+        'categories': categories,
+    }
+    return render(request, 'admin_side/category_offer.html', context)
+
+def deactivate_category_offer(request,id):
+    try:
+        cat_offer = CategoryOffer.objects.get(id = id)
+        if cat_offer.is_active == True:
+            cat_offer.is_active = False
+        else:
+            cat_offer.is_active = True
+        cat_offer.save()
+        messages.success(request,"Category Offer is Activated")
+        print("cat saved",cat_offer.is_active)
+    except:
+        pass
+
+    print(cat_offer)
+    return redirect("category_app:category_offer")
+
+def delete_category_offer(request,id):
+    try:
+        cat_offer = CategoryOffer.objects.get(id = id)
+        cat_offer.delete()
+        messages.success(request,"Category Offer Deleted")
+    except:
+        pass
+
+    return redirect("category_app:category_offer")
 
 
 

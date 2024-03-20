@@ -40,7 +40,13 @@
                         
                         <div class="mt-auto text-center">
                             <hr>
+                            {% if variant.offer == True %}
+                            <p class="card-text"><h6 style="color: red">Category Discount: -{{ variant.offer_discount|floatformat:"0" }}</h6></p>
+
                             <p class="card-text"><h6>{{ variant.sale_price }}</h6><del>{{ variant.max_price }}</del></p>
+                            {% else %}
+                            <p class="card-text"><h6>{{ variant.sale_price }}</h6><del>{{ variant.max_price }}</del></p>
+                            {% endif %}
                             <p class="card-text"><strong>Created Date:</strong> {{ variant.created_at }}</p>
                             <div class="d-flex justify-content-center">
                                 <a href="{% url 'product_management_app:edit-product-variant' variant.id %}" class="btn btn-sm btn-primary me-2">Edit</a>

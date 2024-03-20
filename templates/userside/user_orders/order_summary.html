@@ -24,8 +24,17 @@
                 <div class="input-group-append" id="applybutton">
                     <button type="submit" class="btn btn-outline-info" id="applyButton">Apply</button>
                 </div>
+                {% comment %} <div class="input-group-append" id="applybutton">
+                    <button type="submit" class="btn btn-outline-info d-none" id="applyButton">Cancel</button>
+                </div> {% endcomment %}
             </div>
         </form>
+        
+        <div class="input-group-append" >
+            <a href = "{% url 'checkout_app:cancel_coupon' %}">
+            <button class="btn btn-outline-info d-none" id="cancelButton">Cancel Button</button>
+            </a>
+        </div>
         {% comment %} <button type="button" class="btn btn-primary" style="width:5%" id="applyCouponBtn">Coupon Applied</button> {% endcomment %}
         <div class="input-group-append mb-3">
             <button type="button" class="btn btn-outline-info" id="applyCouponBtn">Show Coupons</button>
@@ -204,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then((data) => {
             // Handle response data
-            console.log("data",data)
+            //console.log("data",data)
             if (data.success) {
                 // Mark coupon as applied
 
@@ -214,17 +223,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.getElementById("totalPrice").innerText = total_with_orginal_price;
                 document.getElementById("couponDiscount").innerText = '₹' + parseInt(data.discount_amount);
                 document.getElementById("finalTotal").innerText = '₹' + data.total;
-
+                
                 // Show success toast
                 showToast("Success! Coupon applied successfully.", "toast-success");
+                const cancel_button = document.getElementById("cancelButton")
+                cancel_button.classList.remove("d-none")
+                //window.location.reload();
             } else {
+                console.log("SSSSSSSSSSSSSSSS",data.message,data.error)
                 // Show error toast
-                showToast("Error: " + data.message, "toast-error");
+                showToast(data.error, "toast-error");
             }
         })
         .catch((error) => {
             // Handle errors
-            console.error("Error:", error);
+            //console.error("Error:", error);
             showToast("An error occurred. Please try again.", "toast-error");
         });
     });

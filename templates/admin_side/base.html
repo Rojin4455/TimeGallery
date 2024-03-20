@@ -96,14 +96,30 @@
                         <span class="text">Orders List</span>
                     </a>
                 </li>
-                <li class="menu-item ">
+                {% comment %} <li class="menu-item ">
                     <a class="menu-link" href="{% url 'category_app:categories' %}"> <i class="icon material-icons md-store"></i>
                         <span class="text">Catagories</span>
-                    </a>
-                </li>
+                    </a> {% endcomment %}
+
+                    <li class="menu-item has-submenu">
+                        <a class="menu-link" href=""> <i class="icon material-icons md-shopping_bag"></i>
+                            <span class="text">Catagories</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="{% url 'category_app:categories' %}">Add Category</a>
+                            <a href="{% url 'category_app:category_offer' %}">Category Offer</a>
+                            {% comment %} <a href="{% url 'product_management_app:add-product-variant' %}">Add Product Variant</a> {% endcomment %}
+                            {% comment %} <a href="{% url 'product_management_app:attribute-values' %}">Add Variant</a> {% endcomment %}  
+                        </div>
+                    </li>
                 <li class="menu-item ">
                     <a class="menu-link" href="{% url 'category_app:create_brand' %}"> <i class="icon material-icons md-store"></i>
                         <span class="text">Brands</span>
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-link" href="{% url 'offer_management_app:referral_offer' %}"> <i class="icon material-icons md-store"></i>
+                        <span class="text">Referral Ofer</span>
                     </a>
                 </li>
                 {% comment %} <li class="menu-item ">

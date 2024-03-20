@@ -26,6 +26,7 @@ from store.models import Wishlist,WishlistItem
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth.hashers import make_password
+from offer_management.models import ReferralOffer,ReferralUser
 
 
 
@@ -47,6 +48,7 @@ def signup(request):
         email = request.POST["email"]
         passw = request.POST["password"]
         conpass = request.POST["conf_password"]
+        referral_code = request.POST["referral_code"]
         try:
             if User.objects.get(email = email):
                 messages.warning(request,"email is taken")
@@ -71,6 +73,12 @@ def signup(request):
         if len(passw) < 8:
             messages.info(request,"Password minimum 8 characters")
             return redirect('user_app:usersignup')
+    
+        if referral_code:
+            try:
+                refferal = ReferralUser.objects.get(code = referral_code)
+            except:
+                messages.error(request,'referral code is not valid')
         randomotp = str(random.randint(1000, 9999))
         request.session['otp_key'] = randomotp
         request.session['email']=email
@@ -78,8 +86,10 @@ def signup(request):
         request.session.set_expiry(300)
 
         # password1 = make_password(password1)
+
         request.session['username'] = user
         request.session['password'] = passw
+        request.session['referral_code'] = referral_code
         # request.session['email']= email
 
         subject = "Verify Your One-Time Password (OTP) - Time Gallery Ecommerce Store"
@@ -115,6 +125,31 @@ def otp(request):
             # user = request.user.id
 
             Wishlist.objects.create(user = customer)
+            referral_code = request.session.get('referral_code')
+            if referral_code:
+                try:
+                    refferal = ReferralUser.objects.get(code = referral_code)
+                
+                    referral_user = refferal.user
+                    referral_user_wallet = Wallet.objects.get(user = referral_user)
+
+                    referral_offer = ReferralOffer.objects.order_by('-id')[0]
+                    referral_user_wallet.balance += referral_offer.amount
+                    referral_user_wallet.save()
+                    refferal.count += 1
+                    refferal.save()
+                    WalletTransaction.objects.create(wallet = referral_user_wallet, transaction_type = "CREDIT", transaction_detail = "Referral Bonus", amount = referral_offer.amount)
+
+                    ReferralUser.objects.create(user = customer,count = 0)
+                    user_wallet.balance += referral_offer.amount
+                    user_wallet.save()
+                    WalletTransaction.objects.create(wallet = user_wallet, transaction_type = "CREDIT", transaction_detail = "Signup Referral Bonus", amount = referral_offer.amount)
+                    
+                except:
+                    print("referral cannot exist")
+                    pass
+
+
             return redirect('user_app:userhome')
         else:
             messages.error(request,"Invalid OTP")

@@ -56,6 +56,10 @@
                           <input type="password" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" name="conf_password" placeholder="Re-enter Password" aria-label="Username" aria-describedby="basic-addon1">
                         </div>
                         <div class="input-group mb-4">
+                          <span class="input-group-text border-end-0 inbg" id="basic-addon1"><i class="bi bi-key"></i></span>
+                          <input type="text" class="form-control ps-2 fs-7 border-start-0 form-control-lg inbg mb-0" name="referral_code" placeholder="Have Any Refferal Code?" aria-label="referral_code" aria-describedby="basic-addon1">
+                        </div>
+                        <div class="input-group mb-4">
                           {% if messages %}
                           {% for message in messages %}
                           <span class="error" style="position: relative;top: 100%;left: 2px;font-size:14px;font-weight: 400;color: red;width: 190px;transition: opacity 0.5s;">{{message}}</span>

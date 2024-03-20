@@ -17,6 +17,7 @@ urlpatterns = [
 
     path('payment/', views.checkout_payment, name='checkout_payment'),
     path('apply_coupon/', views.apply_coupon, name='apply_coupon'),
+    path('cancel_coupon/', views.cancel_coupon, name='cancel_coupon'),
 
     # Other URLs
 ]

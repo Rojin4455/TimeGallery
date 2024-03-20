@@ -49,7 +49,10 @@
                                 <button class="btn btn-lg fw-bold fs-7 btn-success w-100">Login</button>
                             </a>
                         </form>
-                            {% include 'userside/alert.html' %}
+                        <a href="{% url 'user_app:forgot_password' %}">
+                        <p style="text-align: left;">forgot password?</p> 
+                        </a>
+                        {% include 'userside/alert.html' %}
                             <p class="text-center py-4 fw-bold fs-8">Or Sign in with social platforms</p>
                             {% comment %} <a  class="btn btn-sm btn-block btn-light mt-2" id="gp" href="{% provider_login_url 'google' %}" style="width: 100%;margin-bottom: 25px;background-color: aliceblue;">Login With <img src="https://img.icons8.com/color/30/000000/google-logo.png"/></a> {% endcomment %}
 

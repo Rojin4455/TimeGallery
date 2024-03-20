@@ -21,7 +21,7 @@
             <button type="button" class="btn btn-outline-info" id="clearButton" onclick="clearInput()">Apply</button>
         </div>  {% endcomment %}
     {% comment %} </form> {% endcomment %}
-    <form method="post" id="couponForm">
+    {% comment %} <form method="post" id="couponForm">
         {% csrf_token %}
         <div class="input-group mb-3 col-lg-3">
             <input type="text" class="form-control" id="inputField" name="coupencode" placeholder="Enter code">
@@ -32,7 +32,7 @@
     </form>
     <div class="input-group-append">
         <button type="button" class="btn btn-outline-info" id="applyCouponBtn">Show Coupons</button>
-    </div>
+    </div> {% endcomment %}
     
     {% comment %} </div> {% endcomment %}
     
@@ -152,7 +152,7 @@
 </section>
 
 <!-- Coupon Popup Modal -->
-<div class="modal" tabindex="-1" role="dialog" id="couponModal">
+{% comment %} <div class="modal" tabindex="-1" role="dialog" id="couponModal">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -175,10 +175,10 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <!-- Apply coupon button -->
                 {% comment %} <button type="button" class="btn btn-primary" id="applyCouponModalBtn">Apply Coupon</button> {% endcomment %}
-            </div>
+            {% comment %} </div>
         </div>
     </div>
-</div>
+</div> {% endcomment %}
 
 <script>
     function decreaseQuantity(cartItemId) {

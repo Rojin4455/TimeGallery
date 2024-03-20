@@ -1,5 +1,4 @@
 from django.db import models
-
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
@@ -7,6 +6,9 @@ from category.models import Category
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from admin_app.models import User
+import random
+import string
+
 
 # Create your models here.
 class CategoryOffer(models.Model):
@@ -18,47 +20,61 @@ class CategoryOffer(models.Model):
     # category_offer_image = models.ImageField(upload_to='media/category_offer/',blank=True)
     is_active            = models.BooleanField(default=True)
     
-    # def save(self, *args, **kwargs):
-    #     # Automatically generate the slug from the offer name
-    #     if not self.category_offer_slug:
-    #         self.category_offer_slug = slugify(self.offer_name)
-    #     super().save(*args, **kwargs)
-
     def __str__(self):
         return self.offer_name
-    
-    # def calculate_discounted_price(self, product_variant):
-    #     return calculate_discounted_price (product_variant, self.discount_percentage)
 
-
-    # def get_absolute_url(self):
-    #     return reverse('category_offer_detail', kwargs={'slug': self.category_offer_slug})
 
 
 ########### referal offer ############
 
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils import timezone
+import random
+import string
+
+
+
 class ReferralOffer(models.Model):
     expire_date = models.DateField()
-    Amount    = models.DecimalField(max_digits=5, decimal_places=2)
-    limit     = models.IntegerField()
+    amount = models.DecimalField(max_digits=5, decimal_places=2)
+    limit = models.IntegerField()
     is_active = models.BooleanField(default=True)
 
-        
+    def is_offer_active(self):
+        """
+        Check if the referral offer is active based on the expire_date.
+        """
+        return self.is_active and self.expire_date >= timezone.now().date()
 
 class ReferralUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     count = models.IntegerField()
-    code = models.IntegerField()
+    code = models.CharField(max_length=8, unique=True, null=True)  # Assuming code is a string
     is_active = models.BooleanField(default=True)
 
+    def generate_referral_code(self, length=8):
+        """
+        Generate a random referral code.
+        """
+        characters = string.ascii_letters + string.digits
+        code = ''.join(random.choices(characters, k=length))
+        return code
+
     def save(self, *args, **kwargs):
-        if self.count >= self.user.referraloffer.limit:
+        # Check if the referral offer is active before saving
+        referral_offer = ReferralOffer.objects.first()  # Assuming there's only one ReferralOffer object
+        if referral_offer and not referral_offer.is_offer_active():
+            # Offer is expired, deactivate the user
             self.is_active = False
+
+        # Generate a new referral code if not provided
+        if not self.code:
+            self.code = self.generate_referral_code()
+
         super().save(*args, **kwargs)
 
-    def clean(self):
-        if self.code < 1000 or self.code > 9999:
-            raise ValidationError("Code must be a 4-digit integer.")
+
 
     def __str__(self):
         return str(self.code)

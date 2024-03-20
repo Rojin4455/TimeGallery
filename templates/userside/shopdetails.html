@@ -61,7 +61,13 @@
                 </div>
                 <small class="pt-1">(50 Reviews)</small>
             </div>
+            {% if product_variant.offer == True %}
+
+            <h3 class="font-weight-semi-bold mb-4">  <p>Category Offer: ₹<del style="color:red">{{ product_variant.offer_discount|floatformat:"0" }}</del></p> <h6><del>{{ product_variant.max_price }}</del><h6> <h3>₹ {{product_variant.sale_price}}</h3></h3>
+                
+            {%else%}
             <h3 class="font-weight-semi-bold mb-4">₹ {{product_variant.sale_price}}      <h6><del>{{ product_variant.max_price }}</del><h6></h3>
+            {% endif %}    
                 {% if product_variant.stock > 0 %}
                 <p style="color:red">{{ product_variant.stock }} Stocks left</p>
                 {% else %}

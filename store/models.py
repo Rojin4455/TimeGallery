@@ -11,6 +11,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils import timezone
 from decimal import Decimal
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 
 
@@ -76,8 +78,10 @@ class Product_Variant(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    offer = models.BooleanField(default=False,null = True)
-    offer_discount =  models.DecimalField(max_digits=8, decimal_places=2,default=0, null=True)
+    offer = models.BooleanField(default=False)
+    offer_price = models.DecimalField(max_digits=8, decimal_places=2,null=True,blank = True)
+    offer_discount = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
+
 
     # k = 5
     def save(self, *args, **kwargs):
@@ -140,7 +144,7 @@ class Product_Variant(models.Model):
             
             try:
                 # Convert sale_price to Decimal
-                sale_price_decimal = Decimal(str(self.sale_price))
+                sale_price_decimal = Decimal(str(self.offer_price))
                 discount_amount = sale_price_decimal * discount_decimal
                 print("Discount amount:", discount_amount)
             except Exception as e:
@@ -148,13 +152,19 @@ class Product_Variant(models.Model):
                 return 0
             
             # Apply the discount
-            self.sale_price = str(sale_price_decimal - discount_amount)  # Convert back to str
+            self.sale_price = str(Decimal(str(self.offer_price)) - discount_amount)  # Convert back to str
             self.offer = True
             self.offer_discount = discount_amount
             self.save()
             print("Discount amount applied:", discount_amount)
             return discount_amount
         else:
+            self.offer = False
+            self.offer_discount = 0
+            self.sale_price = self.offer_price
+            
+            self.save()
+
             print("No category offer found")
             return 0
 
@@ -174,6 +184,13 @@ class Product_Variant(models.Model):
     def __str__(self):
         # return self.thumbnail_image.url
         return self.variant_name
+
+# Signal handler to set offer_price before saving
+@receiver(pre_save, sender=Product_Variant)
+def set_offer_price(sender, instance, **kwargs):
+    if not instance.offer_price:
+        instance.offer_price = instance.sale_price
+
 
 
 # class  Additional_Product_Image(models.Model):
@@ -220,37 +237,7 @@ class Additional_Product_Image(models.Model):
 
 
     ################## COUPON ######################
-# class Coupon(models.Model):
-#     coupon_code         = models.CharField(max_length=100)
-#     is_expired          = models.BooleanField(default=False)
-#     discount_percentage = models.IntegerField(default=10, validators=[MinValueValidator(0), MaxValueValidator(100)])
-#     minimum_amount      = models.IntegerField(default=400)
-#     max_uses            = models.IntegerField(default=10, validators=[MinValueValidator(0)])
-#     expire_date         = models.DateField()
-#     total_coupons       = models.IntegerField(default=0, validators=[MinValueValidator(0)])
-
     
-#     # if number of the coupon is 0 or the expired date is over set it as expired
-
-#     def save(self, *args, **kwargs):
-#         # Get the current date
-#         current_date = timezone.now().date()
-        
-#         # Compare expire_date with current_date
-#         if self.total_coupons <= 0 or self.expire_date < current_date:
-#             self.is_expired = True
-#         else:
-#             self.is_expired = False
-#         # Save the instance
-#         super().save(*args, **kwargs)
-
-
-#     def __str__(self):
-#         return self.coupon_code
-    
-
-
-
 class Coupon(models.Model):
     coupon_code = models.CharField(max_length=100)
     is_expired = models.BooleanField(default=False)

@@ -254,6 +254,11 @@ def apply_coupon(request):
         return JsonResponse({'error': 'Coupon already applied'})
 
 
+def cancel_coupon(request):
+    if 'discount' in request.session:
+        del request.session['discount']
+    messages.success(request,"coupen deleted")
+    return redirect("checkout_app:order_summary")
 
 def remove_order_summary(request,product_id):
     product = get_object_or_404(Product_Variant,id=product_id)
@@ -332,6 +337,10 @@ def checkout_payment(request,total=0,total_with_og_price=0,discount=0):
         total = 0
         for cart_item in cart_items:
             total += cart_item.subtotal()
+        for i in cart_items:
+            if i.product.stock < 1:
+                messages.error(request,"Product Variant is Out Of Stock")
+                return redirect('checkout_app:checkout_payment')
         # print("Total",type(intfloat(total)))
         rounded_total = round(total)
         total = int(rounded_total)
@@ -410,6 +419,7 @@ def checkout_payment(request,total=0,total_with_og_price=0,discount=0):
     else:
         print("YUIDASHGFUHGFDIUW")
         if request.method == "POST":
+
             print("request.body www  :",request.body)
             data = json.loads(request.body)
             selected_payment_method = data.get('selected_payment_method')
@@ -417,6 +427,11 @@ def checkout_payment(request,total=0,total_with_og_price=0,discount=0):
             # You can add your logic here based on the selected payment method
             if selected_payment_method == 'RAZORPAY':
                 # total = 0
+                for i in cart_items:
+
+                    if i.product.stock < 1:
+                        messages.error(request,"Product Variant is Out Of Stock")
+                        return redirect('checkout_app:checkout_payment')
                 # cart_items = CartItem.objects.filter(user=current_user)
                 # for cart_item in cart_items:
                 #     total += cart_item.subtotal()

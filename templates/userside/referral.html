@@ -1,0 +1,68 @@
+{% extends "userside/base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-around w-100">
+
+    {% include "userside/base-profile.html" %}
+
+    <div class="col-lg-10">
+        <div class="tab-pane fade1" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Referral Terms and Conditions</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        Here are the terms and conditions for the referral program:
+                    </p>
+                    <ul>
+                        <li>Referrer must share their referral code with friends and family.</li>
+                        <li>Referee must use the referral code during signup.</li>
+                        <li>Referrer will receive ₹10 for each successful referral.</li>
+                        <li>The referral reward will be credited to the referrer's account within 24 hours.</li>
+                        <!-- Add more terms and conditions as needed -->
+                    </ul>
+                    <p>
+                        If you have any questions or concerns, please contact our support team.
+                    </p>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Referral Code</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input type="text" id="referral-code" class="form-control" value="{{ user_referral.code }}" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-primary" onclick="copyReferralCode()">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyReferralCode() {
+        /* Get the text field */
+        var referralCode = document.getElementById("referral-code");
+
+        /* Select the text field */
+        referralCode.select();
+        referralCode.setSelectionRange(0, 99999); /* For mobile devices */
+
+        /* Copy the text inside the text field */
+        document.execCommand("copy");
+
+        /* Alert the copied text */
+        alert("Referral code copied to clipboard: " + referralCode.value);
+    }
+</script>
+
+{% endblock %}
