@@ -67,6 +67,7 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     order_grandtotal = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    coupon_discount = models.IntegerField(default=0,null=True)
 
     
     
@@ -122,10 +123,11 @@ class OrderProduct(models.Model):
     created_at      = models.DateTimeField(auto_now_add=True)
     updated_at      = models.DateTimeField(auto_now=True)
     order_status    = models.CharField(choices = ORDER_STATUS_CHOICES,max_length=20,default='New')
-
+    is_paid         = models.BooleanField(default=False)
     
     def save(self, *args, **kwargs):
-        self.grand_totol=self.product_price*self.quantity
+        if not self.grand_totol:
+            self.grand_totol=self.product_price*self.quantity
    
         super().save(*args, **kwargs)
 

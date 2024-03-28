@@ -13,21 +13,17 @@ from admin_app.models import User
 from offer_management.models import ReferralOffer,ReferralUser
 
 def store(request, category_slug=None):
-    # Assuming this is the initial retrieval of products without category filter
     products = Product.objects.filter(category__is_active=True, is_available=True, brand__is_active=True)
     
-    # List to store product variants
     products_list = []
 
-    # Fetch product variants for each product
     for product in products:
         variants = Product_Variant.objects.filter(is_active=True, product=product.id)
         for variant in variants:
             products_list.append(variant)
 
-    # Handle form submission
     if request.method == "POST":
-        selected_categories = request.POST.getlist('category')  # Get list of selected categories
+        selected_categories = request.POST.getlist('category')
 
         # Filter products based on selected categories
         if selected_categories:
@@ -44,9 +40,7 @@ def store(request, category_slug=None):
     # Pagination
     paginator = Paginator(products_list, 6)
     page = request.GET.get('page')
-    print("page no:    ",page)
     paged_products = paginator.get_page(page)
-    print(type(paged_products))
     # Get all categories with at least one product variant associated
     categories_with_product_variants = Category.objects.annotate(
         num_product_variants=models.Count('product__products')
@@ -60,12 +54,7 @@ def store(request, category_slug=None):
     return render(request, 'userside/store.html', context)
 
 
-from offer_management.models import ReferralOffer,ReferralUser
 def product_details(request, id):
-
-    # users = User.objects.all()
-    # for i in users:
-    #     ReferralUser.objects.create(user = i,count = 0)
 
     
     product_variant = Product_Variant.objects.get(id=id)
@@ -73,32 +62,13 @@ def product_details(request, id):
     product_variant_select = Product_Variant.objects.filter(product_id=p_id)
     for i in product_variant_select:
         i.apply_category_offer_discount()
-    # for variant in product_variant_select:
-    #     print(variant.thumbnail_image.url)
-    # print(p_id)
-    # product1 = Product.objects.get(id=p_id)
-    # print(product1.base_price)
-    # print("its the product variant product id: ", product_variant.product)
-    # product = product_variant.product  # Use the product foreign key of the product_variant
-    # print(product)
-    # p = Product_Variant.objects.all()
-    # for i in p:
-    #     try:
-    #         i.offer_price = i.sale_price
-        
-    #         i.save()
-    #     except:
-    #         pass
-        
 
     
 
     product = Product.objects.filter(is_available=True,id=id)
     product_all = Product.objects.filter(is_available=True)
     product_variants_list = []
-    # products_all = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active = True)  # Filter out products with no brand and inactive brands
     product_variant_all = Product_Variant.objects.filter(is_active=True)
-    # product_variant_select = Product_Variant.objects.filter(is_active=True,product=id)
     
     products_list = list()
     for pro in product_all:
@@ -107,12 +77,9 @@ def product_details(request, id):
             product_variants_list.append(variant)
             break
     product_images = Additional_Product_Image.objects.filter(product_variant = id)
-    # print("its product variant list: ",product_variants_list)
 
     in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request),product=product_variant).exists()
-    # return HttpResponse(in_cart)
 
-    # print(product_variant_select)
     product_context = {
         'product_variant':product_variant,
         'product_variants_list':product_variants_list,
@@ -120,7 +87,6 @@ def product_details(request, id):
         'product_variant_select':product_variant_select,
         'in_cart':in_cart
     }
-    # print(product_variant_select)
     
     return render(request,'userside/shopdetails.html',product_context)
 
@@ -132,16 +98,23 @@ def userside_search(request):
         product = request.POST["search_product"]
         if product != '':
             products_list = Product_Variant.objects.filter(variant_name__istartswith=product, is_active=True, product__brand__is_active=True, product__brand__isnull=False, product__category__is_active=True)  # Filter out products with no brand and inactive brands
+    
+                
+
+            categories_with_product_variants = Category.objects.annotate(
+            num_product_variants=models.Count('product__products')
+            ).filter(num_product_variants__gt=0, is_active=True)
             context = {
-                'products_list': products_list
+                'products_list': products_list,
+                'categories':categories_with_product_variants,
             }
             return render(request, 'userside/store.html', context)
         else:
             # If the search product is empty, redirect to the store
-            return redirect('store_app:store')
+            return redirect('store_app:products_by_category')
     else:
         # Handle GET requests, if any
-        return redirect('store_app:store')  # Redirect to the store in case of GET requests
+        return redirect('store_app:products_by_category')  # Redirect to the store in case of GET requests
     
 
 @never_cache
@@ -152,11 +125,6 @@ def user_category_search(request,id):
     page = request.GET.get('page')
     paged_products = paginator.get_page(page)    
 
-
-    # products = Product.objects.filter(is_available=True,brand__is_active=True, category__is_active=True,category=id)
-    # product_variants = Product_Variant.objects.filter(product=products)
-    # # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True, category=id)  # Filter out products with no brand and inactive brands
-    # products_list = product_variants
     context = {
         'products_list': paged_products
     }
@@ -173,11 +141,6 @@ def low_to_high(request):
     page = request.GET.get('page')
     paged_products = paginator.get_page(page)    
 
-
-    # products = Product.objects.filter(is_available=True,brand__is_active=True, category__is_active=True,category=id)
-    # product_variants = Product_Variant.objects.filter(product=products)
-    # # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True, category=id)  # Filter out products with no brand and inactive brands
-    # products_list = product_variants
     context = {
         'products_list': paged_products,
         'categories':categories_with_product_variants
@@ -196,11 +159,6 @@ def high_to_low(request):
     page = request.GET.get('page')
     paged_products = paginator.get_page(page)    
 
-
-    # products = Product.objects.filter(is_available=True,brand__is_active=True, category__is_active=True,category=id)
-    # product_variants = Product_Variant.objects.filter(product=products)
-    # # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True, category=id)  # Filter out products with no brand and inactive brands
-    # products_list = product_variants
     context = {
         'products_list': paged_products,
         'categories':categories_with_product_variants
@@ -219,11 +177,6 @@ def aA_to_zZ(request):
     page = request.GET.get('page')
     paged_products = paginator.get_page(page)    
 
-
-    # products = Product.objects.filter(is_available=True,brand__is_active=True, category__is_active=True,category=id)
-    # product_variants = Product_Variant.objects.filter(product=products)
-    # # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True, category=id)  # Filter out products with no brand and inactive brands
-    # products_list = product_variants
     context = {
         'products_list': paged_products,
         'categories':categories_with_product_variants
@@ -242,11 +195,6 @@ def Zz_to_Aa(request):
     page = request.GET.get('page')
     paged_products = paginator.get_page(page)    
 
-
-    # products = Product.objects.filter(is_available=True,brand__is_active=True, category__is_active=True,category=id)
-    # product_variants = Product_Variant.objects.filter(product=products)
-    # # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active=True, category=id)  # Filter out products with no brand and inactive brands
-    # products_list = product_variants
     context = {
         'products_list': paged_products,
         'categories':categories_with_product_variants
@@ -268,14 +216,9 @@ def wishlist(request):
         user_wishlist = Wishlist.objects.create(user=user)
 
     wishlist_items = WishlistItem.objects.filter(wishlist=user_wishlist)
-    # cart = Cart.objects.get(cart_id=_cart_id(request))
-    # cart_items = CartItem.objects.filter(cart=cart, is_active=True,user=user)
-    # for i in cart_items:
-    #     print(i)
-    
+
     context = {
        'wishlist_items':wishlist_items ,
-    #    'cart_items':cart_items
     }
     return render(request,'userside/wishlist.html',context)
 

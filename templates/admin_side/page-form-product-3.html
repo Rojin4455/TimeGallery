@@ -68,53 +68,7 @@
             </div>
 
          <div class="col-lg-3">
-                <!-- Card for additional images -->
-                {% comment %} <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <h4>Main Image</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="input-upload">
-                                <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
-                                <input type="file" class="form-control" id="category_image" name="image" required>
-                            </div>
-                        </div>
-                    </div> <!-- card end// -->
-                </div>
-                <div class="card mb-4"> {% endcomment %}
-                    {% comment %} <div class="card-body"> {% endcomment %}
-                        {% comment %} <div class="card-header">
-                            <h4>Additional Images</h4>
-                        </div> {% endcomment %}
-                        {% comment %} <div class="card-body"> {% endcomment %}
-                            <!-- Additional image fields -->
-                            {% comment %} <div class="input-upload mb-3"> {% endcomment %}
-                                {% comment %} <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt=""> {% endcomment %}
-                                {% comment %} <input type="file" class="form-control" id="additional_image_1" name="additional_image_1" multiple required>
-                            </div> {% endcomment %}
-                            
-                            
-                            <!-- End of additional image fields -->
-                        {% comment %} </div> {% endcomment %}
-                    {% comment %} </div> <!-- card end// --> {% endcomment %}
-                {% comment %} </div> {% endcomment %}
-                <!-- End of card for additional images -->
-                <!-- Card for main image upload -->
-                {% comment %} <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <h4>Main Image</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="input-upload">
-                                <img src="{% static 'assets_admin/imgs/theme/upload.svg' %}" alt="">
-                                <input type="file" class="form-control" id="category_image" name="image" required>
-                            </div>
-                        </div>
-                    </div> <!-- card end// -->
-                </div> {% endcomment %}
-                <!-- End of card for main image upload -->
+                
             </div>   
         </div>
     </form>
@@ -133,12 +87,9 @@
             event.preventDefault();
 
             const productTitle = document.getElementById('product_title').value.trim();
-            //const productSKU = document.getElementById('product_sku').value.trim();
             const brandSelect = document.getElementById('brandSelect').value;
             const description = document.getElementById('description').value.trim();
-            //const price = document.getElementById('price').value.trim();
             const categorySelect = document.getElementById('categorySelect').value;
-            //const categoryImage = document.getElementById('category_image').value.trim();
 
             errorContainer.innerHTML = '';
 
@@ -165,10 +116,7 @@
                 return;
             }
 
-           // if (!categoryImage) {
-             //   displayError('Image is required.', 'category_image');
-               // return;
-            //}
+    
 
             productForm.submit();
         });

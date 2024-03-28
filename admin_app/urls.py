@@ -12,6 +12,8 @@ urlpatterns = [
     # path('admin-add-products',views.admin_add_products,name='admin_add_products'),
     # path('admin-users-list',views.admin_users_list,name='admin_users_list'),
     path('admin-logout/',views.admin_logout,name='admin_logout'),
+    # path('best_selling_filter/',views.best_selling_filter,name='best_selling_filter'),
+
     # path('edit_category',views.edit_category,name='edit_category'),
 
 ]

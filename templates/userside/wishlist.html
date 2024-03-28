@@ -8,8 +8,7 @@
         <div class="container">
             <div class="breadcrumb">
                 <a href="index.html" rel="nofollow">Wishlist</a>
-                {% comment %} <span></span> Shop {% endcomment %}
-                {% comment %} <span></span> Wishlist {% endcomment %}
+              
             </div>
         </div>
     </div>
@@ -26,7 +25,6 @@
                                     <th scope="col">Product</th>
                                     <th scope="col">Price</th>
                                     <th scope="col">Stock Status</th>
-                                    {% comment %} <th scope="col">Action</th> {% endcomment %}
                                     <th scope="col">Remove</th>
 
                                 </tr>
@@ -37,8 +35,7 @@
                                     <td class="image product-thumbnail" colspan="1"><img src="{{wishlist_item.product.thumbnail_image.url}}" alt="#" style="width:40%"></td>
                                     <td class="product-des product-name" colspan="1">
                                         <h5 class="product-name" style="color:black"><a href="{% url 'store_app:product_details' wishlist_item.product.id %}">{{wishlist_item.product.variant_name}}</a></h5>
-                                        {% comment %} <p class="font-xs">Maboriosam in a tonto nesciung eget<br> distingy magndapibus.
-                                        </p> {% endcomment %}
+                                        
                                     </td>
                                     <td class="price" colspan="1" data-title="Price"><span>{{wishlist_item.product.sale_price}}</span></td>
                                     {% if wishlist_item.product.stock%}
@@ -51,14 +48,7 @@
                                         <span class="color3 font-weight-bold" style="color:red">Out Of Stock</span>
                                     </td>
                                     {%endif%}
-{% comment %} 
-                                    <td class="text-right" colspan="1" data-title="Cart">
-                                        {% if wishlist_item.product in cart_items.values_list('product', flat=True) %}
-                                        <a href="{% url 'cart_app:view_cart' %}" class="btn btn-success">View Cart</a>
-                                    {% else %}
-                                        <a href="{% url 'cart_app:add_cart' wishlist_item.product.id %}" class="btn btn-primary">Add To Cart</a>
-                                    {% endif %}
-                                    </td> {% endcomment %}
+
                                     
                                     <td class="text-right"> 
                                         <a href="{% url 'store_app:wishlist_remove' wishlist_item.product.id %}" class="btn btn-danger"> Remove</a>

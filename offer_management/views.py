@@ -4,23 +4,20 @@ from django.contrib import messages
 import string
 import random
 from decimal import Decimal
+from admin_app.decorators import admin_login_required
 
 
+
+@admin_login_required
 def referral_offer(request):
     if request.method == 'POST':
-        print("podpad")
         expire_date = request.POST.get('expire_date')
-        print(expire_date)
         amount = request.POST.get('amount')
-        print(type(amount))
         limit = request.POST.get('limit')
-        print(limit)
         is_active = request.POST.get('is_active', False)
-        print(is_active)
         amount = Decimal(amount)
         # Convert is_active to boolean
         is_active = True if is_active == 'on' else False
-        print(is_active)
 
         try:
             # Create the ReferralOffer object
@@ -30,11 +27,9 @@ def referral_offer(request):
                 limit=limit,
                 is_active=is_active
             )
-            print("created")
             messages.success(request, 'Referral Offer created successfully.')
             return redirect('offer_management_app:referral_offer')
         except Exception as e:
-            print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",str(e))
             messages.error(request, f'An error occurred: {str(e)}')
             return redirect('offer_management_app:referral_offer')
 
@@ -59,6 +54,7 @@ def change_offer_status(request,id):
         pass
 
     return redirect('offer_management_app:referral_offer')
+
 
 
 def delete_referral_offer(request,id):

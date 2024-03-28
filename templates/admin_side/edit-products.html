@@ -26,12 +26,7 @@
                             <label for="product_title" class="form-label">Product title</label>
                             <input type="text" placeholder="Type here" class="form-control" id="product_title" name='product_title' value="{{ product.product_name }}" required>
                         </div>
-                        {% comment %} <div class="row gx-3">
-                            <div class="col-md-4 mb-3">
-                                <label for="product_sku" class="form-label">Stock</label>
-                                <input type="number" placeholder="Type here" class="form-control" id="product_sku" name="stock_qty" value="{{ product.stock }}" required>
-                            </div>
-                        </div> {% endcomment %}
+
                         <div class="mb-4">
                             <label class="form-label">Brand</label>
                             <select class="form-select" id="brandSelect" name="brand" required>
@@ -42,10 +37,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        {% comment %} <div class="mb-4">
-                            <label class="form-label">Price</label>
-                            <input type="text" placeholder="Type here" class="form-control" id="price" name="price" value="{{ product.price }}" required>
-                        </div> {% endcomment %}
+              
                         <div class="mb-4">
                             <label class="form-label">Category</label>
                             <select class="form-select" id="categorySelect" name="category_id" required>
@@ -69,41 +61,7 @@
             </div>
 
             <div class="col-lg-3">
-                <!-- Card for main image upload -->
-                {% comment %} <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <h4>Main Image</h4>
-                        </div>
-                        <div class="card-body">
-                            <img src="{{ product.images.url }}" class="img-thumbnail" alt="Main Image">
-                            <input type="file" class="form-control mt-3" id="category_image" name="image">
-                        </div>
-                    </div> <!-- card end// -->
-                </div> {% endcomment %}
-                <!-- End of card for main image upload -->
-                
-                <!-- Card for additional images -->
-                {% comment %} <div class="card mb-4"> {% endcomment %}
-                    {% comment %} <div class="card-body"> {% endcomment %}
-                        {% comment %} <div class="card-header">
-                            <h4>Additional Images</h4>
-                        </div> {% endcomment %}
-                        {% comment %} <div class="card-body"> {% endcomment %}
-                            <!-- Additional image fields -->
-                            {% comment %} {% for image in product.additional_product_images.all %} {% endcomment %}
-                            {% comment %} <div class="input-upload mb-3"> {% endcomment %}
-                                {% comment %} <img src="{{ image.image.url }}" class="img-thumbnail" alt="Additional Image"> {% endcomment %}
-                                {% comment %} <input type="file" class="form-control mt-3" name="additional_image_{{ forloop.counter }}" multiple> {% endcomment %}
-                                {% comment %} <input type="file" class="form-control mt-3" name="additional_image_1" multiple> {% endcomment %}
-
-                            {% comment %} </div> {% endcomment %}
-                            {% comment %} {% endfor %} {% endcomment %}
-                            <!-- End of additional image fields -->
-                        {% comment %} </div> {% endcomment %}
-                    {% comment %} </div> <!-- card end// --> {% endcomment %}
-                {% comment %} </div> {% endcomment %}
-                <!-- End of card for additional images -->
+               
             </div>
         </div>
     </form>
@@ -118,8 +76,7 @@
         const productForm = document.getElementById('productForm');
         const errorContainer = document.getElementById('errorContainer');
 
-        //saveBtn.addEventListener('click', function(event) {
-          //  event.preventDefault();
+
 
             const productTitle = document.getElementById('product_title').value.trim();
             const productSKU = document.getElementById('product_sku').value.trim();
@@ -127,8 +84,7 @@
             const description = document.getElementById('description').value.trim();
             const price = document.getElementById('price').value.trim();
             const categorySelect = document.getElementById('categorySelect').value;
-            /*const categoryImage = document.getElementById('category_image').value.trim();
-            const additionalImages = document.querySelectorAll('input[name^="additional_image"]');*/
+        
 
             errorContainer.innerHTML = '';
 
@@ -163,14 +119,7 @@
                 return;
             }
 
-            // Check if main image is provided
-            /*if (!categoryImage) {
-                // Check if there are no additional images
-                if (additionalImages.length === 0) {
-                    displayError('Main image is required.', 'category_image');
-                    return;
-                }
-            }*/
+
 
             productForm.submit();
         });

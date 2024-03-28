@@ -3,13 +3,11 @@ from . import views
 
 app_name = 'user_app'
 urlpatterns = [
-    # path('userlogin/', views.login, name='user_login'),
     path('usersignup/', views.signup, name='usersignup'),
     path('',views.userhome, name = 'userhome'),
     path('check-otp/',views.otp, name = 'check-otp'),
     path('login/', views.login, name='login'),
     path('logout',views.logout, name='user_logout'),
-    # path('otp_verification',views.otp_verification,name="otp_verification"),
 
 
 
@@ -28,7 +26,6 @@ urlpatterns = [
     path('forgot_password/', views.forgot_password, name='forgot_password'),
     path('forgot_password_otp/', views.forgot_password_otp, name='forgot_password_otp'),
 
-    # path('user-cart/',views.user_cart,name='user_cart'),
 
     
 

@@ -1,0 +1,39 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>Edit Banner - {{ banner.id }}</h4>
+    </div>
+    <div class="card-body">
+        <form action="{% url 'admin_dashboard:edit_banner' banner.id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="edit_banner_image" class="form-label">Banner Image</label>
+                <input type="file" class="form-control" id="edit_banner_image" name="edit_banner_image">
+            </div>
+        
+            <div class="mb-3">
+                <label for="edit_banner_title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="edit_banner_title" name="edit_banner_title" value="{{ banner.banner_title }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="edit_banner_caption" class="form-label">Banner Caption</label>
+                <input type="text" class="form-control" id="edit_banner_caption" name="edit_banner_caption" value="{{ banner.banner_caption }}">
+            </div>
+        
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="edit_is_visible" name="edit_is_visible" {% if banner.is_visible %}checked{% endif %}>
+                <label class="form-check-label" for="edit_is_visible">Visible</label>
+            </div>
+        
+            <button type="submit" class="btn btn-primary">Update Banner</button>
+        </form>
+        
+        
+    </div>
+</div>
+{% endblock %}

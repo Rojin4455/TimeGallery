@@ -255,8 +255,10 @@ class Coupon(models.Model):
         # Compare expire_date with current_date
         if self.total_coupons <= 0 or self.expire_date < current_date:
             self.is_expired = True
+            # self.is_active = False
         else:
             self.is_expired = False
+            # self.is_active = True
         
         # Call the parent class's save method
         super().save(*args, **kwargs)
@@ -304,3 +306,18 @@ class WishlistItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return str(self.product)
+    
+
+
+class Banner(models.Model):
+    images = models.ImageField(upload_to='media/photos/banner', null=True, blank = True)
+    is_visible = models.BooleanField(default=True)
+    banner_title = models.CharField(max_length=100)
+    banner_caption = models.CharField(max_length=150, null = True)
+    video = models.FileField(upload_to='media/photos/banner_videos/', blank=True, null=True)
+
+
+    def __str__(self):
+        return self.banner_title
+    
+

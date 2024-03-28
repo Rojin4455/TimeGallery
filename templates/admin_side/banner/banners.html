@@ -1,0 +1,100 @@
+{% extends 'admin_side/base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="content-main">
+        <div class="content-header">
+            <div>
+                <h2 class="content-title card-title">Banners</h2>
+                <p>Create, view, and manage banners</p>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <span class="alert alert-success" role="alert">
+                            {{ message }}
+                        </span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Create Banner</h4>
+            </div>
+            <div class="card-body">
+                <form action="{% url 'admin_dashboard:banner' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="banner_image" class="form-label">Banner Image</label>
+                        <input type="file" class="form-control" id="banner_image" name="banner_image">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="banner_title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="banner_title" name="banner_title" placeholder="Enter title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="banner_caption" class="form-label">Banner Caption</label>
+                        <input type="text" class="form-control" id="banner_caption" name="banner_caption" placeholder="Enter a caption" required>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="is_visible" name="is_visible" checked>
+                        <label class="form-check-label" for="is_visible">Visible</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Create Banner</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th>Visible</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for banner in banners %}
+                                <tr>
+                                    <td>{{ banner.id }}</td>
+                                    {% if banner.images %}
+                                    <td><img src="{{ banner.images.url }}" alt="{{ banner.banner_title }}" width="100"></td>
+                                {% else %}
+                                    <td>No Image</td>
+                                {% endif %}                                    <td>{{ banner.banner_title }}</td>
+                                    <td>
+                                        {% if banner.is_visible %}
+                                            <span class="badge rounded-pill bg-success">Visible</span>
+                                        {% else %}
+                                            <span class="badge rounded-pill bg-secondary">Hidden</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="dropdown">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
+                                                <i class="material-icons md-more_horiz"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="{% url 'admin_dashboard:edit_banner' banner.id %}">Edit</a>
+                                                <a class="dropdown-item text-danger" href="{% url 'admin_dashboard:delete_banner' banner.id %}">Delete</a>
+                                            </div>
+                                        </div> <!-- dropdown //end -->
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

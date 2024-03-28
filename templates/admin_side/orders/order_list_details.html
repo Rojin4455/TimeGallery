@@ -10,27 +10,7 @@
         </div>
     </div>
     <div class="card">
-        {% comment %} <header class="card-header">
-            <div class="row align-items-center">
-                <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
-                    <span>
-                        <i class="material-icons md-calendar_today"></i> <b>Wed, Aug 13, 2020, 4:34PM</b>
-                    </span> <br>
-                    <small class="text-muted">Order ID: 3453012</small>
-                </div>
-                <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                    <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
-                        <option>Change status</option>
-                        <option>Awaiting payment</option>
-                        <option>Confirmed</option>
-                        <option>Shipped</option>
-                        <option>Delivered</option>
-                    </select>
-                    <a class="btn btn-primary" href="#">Save</a>
-                    <a class="btn btn-secondary print ms-2" href="#"><i class="icon material-icons md-print"></i></a>
-                </div>
-            </div>
-        </header> <!-- card-header end// --> {% endcomment %}
+        
         <div class="card-body">
             <div class="row mb-50 mt-20 order-info-wrap">
                 <div class="col-md-4">
@@ -43,24 +23,10 @@
                             <p class="mb-1">
                                 Name: {{user.username}} <br> <template class="__cf_email__" data-cfemail="e2838e879aa2879a838f928e87cc818d8f">[email&#160;protected]</template> <br> Email: {{user.email}}
                             </p>
-                            {% comment %} <a href="#">View profile</a> {% endcomment %}
                         </div>
                     </article>
                 </div> <!-- col// -->
-                {% comment %} <div class="col-md-4">
-                    <article class="icontext align-items-start">
-                        <span class="icon icon-sm rounded-circle bg-primary-light">
-                            <i class="text-primary material-icons md-local_shipping"></i>
-                        </span>
-                        <div class="text">
-                            <h6 class="mb-1">Order info</h6>
-                            <p class="mb-1">
-                                Shipping: Fargo express <br> Pay method: card <br> Status: new
-                            </p>
-                            <a href="#">Download info</a>
-                        </div>
-                    </article>
-                </div> <!-- col// --> {% endcomment %}
+               
                 <div class="col-md-4">
                     <article class="icontext align-items-start">
                         <span class="icon icon-sm rounded-circle bg-primary-light">
@@ -73,24 +39,11 @@
                                 City: {{shipping_address}}
                             </p>
 
-                            <a href="#">View profile</a>
+                            <a href="{% url 'order_management_app:order_details' user.id %}">View profile</a>
                         </div>
                     </article>
                 </div> <!-- col// -->
-                {% comment %} <div class="col-md-4">
-                    <article class="icontext align-items-start">
-                        <span class="icon icon-sm rounded-circle bg-primary-light">
-                            <i class="text-primary material-icons md-place"></i>
-                        </span>
-                        <div class="text">
-                            <h6 class="mb-1">Deliver to</h6>
-                            <p class="mb-1">
-                                City: Tashkent, Uzbekistan <br>Block A, House 123, Floor 2 <br> Po Box 10000
-                            </p>
-                            <a href="#">View profile</a>
-                        </div>
-                    </article>
-                </div> <!-- col// --> {% endcomment %}
+                
             </div> <!-- row // -->
             <div class="row">
                 <div class="col-lg-12">
@@ -115,9 +68,9 @@
                                             <div class="info"> {{product.product_variant}} </div>
                                         </a>
                                     </td>
-                                    <td> {{product.product_price}} </td>
+                                    <td>₹ {{product.product_price}} </td>
                                     <td> {{product.quantity}} </td>
-                                    <td class="text-end"> {{product.grand_totol}} </td>
+                                    <td class="text-end"> ₹{{product.grand_totol}} </td>
                                 </tr>
                                 {%endfor%}
                                 <tr>
@@ -125,33 +78,28 @@
                                         <article class="float-end">
                                             <dl class="dlist">
                                                 <dt>Subtotal:</dt>
-                                                <dd>{{total_product_price}}</dd>
+                                                <dd>₹ {{order.order_total}}</dd>
                                             </dl>
                                             <dl class="dlist">
                                                 <dt>Shipping cost:</dt>
                                                 <dd>0.00</dd>
                                             </dl>
-                                            {% if coupon_discount %}
+                                            {% if order.coupon_discount != 0 %}
                                             <dl class="dlist">
                                                 <dt>Coupon Discount:</dt>
-                                                <dd> <b class="h5" style="color:red">- {{coupon_discount}}</b> </dd>
+                                                <dd> <b class="h5" style="color:red">-₹ {{order.coupon_discount}}</b> </dd>
                                             </dl>
                                             <dl class="dlist">
                                                 <dt>Grand total:</dt>
-                                                <dd> <b class="h5">{{order_total}}</b> </dd>
+                                                <dd><b class="h5" style="color:green">+{{order.order_grandtotal}}</b> </dd>
                                             </dl>
                                             {% else %}
                                             <dl class="dlist">
                                                 <dt>Grand total:</dt>
-                                                <dd> <b class="h5">{{total_product_price}}</b> </dd>
+                                                <dd><b class="h5" style="color:green">+{{total_product_price}}</b> </dd>
                                             </dl>
                                             {% endif %}
-                                            {% comment %} <dl class="dlist">
-                                                <dt class="text-muted">Status:</dt>
-                                                <dd>
-                                                    <span class="badge rounded-pill alert-success text-success">Payment done</span>
-                                                </dd>
-                                            </dl> {% endcomment %}
+            
                                         </article>
                                     </td>
                                 </tr>
@@ -160,23 +108,7 @@
                     </div> <!-- table-responsive// -->
                 </div> <!-- col// -->
                 <div class="col-lg-1"></div>
-                {% comment %} <div class="col-lg-4"> {% endcomment %}
-                    {% comment %} <div class="box shadow-sm bg-light">
-                        <h6 class="mb-15">Payment info</h6>
-                        <p>
-                            <img src="assets/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br>
-                            Business name: Grand Market LLC <br>
-                            Phone: +1 (800) 555-154-52
-                        </p>
-                    </div> {% endcomment %}
-                    {% comment %} <div class="h-25 pt-4">
-                        <div class="mb-3">
-                            <label>Notes</label>
-                            <textarea class="form-control" name="notes" id="notes" placeholder="Type some note"></textarea>
-                        </div>
-                        <button class="btn btn-primary">Save note</button>
-                    </div> {% endcomment %}
-                {% comment %} </div> <!-- col// --> {% endcomment %}
+                
             </div>
         </div> <!-- card-body end// -->
     </div> <!-- card end// -->

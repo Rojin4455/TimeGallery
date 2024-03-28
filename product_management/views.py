@@ -47,25 +47,14 @@ def admin_products_list(request):
 @never_cache
 def add_product(request):
     if request.user.is_authenticated and request.user.is_superuser:
-        print("before entering post method")
         if request.method == 'POST':
             title = request.POST.get('product_title')
-            # stock_qty = request.POST.get('stock_qty')
             brand_id = request.POST.get('Brand')
             description = request.POST.get('description')
-            # price = request.POST.get('price')
             category_id = request.POST.get('category_id')
             base_price = request.POST.get('base_price')
-            print("entering post method")
             image = request.FILES.get('image')
-            # additional_images = request.FILES.getlist('additional_image_1')
 
-
-            # try:
-            #     # image = request.FILES.get('image')
-            # except :
-            #     messages.warning(request,"add product image")
-            #     return redirect('product_management_app:add_product') 
 
             try:
                 if title == '':
@@ -76,25 +65,19 @@ def add_product(request):
                     return redirect('product_management_app:add_product')   
             except:
                pass
-            # if brand_id or price or category_id or stock_qty:
-            #     messages.warning(request,"All fields are required")
-            #     return redirect('product_management_app:add_product')
+
             category = Category.objects.get(id = category_id)
             brand = Brand.objects.get(id = brand_id)
             product = Product(
                 product_name = title,
-                # stock = stock_qty,
                 brand = brand,
                 category = category,
                 description = description,
-                # price = price,
-                # images = image,
+
                 base_price = base_price
             )
             product.save()
-            
-            # for img in additional_images:
-            #     Additional_Product_Image.objects.create(product=product,image=img)    
+    
             return redirect('product_management_app:admin_products_list')
 
         categories = Category.objects.filter(is_active = True)
@@ -118,36 +101,23 @@ def edit_product(request,id):
 
         if request.method == 'POST':
             title = request.POST.get('product_title')
-            # stock_qty = request.POST.get('stock_qty')
-            # brand_id = request.POST.get('brand')
             brand_id = request.POST.get('brand')
             brand = get_object_or_404(Brand, pk=brand_id)
             description = request.POST.get('description')
-            # price = request.POST.get('price')
             category_id = request.POST.get('category_id')
             category = get_object_or_404(Category, pk=category_id)
-            print("entering post method")
-            # image = request.FILES.get('image')
-            # additional_images = request.FILES.getlist('additional_image_1')
+
             
             if title:
                 product.product_name = title
-            # if stock_qty:
-            #     product.stock = stock_qty
+
             if brand_id:
                 product.brand = brand
             if description:
                 product.description = description
-            # if price:
-            #     product.price = price
+
             if category_id:
                 product.category = category
-
-
-            # if image:
-            #     product.images = image
-            # for img in additional_images:
-            #     Additional_Product_Image.objects.create(product=product,image=img)  
 
             product.save()
 
@@ -197,7 +167,6 @@ def show_actived_products(request):
             'categories':categories,
             'brands':brands,
         }
-        print('hello')
         return render(request,'admin_side/page-products-list.html',context)
     return redirect('admin_app:admin_login')
 
@@ -214,7 +183,6 @@ def show_inactive_products(request):
             'categories':categories,
             'brands':brands,
         }
-        print('hello')
         return render(request,'admin_side/page-products-list.html',context)
     return redirect('admin_app:admin_login')   
 
@@ -245,27 +213,18 @@ def deactivate_brand(request, id):
     current.save()
     return redirect('category_app:create_brand') 
 
-# from django.shortcuts import render
-# from django.http import HttpResponse
-# from .models import Product, Attribute_Value
-
-
 
 @admin_login_required
 def add_product_variant(request,id):
     if request.method == 'POST':
-        print('its under post')
-        # sku_id = request.POST.get('sku_id')
         variant_name = request.POST.get('variant_name')
         max_price = request.POST.get('max_price')
         sale_price = request.POST.get('sale_price')
         stock = request.POST.get('stock')
-        # product_id = request.POST.get('product')
         product = get_object_or_404(Product, pk=id)
 
         attribute_id = request.POST.get('attributes')
         attribute = get_object_or_404(Attribute_Value, pk=attribute_id)
-        # is_active = request.POST.get('is_active')
 
 
         thumbnail_image = request.FILES.get('image')
@@ -283,7 +242,6 @@ def add_product_variant(request,id):
             thumbnail_image=thumbnail_image,
         )   
         discount_amount = p.apply_category_offer_discount()
-        print("category offer discount amount in creating a product",discount_amount)
 
         # Add the attribute to the Product_Variant
         p.attributes.add(attribute)
@@ -296,7 +254,6 @@ def add_product_variant(request,id):
             )
             additional_image.save()
         return redirect(reverse('product_management_app:product-variant-list', kwargs={'id': product.id}))
-        print('Product Variant created successfully')
         # Redirect or render a success message
 
     # Get products and attribute values for the form
@@ -366,24 +323,6 @@ def attribute_values(request):
     }
     return render(request, 'admin_side/add-variant-attribute.html', context)
 
-
-# @require_POST
-# def block_attribute_value(request, attribute_value_id):
-#     try:
-#         attribute_value = Attribute_Value.objects.get(pk=attribute_value_id)
-#         is_active = request.POST.get('is_active', False)
-#         if is_active is not None:
-#             is_active = is_active == 'true'  # Convert string to boolean
-
-#         attribute_value.is_active = is_active
-#         attribute_value.save()
-#         return HttpResponse('Attribute value status updated successfully', status=200)
-#     except Attribute_Value.DoesNotExist:
-#         return HttpResponse('Attribute value not found', status=404)
-#     except Exception as e:
-#         return HttpResponse(f'Error: {str(e)}', status=500)
-
-
 @admin_login_required
 @never_cache
 def deactivate_attribute(request,id):
@@ -407,7 +346,6 @@ def edit_product_variant(request, id):
     variants = Attribute_Value.objects.all()
     product_variant = get_object_or_404(Product_Variant, id=id)
     a= product_variant.product
-    print(a)
     if request.method == "POST":
         sku_id = request.POST.get('sku_id')
         max_price = request.POST.get('max_price')
@@ -447,21 +385,8 @@ def edit_product_variant(request, id):
             for image in additional_image_1:
                 Additional_Product_Image.objects.create(product_variant=product_variant,image=image)
         product_variant.apply_category_offer_discount()
-        # p = Product_Variant.objects.all()
-        # for i in p:
-        #     try:
-        #         i.offer_price = i.sale_price
-            
-        #         i.save()
-        #     except:
-        #         pass
-        # product_variant.offer_price = product_variant.sale_price
-        # product_variant.save()
+
         return redirect(reverse('product_management_app:product-variant-list', kwargs={'id': product_variant.product.id}))
-
-
-        # Redirect to a success page or back to the product variant detail page
-        # Example: return redirect('product_variant_detail', id=product_variant.id)
 
     context = {
         'product_variant': product_variant,
@@ -538,14 +463,9 @@ def toggle_coupon_status(request):
     data = json.loads(request.body)
     coupon_id = data.get('coupon_id')
     activate = data.get('activate')
-    print("activate",activate)
-    print("jijeofjjjjjjjjjj")
-    print("coupon id = ",coupon_id)
     
     try:
-        print("fqewfwe")
         coupon = Coupon.objects.get(id=coupon_id)
-        print(coupon.id)
         coupon.is_active = activate
         coupon.save()
         return JsonResponse({'success': True, 'active': coupon.is_active})

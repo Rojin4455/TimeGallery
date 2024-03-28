@@ -108,17 +108,14 @@
                                     <td> {{ order.product_price }} </td>
                                     <td> {{ order.quantity }} </td>
                                     <td> {{ order.grand_totol }} </td>
-                                    {% if order.order_status != "Cancelled User" and order.order_status != "Returned User"%}
-                                    {% comment %} <td class="text-end" disabled></td>
-                                        <td>
-                                    {% else %} {% endcomment %}
+                                    {% if order.order_status != "Cancelled User" and order.order_status != "Returned User" and order.order_status != "Cancelled Admin" and order.order_status != "Delivered" and order.order.payment.payment_status != "FAILED" %}
+                            
                                     <td>
                                         <select onchange="handleChange(this)">
                                             <option value="" disabled selected>Change status</option>
                                             <option value="{% url 'order_management_app:change_status' order.id 'Accepted' user.id %}">Accepted</option>
                                             <option value="{% url 'order_management_app:change_status' order.id 'Delivered' user.id %}">Delivered</option>
                                             <option value="{% url 'order_management_app:change_status' order.id 'Cancelled Admin' user.id %}">Cancelled Admin</option>
-                                            <option value="{% url 'order_management_app:change_status' order.id 'Return Pending' user.id %}">Return Pending</option>
                                         </select>
                                     </td>
                                     {% elif order.order_status == "Cancelled User" %}
@@ -127,6 +124,16 @@
                                     {% elif order.order_status == "Returned User" %}
 
                                     <td style="color:red">Returned by User</td>
+
+                                    {% elif order.order_status == "Cancelled Admin" %}
+
+                                    <td style="color:red">Cancelled by Admin</td>
+                                    {% elif order.order_status == "Delivered" %}
+
+                                    <td style="color:Green">Order Deliverd</td>
+                                    {% elif order.order.payment.payment_status == "FAILED" %}
+
+                                    <td style="color:red">FAILED ORDER</td>
                                     {% endif %}
                                 </tr>
 
@@ -147,12 +154,7 @@
                                                 <dt>Grand total:</dt>
                                                 <dd> <b class="h5">{{ grant_total }}</b> </dd>
                                             </dl>
-                                            {% comment %} <dl class="dlist">
-                                                <dt class="text-muted">Status:</dt>
-                                                <dd>
-                                                    <span class="badge rounded-pill alert-success text-success">Payment done</span>
-                                                </dd>
-                                            </dl> {% endcomment %}
+
                                         </article>
                                     </td>
                                 </tr>
@@ -166,9 +168,7 @@
                         <h6 class="mb-15">Payment info</h6>
                         <p>
                             Cash On Delivery
-                            {% comment %} <img src="assets/imgs/card-brands/2.png" class="border" height="20"> Master Card **** **** 4768 <br>
-                            Business name: Grand Market LLC <br>
-                            Phone: +1 (800) 555-154-52 {% endcomment %}
+
                         </p>
                     </div>
                     <div class="h-25 pt-4">

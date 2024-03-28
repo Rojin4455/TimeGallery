@@ -10,11 +10,9 @@
 
             {% if messages %}
             {% for message in messages %}
-            {% comment %} {% if message.tags == "offer_success" %} {% endcomment %}
             <span class="alert alert-success" role="alert">
                 {{ message }}
             </span>
-            {% comment %} {% endif %} {% endcomment %}
             {% endfor %}
             {% endif %}
         </div>
@@ -104,12 +102,10 @@
                                                 <a class="dropdown-item" href="#">Edit Info</a>
                                                 <a class="dropdown-item" href="{% url 'category_app:delete_category_offer' offer.id %}">Delete</a>
                                                 {% if offer.is_active %}
-                                                {% comment %} <a class="dropdown-item" href="">Deactivate</a> {% endcomment %}
 
                                                 <a class="dropdown-item" href="{% url 'category_app:deactivate_category_offer' offer.id %}">Deactivate</a>
                                                 {% else %}
                                                 
-                                                {% comment %} <a class="dropdown-item" href="">Activate</a> {% endcomment %}
 
                                                 <a class="dropdown-item" href="{% url 'category_app:deactivate_category_offer' offer.id %}">Activate</a>
                                                 {% endif %}

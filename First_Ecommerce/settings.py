@@ -18,7 +18,6 @@ ALLOWED_HOSTS = []
 CSRF_TRUSTED_ORIGINS = ['https://api.razorpay.com']
 
 LOGIN_REDIRECT_URL = '/'
-# ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -67,7 +66,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': ['templates'],
-        # 'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,10 +73,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'django.contrib.messages.context_processors.messages',
                 'category.context_processors.menu_links',
                 'cart_app.context_processors.counter',
-                'cart_app.context_processors.global_order_summary',  # Replace 'myapp' with your app name
+                'cart_app.context_processors.global_order_summary',
 
                 
             ],
@@ -156,7 +153,6 @@ SOCIALACCOUNT_LOGIN_ON_GET=True
 AUTH_USER_MODEL = 'admin_app.User'
 
 LOGIN_URL = reverse_lazy('user_app:login')
-# LOGIN_URL_ADMIN = reverse_lazy('admin_app:admin_login')
 
 RAZOR_PAY_KEY_ID = 'rzp_test_dSu8p6gC5RjeXR'
 KEY_SECRET = 'gbLg8Tb8J5mNibxFPEOcrNKX'

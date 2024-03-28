@@ -1,22 +1,13 @@
-{% extends "userside/base.html" %} {% load static %} {% block content %}
-
+{% extends "userside/base.html" %} 
+{% load static %} 
+{% block content %}
 <section class="section-content padding-y bg">
   <div class="container">
     <div class="progress mb-4">
-      <div
-        class="progress-bar progress-bar-striped progress-bar-animated"
-        role="progressbar"
-        style="width: 100%"
-        aria-valuenow="100"
-        aria-valuemin="0"
-        aria-valuemax="100"
-      >
-        Step 3 of 3
-      </div>
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Step 3 of 3</div>
     </div>
-    <a href="{% url 'checkout_app:order_summary' %}" class="btn btn-secondary">
-      Back
-    </a>
+    <a href="{% url 'checkout_app:order_summary' %}" class="btn btn-secondary">Back</a>
+    
     <div class="row">
       <div class="col-lg-9">
         <!-- Payment Options -->
@@ -29,42 +20,24 @@
                 {% for p in payment %}
                 <li class="list-group-item">
                   <div class="custom-control custom-radio">
-                    <input
-                      type="radio"
-                      id="payment_option_{{ p.id }}"
-                      name="payment_option"
-                      class="custom-control-input"
-                      value="{{ p.method_name }}"
-                    />
-                    <label
-                      class="custom-control-label"
-                      for="payment_option_{{ p.id }}"
-                      >{{ p.id }}, {{ p.method_name }}</label
-                    >
+                    <input type="radio" id="payment_option_{{ p.id }}" name="payment_option" class="custom-control-input" value="{{ p.method_name }}" />
+                    <label class="custom-control-label" for="payment_option_{{ p.id }}">{{ p.id }}, {{ p.method_name }}</label>
                   </div>
                 </li>
                 {% endfor %}
               </ul>
-              <button type="submit" class="btn btn-primary" id="submitBtn">
-                Confirm Order
-              </button>
+              <button type="submit" class="btn btn-primary" id="submitBtn">Confirm Order</button>
             </form>
-            {% if messages %} {% for message in messages %}
-            <div
-              class="alert alert-danger alert-dismissible fade show"
-              role="alert"
-            >
-              {{ message }}
-              <button
-                type="button"
-                class="close"
-                data-dismiss="alert"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            {% endfor %} {% endif %}
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  {{ message }}
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              {% endfor %}
+            {% endif %}
           </div>
         </div>
       </div>
@@ -73,35 +46,25 @@
           <div class="card-body">
             <dl class="dlist-align">
               <dt>Total price:</dt>
-              <dd class="text-right" style="color: black; font-weight: bold;">
-                ₹{{ global_order_summary_total_with_original_price }}
-              </dd>
+              <dd class="text-right" style="color: black; font-weight: bold;">₹{{ global_order_summary_total_with_original_price }}</dd>
             </dl>
             <dl class="dlist-align">
               <dt>Discount:</dt>
-              <dd class="text-right" style="color: red; font-weight: bold;">
-                ₹{{ global_order_summary_discount }}
-              </dd>
+              <dd class="text-right" style="color: red; font-weight: bold;">₹{{ global_order_summary_discount }}</dd>
             </dl>
             {% if coupon_discount %}
             <dl class="dlist-align">
               <dt>Coupon Discount:</dt>
-              <dd class="text-right" style="color: red; font-weight: bold;">
-                ₹{{ coupon_discount }}
-              </dd>
+              <dd class="text-right" style="color: red; font-weight: bold;" id="coupon_discount22">₹{{ coupon_discount }}</dd>
             </dl>
             <dl class="dlist-align">
               <dt>Total:</dt>
-              <dd class="text-right text-dark b" style="font-weight: bold;">
-                ₹{{ total }}
-              </dd>
+              <dd class="text-right text-dark b" style="font-weight: bold;" id="total22">₹{{ total }}</dd>
             </dl>
             {% else %}
             <dl class="dlist-align">
               <dt>Total:</dt>
-              <dd class="text-right text-dark b" style="font-weight: bold;">
-                ₹{{ global_order_summary_total }}
-              </dd>
+              <dd class="text-right text-dark b" style="font-weight: bold;">₹{{ global_order_summary_total }}</dd>
             </dl>
             {% endif %}
             <hr style="border-top: 1px solid rgba(0, 0, 0, 0.1);" />
@@ -110,133 +73,164 @@
         </div>
         <!-- card.// -->
       </aside>
-      
     </div>
   </div>
 </section>
-
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   var globalOrderSummaryTotal = "{{ global_order_summary_total }}";
   var walletBalance = parseFloat("{{ wallet_balance }}");
   const csrftoken = getCookie("csrftoken");
-  document
-    .getElementById("paymentForm")
-    .addEventListener("submit", function (event) {
-      event.preventDefault(); // Prevent form submission
-      console.log("SSSSSSSSSSSSSSSSSSD");
 
-      // Get the selected payment option
-      var selectedOption = document.querySelector(
-        'input[name="payment_option"]:checked'
-      );
-      console.log("selectedOption", selectedOption);
+  document.getElementById("paymentForm").addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent form submission
+    console.log("SSSSSSSSSSSSSSSSSSD");
 
-      if (!selectedOption) {
-        alert("Please select a payment option.");
-        return; // Exit function if no option selected
+    // Get the selected payment option
+    var selectedOption = document.querySelector('input[name="payment_option"]:checked');
+    console.log("selectedOption", selectedOption);
+
+    if (!selectedOption) {
+      alert("Please select a payment option.");
+      return; // Exit function if no option selected
+    }
+
+    // Check if Cash on Delivery is selected and order amount is below 10000
+    console.log("optionnnnn",globalOrderSummaryTotal)
+    if (selectedOption.value == "CASH ON DELIVERY" && parseFloat(globalOrderSummaryTotal) >= 10000) {
+      Swal.fire({
+        title: 'Order Amount Exceeded',
+        text: 'Cash on Delivery is only available for orders below 10000.',
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    // Continue with other payment methods
+    if (selectedOption.value == "RAZORPAY") {
+      // Create the fetch request
+      fetch('{% url "checkout_app:checkout_payment" %}', {
+        method: "POST",
+       
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify({
+          selected_payment_method: selectedOption.value,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json(); // Parse response JSON
+        })
+        .then((data) => {
+          console.log("Received data:", data);
+          var csrftoken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+          console.log("CSRF token from form:", csrftoken);
+          console.log("CSRF token from server:", "{{ csrf_token }}");
+
+          var options = {
+            key: "rzp_test_dSu8p6gC5RjeXR", // Enter the Key ID generated from the Dashboard
+            amount: data.context.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            currency: "INR",
+            name: "TimeGallery",
+            description: "Test Transaction",
+            image: "https://example.com/your_logo",
+            order_id: data.context.order_id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            callback_url: "http://127.0.0.1:8000/place_order_razpay/",
+            handler: function (response) {
+              // Handle Razorpay response
+              window.location.reload();
+            },
+            prefill: {
+              name: "{{ request.user.get_username }}", // Corrected username
+              email: "{{ request.user.email }}",
+              contact: "{{ request.user.phone_number }}",
+            },
+            notes: {
+              address: "Razorpay Corporate Office",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+          var rzp1 = new Razorpay(options);
+          rzp1.on("payment.failed", function (response) {
+            alert(response.error.code);
+          });
+
+          rzp1.on("payment.success", function (response) {
+            window.location.reload(); // Reload the page after successful payment
+          });
+
+          rzp1.open();
+
+          //to allow the form to submit
+          // Handle the response, perhaps redirect based on success
+        })
+        .catch((error) => {
+          console.error("There was a problem with the fetch operation:", error);
+        });
+    } else if (selectedOption.value == "CASH ON DELIVERY") {
+      window.location.href = "{% url 'order_app:place_order_cod' %}";
+    } else {
+      console.log("wallet_balance", walletBalance);
+      console.log("globalOrderSummaryTotal", globalOrderSummaryTotal);
+      try {
+        var coupon_discount = document.getElementById("coupon_discount22").textContent;
+        var total = document.getElementById("total22").textContent;
+      } catch (error) {
+        console.log(error);
+        var coupon_discount = null;
+        var total = null;
       }
 
-      // Get the CSRF token
-      //var csrftoken = document.querySelector('meta[name="csrf-token"]').content;
-
-      if (selectedOption.value == "RAZORPAY") {
-        // Create the fetch request
-        fetch('{% url "checkout_app:checkout_payment" %}', {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrftoken,
-            // Add any additional headers if needed
-          },
-          body: JSON.stringify({
-            selected_payment_method: selectedOption.value,
-          }),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json(); // Parse response JSON
-          })
-          .then((data) => {
-            console.log("Received data:", data);
-            var csrftoken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-            console.log("CSRF token from form:", csrftoken);
-            console.log("CSRF token from server:", "{{ csrf_token }}");
-
-
-            var options = {
-              key: "rzp_test_dSu8p6gC5RjeXR", // Enter the Key ID generated from the Dashboard
-              amount: data.context.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-              currency: "INR",
-              name: "TimeGallery",
-              description: "Test Transaction",
-              image: "https://example.com/your_logo",
-              order_id: data.context.order_id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-              callback_url: "http://127.0.0.1:8000/place_order_razpay/",
-              handler: function (response) {
-                // Handle Razorpay response
-               
-
-                window.location.reload();
-
-            },
-              prefill: {
-                name: "{{ request.user.get_username }}", // Corrected username
-                email: "{{ request.user.email }}",
-                contact: "{{ request.user.phone_number }}",
-              },
-              notes: {
-                address: "Razorpay Corporate Office",
-              },
-              theme: {
-                color: "#3399cc",
-              },
-            };
-            var rzp1 = new Razorpay(options);
-            rzp1.on("payment.failed", function (response) {
-              alert(response.error.code);
-            });
-
-            rzp1.on("payment.success", function (response) {
-              window.location.reload(); // Reload the page after successful payment
-            });
-
-            rzp1.open();
-
-
-            //to allow the form to submit
-            // Handle the response, perhaps redirect based on success
-          })
-
-          .catch((error) => {
-            console.error(
-              "There was a problem with the fetch operation:",
-              error
-            );
-          });
-      } else if(selectedOption.value == "CASH ON DELIVERY"){
-        window.location.href = "{% url 'order_app:place_order_cod' %}";
-      }else{
-        console.log("wallet_balance",walletBalance)
-        console.log("globalOrderSummaryTotal",globalOrderSummaryTotal)
-
+      console.log("YESsss");
+      if (coupon_discount == null) {
+        console.log("coupon is not applied");
+        console.log("coupon discount", coupon_discount);
         if (walletBalance < globalOrderSummaryTotal) {
+          console.log(globalOrderSummaryTotal);
+          console.log("coupon is not applied55555");
+
           Swal.fire({
-              title: 'Insufficient Balance',
-              text: 'You do not have enough balance in your wallet.',
-              icon: 'error',
-              confirmButtonText: 'OK'
+            title: "Insufficient Balance",
+            text: "You do not have enough balance in your wallet.",
+            icon: "error",
+            confirmButtonText: "OK",
           });
           return;
-        }else{var url = "{% url 'order_app:wallet_order' %}?amount=" + globalOrderSummaryTotal;
-        window.location.href = url;
+        } else {
+          var url = "{% url 'order_app:wallet_order' %}?amount=" + globalOrderSummaryTotal;
+          window.location.href = url;
+        }
+      } else {
+        const total_value = parseFloat(total.split("₹")[1]);
+        console.log("value", typeof total_value, total_value);
+
+        if (walletBalance < total_value) {
+          console.log(globalOrderSummaryTotal);
+          console.log("coupon is applied1111");
+
+          Swal.fire({
+            title: "Insufficient Balance",
+            text: "You do not have enough balance in your wallet.",
+            icon: "error",
+            confirmButtonText: "OK",
+          });
+          return;
+        } else {
+          var url = "{% url 'order_app:wallet_order' %}?amount=" + globalOrderSummaryTotal;
+          window.location.href = url;
+        }
       }
-        
-      }
-    });
+    }
+  });
 
   function getCookie(name) {
     var cookieValue = null;

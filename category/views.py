@@ -23,16 +23,13 @@ def categories(request):
             cat_image = request.FILES.get('image')
             cat_description = request.POST['description']
             if cat_name:
-                print("Category have name")
                 try:
                     if  Category.objects.get(cat_name=cat_name):
-                        print("Category is takn")
                         messages.error(request,"Category is taken")
                         return redirect('admin_app:admin_categories')
                 except:
                     pass   
                     
-                print("Category is created")
 
                 category = Category.objects.create(cat_name = cat_name,cat_slug = cat_slug, cat_image = cat_image, cat_description = cat_description)
                 category.save()
@@ -140,6 +137,7 @@ def delete_brand(request,id):
 
 
 
+@admin_login_required
 def category_offer(request):
     if request.method == 'POST':
         form = CategoryOfferForm(request.POST)
@@ -173,12 +171,11 @@ def deactivate_category_offer(request,id):
             cat_offer.is_active = True
         cat_offer.save()
         messages.success(request,"Category Offer is Activated")
-        print("cat saved",cat_offer.is_active)
     except:
         pass
 
-    print(cat_offer)
     return redirect("category_app:category_offer")
+
 
 def delete_category_offer(request,id):
     try:

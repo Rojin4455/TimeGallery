@@ -70,7 +70,6 @@ def wallet_handler(request):
             razorpay_order_id = request.POST.get('razorpay_order_id', '')
             signature         = request.POST.get('razorpay_signature', '')
             amount = request.GET.get('amount', '') 
-            print(f'1:{payment_id},2:{razorpay_order_id},3:{signature},4:{amount}')
 
             params_dict = {
                 'razorpay_order_id': razorpay_order_id,
@@ -85,7 +84,6 @@ def wallet_handler(request):
             else:
                 try:
 
-                    print("transaction success")
                     return redirect('wallet_app:wallet_success',payment_id,amount)
                 except Exception as e:
                     print("exception:   ",str(e))
@@ -104,8 +102,6 @@ def wallet_faild(request):
 
 def wallet_success(request,payment_id,amount):
     user = request.user
-    print("wallet user : ",user)
-    # return redirect("wallet_app:wallet")
     wallet = Wallet.objects.get(user=user)
     
     WalletTransaction.objects.create(
@@ -114,10 +110,8 @@ def wallet_success(request,payment_id,amount):
         wallet_payment_id = payment_id,
         amount = int(amount),
     )
-    print('wallet balance before:',wallet.balance)
     wallet.balance += int(amount)
     wallet.save()
-    print('wallet balance after:',wallet.balance)
             
 
     

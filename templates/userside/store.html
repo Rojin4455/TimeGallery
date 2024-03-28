@@ -86,7 +86,7 @@
                         </div>
                     </div>
                 </div>
-
+                {% if products_list %}
                 {% for product in products_list %}
                 <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
                     <div class="card product-item border-0 mb-4">
@@ -98,15 +98,9 @@
                         <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                             <h6 class="text-truncate mb-3">{{product.variant_name}}</h6>
                             <div class="d-flex justify-content-center">
-                                {% comment %} {% if product.offer %}
-                                <p class="card-text" style="color: red">Category Discount: -₹{{ product.offer_discount }}</p>
+                               
                                 <h6>₹{{ product.sale_price }}</h6>
-                                <h6 class="text-muted ml-2"><del>₹{{ product.price }}</del></h6>
-                            {% else %} {% endcomment %}
-                                <h6>₹{{ product.sale_price }}</h6>
-                                <!-- Uncomment the following line if you want to display the original price -->
-                                <!-- <h6 class="text-muted ml-2"><del>₹{{ product.price }}</del></h6> -->
-                            {% comment %} {% endif %} {% endcomment %}
+                               
                             
                             </div>
                         </div>
@@ -121,6 +115,16 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% else %}
+                <div class="d-flex justify-content-center"  style="background-color: #fff3cd; /* Yellow background color */
+                border-color: #ffeeba; /* Border color */
+                color: #856404; /* Text color */
+                padding: 0.75rem 1.25rem; /* Padding */
+                border-radius: 0.25rem; /* Border radius */
+                margin-bottom: 1rem; /* Bottom margin */">
+                <p style="margin: 0;">No Match Found</p>
+                </div>
+                {% endif %}
 
                 <div class="col-12 pb-1">
                     <nav aria-label="Page navigation">
@@ -147,17 +151,7 @@
                         <li class="page-item disabled"><a class='page-link' href="#">Next</a></li>
 
                         {% endif %}
-                        {% comment %} <li class="page-item"><a class="page-link" href="#">Next</a></li> {% endcomment %}
-
-                            {% comment %} <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                          <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                            <span class="sr-only">Next</span>
-                          </a>
-                        </li> {% endcomment %}
+   
                       </ul>
                     {% endif %}
                     </nav>

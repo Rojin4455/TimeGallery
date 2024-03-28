@@ -62,37 +62,7 @@
                 </div>
             </div>
             <aside class="col-lg-3">
-                <!-- Order Summary -->
-                {% comment %} <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Order Summary</h4>
-                        <!-- Order Summary Content -->
-                        <!-- Include order summary content here -->
-                        <!-- Example: Product Name, Quantity, Price -->
-                        <!-- Include total calculation -->
-                        <hr>
-                        <!-- Total Section -->
-                        <dl class="row">
-                            <dt class="col-6">Total Price:</dt>
-                            <dd class="col-6 text-right">₹{{ total_with_original_price }}</dd>
-                            <dt class="col-6">Discount:</dt>
-                            <dd class="col-6 text-right">₹{{ discount }}</dd>
-                            <dt class="col-6">Total:</dt>
-                            <dd class="col-6 text-right text-dark b"><strong>₹{{ total }}</strong></dd>
-                        </dl>
-                        <!-- Payment Options -->
-                        <hr> {% endcomment %}
-                        {% comment %} <p class="text-center mb-3">
-                            <img src="{% static 'images/misc/payments.png' %}" height="26">
-                        </p>
-                        <!-- Continue Shopping -->
-                        <a href="{% url 'store_app:products_by_category' %}" class="btn btn-light btn-block ">Continue Shopping</a>
-                    </div> {% endcomment %}
-
-                {% comment %} </div>
-                <a href="{% url 'checkout_app:order_summary' %}">
-                <button type="button" class="btn btn-outline-dark" style="border-radius:9px">Continue</button>
-                </a> {% endcomment %}
+                
                 
                 <a href="{% url 'checkout_app:order_summary' %}" class="btn btn-outline-dark" style="border-radius:9px">Continue</a>
 

@@ -7,6 +7,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from user_app.models import Address
 from admin_app.decorators import admin_login_required
+from wallet.models import Wallet,WalletTransaction
 
 
 
@@ -18,21 +19,11 @@ def order_list(request):
 
     paginator = Paginator(order, 6)
     page = request.GET.get('page')
-    print("page no:    ",page)
     paged_orders = paginator.get_page(page)
-    # print(type(paged_orders))
-    # Get all categories with at least one product variant associated
-    # categories_with_product_variants = Category.objects.annotate(
-    #     num_product_variants=models.Count('product__products')
-    # ).filter(num_product_variants__gt=0, is_active=True)
-
-    # for i in paged_orders:
-    #     print(i.)
 
 
     context = {
         "paged_orders":paged_orders,
-        # "order_lists":order_list,
         'order':order,
     }
     return render(request,'admin_side/orders/order_list.html', context)
@@ -43,21 +34,22 @@ def order_details(request,user_id):
     user = User.objects.get(id = user_id)
 
     orders = OrderProduct.objects.filter(user__id = user.id).order_by("-created_at")
+    order_products_calc = OrderProduct.objects.filter(user__id = user.id,order_status__in=["New","Accepted","Delivered"],order__payment__payment_status__in=["SUCCESS","PENDING"]).order_by("-created_at")
     order = Order.objects.filter(user_id = user.id)
     total_user_orders = Order.objects.filter(user=user_id)
-    print("total_user_orders",total_user_orders)
+
+
     
     try:
         user_address = Address.objects.get(is_default = True, account = user)
     except:
         user_address = None
-    print("user address:",user_address)
     total_product_price = 0
     grant_total = 0
     discount = 0
-    for i in orders:
-        total_product_price = i.product_price
-        grant_total = i.grand_totol
+    for i in order_products_calc:
+        total_product_price += i.product_price
+        grant_total += i.grand_totol
 
     discount = grant_total-total_product_price
 
@@ -77,43 +69,59 @@ def order_details(request,user_id):
 
 @admin_login_required
 def change_order_status(request, order_id, status, user_id):
-    order = get_object_or_404(OrderProduct, id=order_id)
-    order.order_status = status
-    order.save()
-    print("user_id",user_id)
+    order_product = get_object_or_404(OrderProduct, id=order_id)
+
+    order_product.order_status = status
+    order_product.save()
+    if status == "Cancelled Admin":
+        order = Order.objects.get(order_number = order_product.order)
+
+
+        if order.payment.is_paid:
+            wallet = Wallet.objects.get(user = order.user)
+            wallet.balance += order_product.grand_totol
+            wallet.save()
+            WalletTransaction.objects.create(
+                wallet = wallet,
+                transaction_type = "CREDIT",
+                transaction_detail = 'Order product Cancelled by Admin',
+                amount = order_product.grand_totol
+            )
+
+    elif status == "Delivered":
+        order = Order.objects.get(order_number = order_product.order)
+        if order.payment.payment_method.method_name == "CASH ON DELIVERY":
+            order_product.is_paid = True
+            order_product.save()
+            order.payment.amount_paid = order_product.grand_totol
+            order.save()
+            
     
     # Redirect to some page after changing status
-    return redirect(reverse('order_management_app:order_details', kwargs={'user_id': user_id}))  # Change 'order_list' to your desired URL name
+    return redirect(reverse('order_management_app:order_details', kwargs={'user_id': user_id}))
 
 
 @admin_login_required
 def order_list_details(request,id):
-    # user = User.objects.get(id = user_id)
     order = Order.objects.get(id = id)
     order_products = OrderProduct.objects.filter(order = order)
     user_id = order.user.id
-    print("user osss",user_id)
     user = User.objects.get(id = user_id)
-    # address = Address.objects.get(is_default = True, account = user)
-    print("userfeffefe",user.username)
+
     try:
         user_address = Address.objects.get(is_default = True, account = user)
     except:
         user_address = None
-    print("user address:",user_address)
     total_product_price = 0
     grant_total = 0
     discount = 0
     for i in order_products:
         total_product_price += i.grand_totol
-    print(total_product_price,order.order_total)
     if total_product_price > order.order_total:
         order_total =  order.order_total
         coupon_discount = total_product_price-order_total
-        print("user address:",order.shipping_address)
     shipping_address = order.shipping_address
     try:
-        # if coupon_discount:
         context={
             'order':order,
             'order_products':order_products,

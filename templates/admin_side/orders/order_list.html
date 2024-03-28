@@ -46,7 +46,7 @@
                             <th scope="col">Name</th>
                             <th scope="col">Email</th>
                             <th scope="col">Order Total</th>
-                            {% comment %} <th scope="col">Status</th> {% endcomment %}
+                            <th scope="col">Payment Status</th>
                             <th scope="col">Date</th>
                             <th scope="col" class="text-end"> Detail </th>
                         </tr>
@@ -55,20 +55,21 @@
                     <tbody>
                         <tr>
                             <td>{{ order_list.order_number }}</td>
-                            {% comment %} <td><b><a "{% url 'order_management_app:order_details' order_list.user.id %}">{{ order_list.user.username }}</a></b></td> {% endcomment %}
                             <td><b><a href="{% url 'order_management_app:order_details' order_list.user.id %}">{{order_list.user.username}}</a></b></td>
 
                             <td>{{ order_list.user.email }}</td>
-                            <td>₹ {{ order_list.order_total }}</td>
-                            {% comment %} <td><span class="badge rounded-pill alert-warning">{{ order_list.order_status }}</span></td> {% endcomment %}
+                            <td>₹ {{ order_list.order_grandtotal }}</td>
+                            {% if  order_list.payment.payment_status == "PENDING"%}
+                            <td><span class="badge rounded-pill alert-warning">{{ order_list.payment.payment_status }}</span></td>
+                            {% elif  order_list.payment.payment_status == "SUCCESS"%}
+                            <td><span class="badge rounded-pill alert-success">{{ order_list.payment.payment_status }}</span></td>
+                            {% elif  order_list.payment.payment_status == "FAILED"%}
+                            <td><span class="badge rounded-pill alert-danger">{{ order_list.payment.payment_status }}</span></td>
+                            {% endif %}
                             <td>{{ order_list.created_at }}</td>
                             <td class="text-end">
                                 <a href="{% url 'order_management_app:order_list_details' order_list.id %}" class="btn btn-md rounded font-sm">View Order</a>
-                                    {% comment %} <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{% url 'order_management_app:order_list_details' order_list.id %}">View detail</a>
-                                        <a class="dropdown-item" href="#">Edit info</a>
-                                        <a class="dropdown-item text-danger" href="#">Delete</a>
-                                    </div> {% endcomment %}
+
                                 <!-- dropdown //end -->
                             </td>
                         </tr>

@@ -76,8 +76,8 @@
                                 </td>
                                 <td> 
                                     <div class="price-wrap"> 
-                                        <var class="price">${{ cart_item.subtotal }}</var> 
-                                        <small class="text-muted"> ${{ cart_item.product.sale_price }} each </small> 
+                                        <var class="price">₹{{ cart_item.subtotal }}</var> 
+                                        <small class="text-muted">₹{{ cart_item.product.sale_price }} each </small> 
                                     </div> <!-- price-wrap .// -->
                                 </td>
                                 <td class="text-right"> 
@@ -151,34 +151,7 @@
     </div> <!-- container .//  -->
 </section>
 
-<!-- Coupon Popup Modal -->
-{% comment %} <div class="modal" tabindex="-1" role="dialog" id="couponModal">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Available Coupons</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            {% for i in coupens %}
-            <div class="modal-body">
-                <!-- List of available coupons -->
-                <ul class='d-flex justify-content-between'>
-                    <li><span  id="{{i.id}}">{{i.coupon_code}}</span>  {{i.discount_percentage}}% off <span>Min Amount{{i.minimum_amount}}</span></li>
-                    <li><button onClick = 'copycoupen("{{ i.id }}")' class='rounded-3 px-2 py-1' style="font-size: 12px; border:none">copy</button></li>
-                    <!-- Add more coupons as needed -->
-                </ul>
-            </div>
-            {%endfor%}
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <!-- Apply coupon button -->
-                {% comment %} <button type="button" class="btn btn-primary" id="applyCouponModalBtn">Apply Coupon</button> {% endcomment %}
-            {% comment %} </div>
-        </div>
-    </div>
-</div> {% endcomment %}
+
 
 <script>
     function decreaseQuantity(cartItemId) {
@@ -217,117 +190,7 @@
         {% endif %}
     }
 
-        // Apply Coupon button click handler
-        {% comment %} document.getElementById('applyCouponBtn').addEventListener('click', function() {
-            // Show the coupon modal
-            $('#couponModal').modal('show');
-        });
-    
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const couponForm = document.getElementById("couponForm");
-    
-        couponForm.addEventListener("submit", function (event) {
-            event.preventDefault(); // Prevent the form from submitting normally
-    
-            const formData = new FormData(couponForm); // Get form data
-            const coupencode = formData.get("coupencode");
-            console.log(coupencode,"weqeq")
-            // Fetch request to handle form submission
-            fetch("{% url 'cart_app:apply_coupon' %}", {
-                method: "POST",
-                body: JSON.stringify({ coupencode: coupencode }),
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCookie("csrftoken"), // Function to get CSRF token
-                },
-            })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                console.log("printed success 2")
-                //window.location.reload();
-
-                return response.json();
-            })
-            .then((data) => {
-                // Handle response data
-                console.log("printed Success")
-                window.location.reload();
-
-                console.log(data);
-            })
-            .catch((error) => {
-                // Handle errors
-                console.error("Error:", error);
-            });
-        });
-    
-        // Function to get CSRF token from cookies
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-    }); {% endcomment %}
-
-    {% comment %} document.addEventListener('DOMContentLoaded', function() {
-        const applyButton = document.getElementById('applyButton');
-
-        applyButton.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default form submission
-            
-            const couponCode = document.getElementById('inputField').value;
-            console.log(coupenCode)
-            
-            // Send AJAX request to apply coupon
-            fetch("{% url 'cart_app:apply_coupon' %}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-                body: JSON.stringify({ 'coupencode': couponCode }),
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Coupon applied successfully
-                    window.location.reload(); // Refresh the page
-                } else {
-                    // Invalid coupon or error
-                    response.json().then(data => {
-                        alert(data.message); // Display error message
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.'); // Generic error message
-            });
-        });
-    }); {% endcomment %}
-{% comment %} 
-    function removebtn(){
         
-        var input = document.getElementById("couponInput").value
-        alert(input)
-        console.log(input)
-        if(input===""){
-            removeApplyButton()
-        }
-    }
-     {% endcomment %}
 </script>
 
 {% endblock %}

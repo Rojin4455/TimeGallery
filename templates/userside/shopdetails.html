@@ -3,18 +3,6 @@
 {% block content %}
 
 
-{% comment %} <!-- Page Header Start -->
-<div class="container-fluid bg-secondary mb-5">
-    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-        <h1 class="font-weight-semi-bold text-uppercase mb-3">Shop Detail</h1>
-        <div class="d-inline-flex">
-            <p class="m-0"><a href="">Home</a></p>
-            <p class="m-0 px-2">-</p>
-            <p class="m-0">Shop Detail</p>
-        </div>
-    </div>
-</div>
-<!-- Page Header End --> {% endcomment %}
 
 
 <!-- Shop Detail Start -->
@@ -30,15 +18,7 @@
                         </div>
                     {% endfor %}
                 </div>
-                    {% comment %} <div class="carousel-item">
-                        <img class="w-100 h-100" src="{% static 'img/product-2.jpg' %}" alt="Image">
-                    </div>
-                    <div class="carousel-item">
-                        <img class="w-100 h-100" src="{% static 'img/product-3.jpg' %}" alt="Image">
-                    </div>
-                    <div class="carousel-item">
-                        <img class="w-100 h-100" src="{% static 'img/product-4.jpg' %}" alt="Image">
-                    </div> {% endcomment %}
+   
                 <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
                     <i class="fa fa-2x fa-angle-left text-dark"></i>
                 </a>
@@ -75,29 +55,7 @@
                 {% endif %}
             <p class="mb-4">{{product_variant.variant_name}}</p>
             <div class="d-flex mb-3">
-                {% comment %} <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p> {% endcomment %}
-                {% comment %} <form>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" id="size-1" name="size">
-                        <label class="custom-control-label" for="size-1">XS</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" id="size-2" name="size">
-                        <label class="custom-control-label" for="size-2">S</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" id="size-3" name="size">
-                        <label class="custom-control-label" for="size-3">M</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" id="size-4" name="size">
-                        <label class="custom-control-label" for="size-4">L</label>
-                    </div>
-                    <div class="custom-control custom-radio custom-control-inline">
-                        <input type="radio" class="custom-control-input" id="size-5" name="size">
-                        <label class="custom-control-label" for="size-5">XL</label>
-                    </div>
-                </form> {% endcomment %}
+                
             </div>
             <div class="d-flex flex-wrap align-items-center">
                 {% for variant in product_variant_select %}
@@ -116,10 +74,7 @@
             </div>
             
             
-{% comment %} 
-<div id="watch-variant-image-preview">
-    <!-- Image previews will be shown here -->
-</div> {% endcomment %}
+
 
 {% if request.user.is_authenticated %}
         <!-- Product is wishlisted by the user -->
@@ -150,7 +105,6 @@
 
         {% endif %}
     {% endif %}
-    {% comment %} <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Wishlist</button> {% endcomment %}
 </div>
 
 
@@ -327,7 +281,6 @@
 <!-- Products End -->
 
 <!-- Add these links to your head section -->
-{% comment %} <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> {% endcomment %}
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

@@ -123,16 +123,12 @@
                                 <p><dd id="finalTotal" class="text-right text-dark b"><strong>₹ {{ total }}</strong></dd></p>
                             </dl>
                             <hr>
-                            {% comment %} <p class="text-center mb-3">
-                                <img src="{% static 'images/misc/payments.png' %}" height="26">
-                            </p> {% endcomment %}
+                       
                             <a href="{% url 'checkout_app:checkout_payment' %}" class="btn btn-primary btn-block"> Continue </a>
-                            {% comment %} <a href="{% url 'store_app:products_by_category' %}" class="btn btn-light btn-block">Continue Shopping</a> {% endcomment %}
                         </div> <!-- card-body.// -->
                     </div> <!-- card.// -->
                 </aside> <!-- col.// -->
             </div> <!-- row.// -->
-            {% comment %} {% endif %} {% endcomment %}
         </div> <!-- container .//  -->
 
 </section>
@@ -160,7 +156,6 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <!-- Apply coupon button -->
-                {% comment %} <button type="button" class="btn btn-primary" id="applyCouponModalBtn">Apply Coupon</button> {% endcomment %}
             </div>
         </div>
     </div>
@@ -206,29 +201,56 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then((response) => {
             console.log(response)
+            console.log("errorrrrrrrrrr")
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }
             return response.json();
         })
         .then((data) => {
+            console.log("its data",data)
+
             // Handle response data
             //console.log("data",data)
             if (data.success) {
                 // Mark coupon as applied
-
-
                 // Update total and coupon discount
                 console.log(total_with_orginal_price)
+
+    // Update coupon discount amount
+                var couponDiscountElement = document.getElementById("couponDiscount");
+                if (!couponDiscountElement) {
+                    // Create new <dd> element if not already present
+                    var dlElement = document.getElementsByClassName("dlist-align")[0];
+                    if (dlElement) {
+                        var dtElement = document.createElement("dt");
+                        dtElement.textContent = "Coupon Discount:";
+                        
+                        couponDiscountElement = document.createElement("dd");
+                        couponDiscountElement.id = "couponDiscount";
+                        couponDiscountElement.className = "text-right";
+                        
+                        dlElement.appendChild(dtElement);
+                        dlElement.appendChild(couponDiscountElement);
+                    }
+                }
+
+                // Set the text content to ₹ plus the discount amount
+                if (couponDiscountElement) {
+                    couponDiscountElement.innerText = '₹' + parseInt(data.discount_amount);
+                }
                 document.getElementById("totalPrice").innerText = total_with_orginal_price;
+                console.log("1")
                 document.getElementById("couponDiscount").innerText = '₹' + parseInt(data.discount_amount);
+                console.log("2")
                 document.getElementById("finalTotal").innerText = '₹' + data.total;
+                console.log("3")
+
                 
                 // Show success toast
                 showToast("Success! Coupon applied successfully.", "toast-success");
                 const cancel_button = document.getElementById("cancelButton")
                 cancel_button.classList.remove("d-none")
-                //window.location.reload();
             } else {
                 console.log("SSSSSSSSSSSSSSSS",data.message,data.error)
                 // Show error toast
@@ -237,7 +259,6 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch((error) => {
             // Handle errors
-            //console.error("Error:", error);
             showToast("An error occurred. Please try again.", "toast-error");
         });
     });

@@ -27,6 +27,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth.hashers import make_password
 from offer_management.models import ReferralOffer,ReferralUser
+from store.models import Banner
 
 
 
@@ -35,8 +36,6 @@ from offer_management.models import ReferralOffer,ReferralUser
 
 
 
-# signup page
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @never_cache
 def signup(request):
     if request.user.is_authenticated:
@@ -85,12 +84,10 @@ def signup(request):
         request.session.modified = True 
         request.session.set_expiry(300)
 
-        # password1 = make_password(password1)
 
         request.session['username'] = user
         request.session['password'] = passw
         request.session['referral_code'] = referral_code
-        # request.session['email']= email
 
         subject = "Verify Your One-Time Password (OTP) - Time Gallery Ecommerce Store"
         sendermail = "timegalleryt.com"
@@ -103,7 +100,6 @@ def signup(request):
     return render(request,'userside/usersignup.html')
 
 
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True)   
 @never_cache
 def otp(request):
     if request.user.is_authenticated:
@@ -122,7 +118,6 @@ def otp(request):
             user = request.user
             user_wallet = Wallet.objects.create(user = user,balance = 0)
             user_wallet.save()
-            # user = request.user.id
 
             Wishlist.objects.create(user = customer)
             referral_code = request.session.get('referral_code')
@@ -156,7 +151,6 @@ def otp(request):
             return redirect('user_app:otp')
     return render(request,'user/otp.html')
 
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @never_cache
 def login(request):
     if request.user.is_authenticated:
@@ -213,26 +207,25 @@ def login(request):
     response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
     return response
 
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @never_cache
 
 def userhome(request):
     products = Product.objects.filter(is_available=True)
-    # product_variants = Product_Variant.objects.filter(is_active=True)
 
     products_list = list()
     p = Product_Variant.objects.all()
     for pro in products:
         variants = Product_Variant.objects.filter(is_active=True,product=pro.id)
-        print(pro.id)
         for variant in variants:
             products_list.append(variant)
             break
-
+    
+    banners = Banner.objects.filter(is_visible = True)
 
     # products = Product.objects.filter(is_available=True, brand__is_active=True, brand__isnull=False, category__is_active = True)  # Filter out products with no brand and inactive brands
     context = {
-        'products_list':products_list
+        'products_list':products_list,
+        "banners":banners,
     }
 
     return render(request, 'userside/home.html', context)
@@ -242,9 +235,7 @@ def userhome(request):
 @never_cache
 
 def logout(request):
-    # user = User.objects.get(user = request.user)
-    # print(user)
-    print('logout')
+  
     user_logout(request)
     return redirect('user_app:userhome')
 
@@ -260,7 +251,6 @@ def base_profile(request):
 def profile_details(request):
 
 
-        # get the image from the frontent and save it to the userimage table and send the response here
     user = request.user
     print(user)
     try:
@@ -268,9 +258,6 @@ def profile_details(request):
     except ObjectDoesNotExist:
         profile = UserImage.objects.create(user=user)
         
-
-    # return render(request, 'user_addresses.html', {'user_addresses': dummy_addresses})
-
 
     return render(request,'userside/profile-details.html',{'profile':profile})
         
@@ -296,19 +283,33 @@ def profile_address(request):
 def profile_orders(request):
     current_user = request.user
     orders = Order.objects.filter(user=current_user).order_by("-created_at")
+    
+    # Initialize an empty list to store order products
     order_products = []
 
     for order in orders:
-        order_products.append(OrderProduct.objects.filter(order=order))
+        # Get the order products for each order
+        products_for_order = OrderProduct.objects.filter(order=order)
+        order_products.append(products_for_order)
 
-    # Now let's print the payment method for each order
     for order in orders:
         if order.payment:
             print(order.payment.payment_method.method_name)
         else:
             print("No payment found for order #", order.order_number)
     
-    paginator = Paginator(orders,6)
+    
+    for order, order_product_list in zip(orders, order_products):
+        if order.payment.payment_method == "CASH ON DELIVERY":
+            all_delivered = all(product.order_status == "Delivered" for product in order_product_list)
+            if all_delivered:
+                order.payment.payment_status = "SUCCESS"
+            else:
+                order.payment.payment_status = "PENDING"
+            order.save()
+
+    # Paginate the orders
+    paginator = Paginator(orders, 6)
     page = request.GET.get('page')
     paged_products = paginator.get_page(page)    
 
@@ -354,8 +355,7 @@ def edit_address(request, id):
     address = get_object_or_404(Address, id=id)
     
     if request.method == 'POST':
-        # Handle form submission
-        # Save the updated data
+
         address.first_name = request.POST.get('first_name')
         address.last_name = request.POST.get('last_name')
         address.phone_number = request.POST.get('phone_number')
@@ -366,14 +366,6 @@ def edit_address(request, id):
         address.zip_code = request.POST.get('zip_code')
         address.save()
 
-        # Check if the address is being set as default
-        # if 'make_default' in request.POST:
-        #     user_addresses = Address.objects.filter(account=user)
-        #     for addr in user_addresses:
-        #         addr.is_default = False
-        #         addr.save()
-        #     address.is_default = True
-        #     address.save()
 
         return redirect('user_app:profile-address')
 
