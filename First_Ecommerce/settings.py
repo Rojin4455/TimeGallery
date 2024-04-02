@@ -154,8 +154,8 @@ AUTH_USER_MODEL = 'admin_app.User'
 
 LOGIN_URL = reverse_lazy('user_app:login')
 
-RAZOR_PAY_KEY_ID = 'rzp_test_dSu8p6gC5RjeXR'
-KEY_SECRET = 'gbLg8Tb8J5mNibxFPEOcrNKX'
+RAZOR_PAY_KEY_ID = os.environ["RAZOR_PAY_KEY_ID"]
+KEY_SECRET = os.environ["KEY_SECRET"]
 
 SESSION_COOKIE_AGE = 3600  # 1 hour in seconds
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False

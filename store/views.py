@@ -132,6 +132,35 @@ def user_category_search(request,id):
 
 
 def low_to_high(request):
+
+    if request.method == "POST":
+        print("TTTTTTTTTTTTTTTTTTTTTTT")
+        selected_categories = request.POST.getlist('category')
+
+        # Filter products based on selected categories
+        if selected_categories:
+            filtered_products = []
+            for category_id in selected_categories:
+                category_products = Product.objects.filter(category__is_active=True, is_available=True, brand__is_active=True, category__id=category_id)
+                for product in category_products:
+                    variants = Product_Variant.objects.filter(is_active=True, product=product.id)
+                    filtered_products.extend(variants)
+
+            # Only add unique variants to products_list
+            categories_with_product_variants = Category.objects.annotate(
+            num_product_variants=models.Count('product__products')
+            ).filter(num_product_variants__gt=0, is_active=True)
+            products_list = list(set(filtered_products))
+            paginator = Paginator(products_list,6)
+            page = request.GET.get('page')
+            paged_products = paginator.get_page(page)    
+
+            context = {
+                'products_list': paged_products,
+                'categories':categories_with_product_variants
+            }
+            return render(request, 'userside/store.html', context)
+    
     products_list = Product_Variant.objects.filter(is_active=True).order_by('sale_price')
     categories_with_product_variants = Category.objects.annotate(
     num_product_variants=models.Count('product__products')
@@ -150,6 +179,36 @@ def low_to_high(request):
 
 
 def high_to_low(request):
+
+
+    if request.method == "POST":
+            print("TTTTTTTTTTTTTTTTTTTTTTT")
+            selected_categories = request.POST.getlist('category')
+
+            # Filter products based on selected categories
+            if selected_categories:
+                filtered_products = []
+                for category_id in selected_categories:
+                    category_products = Product.objects.filter(category__is_active=True, is_available=True, brand__is_active=True, category__id=category_id)
+                    for product in category_products:
+                        variants = Product_Variant.objects.filter(is_active=True, product=product.id)
+                        filtered_products.extend(variants)
+
+                # Only add unique variants to products_list
+                categories_with_product_variants = Category.objects.annotate(
+                num_product_variants=models.Count('product__products')
+                ).filter(num_product_variants__gt=0, is_active=True)
+                products_list = list(set(filtered_products))
+                paginator = Paginator(products_list,6)
+                page = request.GET.get('page')
+                paged_products = paginator.get_page(page)    
+
+                context = {
+                    'products_list': paged_products,
+                    'categories':categories_with_product_variants
+                }
+                return render(request, 'userside/store.html', context)
+        
     products_list = Product_Variant.objects.filter(is_active=True).order_by('-sale_price')
     categories_with_product_variants = Category.objects.annotate(
     num_product_variants=models.Count('product__products')
@@ -208,14 +267,23 @@ def pricebar(request):
 
 def wishlist(request):
     user_id = request.user.id
-
     user = User.objects.get(id = user_id)
     try:
         user_wishlist = Wishlist.objects.get(user=user)
     except:
         user_wishlist = Wishlist.objects.create(user=user)
 
+    cart_items = CartItem.objects.filter(user = request.user)
+    list1 = list()
+    for i in cart_items:
+        list1.append(i.product.id)
+
     wishlist_items = WishlistItem.objects.filter(wishlist=user_wishlist)
+    print("wishlist_items before", wishlist_items)
+    for i in wishlist_items:
+        if i.product.id in list1:
+            i.delete()
+    print("wishlist items after",wishlist_items)
 
     context = {
        'wishlist_items':wishlist_items ,

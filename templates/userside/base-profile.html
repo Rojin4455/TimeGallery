@@ -1,59 +1,75 @@
-<aside class="navbar-aside1 d-flex w-25" id="offcanvas_aside">
+<aside class="navbar-aside1 d-flex flex-column w-25" id="offcanvas_aside">
     <div class="aside-top">
         <a href="#" class="brand-wrap">
-            {% comment %} <img src="" class="logo" alt="TimeGallery Dashboard"> {% endcomment %}
+            <!-- Your logo or brand image can go here -->
         </a>
         <div>
-            {% comment %} <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button> {% endcomment %}
+            <!-- Button to toggle the aside content (only visible on mobile) -->
+            <button class="btn btn-icon btn-aside-toggle d-lg-none" onclick="toggleAside()">
+                <i class="text-muted material-icons md-menu_open"></i>
+            </button>
         </div>
     </div>
 
-    <nav>
-        <ul class="menu-aside">
+    <nav id="menu-aside" class="menu-aside" style="{% if 'col-sm' not in offcanvas_aside %}display: block;{% endif %}">
+        <ul>
             <li class="menu-item">
-                <a class="menu-link" href="{% url 'user_app:profile-details' %}"> <i class="icon material-icons md-home"></i>
+                <a class="menu-link" href="{% url 'user_app:profile-details' %}">
+                    <i class="icon material-icons md-home"></i>
                     <span class="text">Profile Information</span>
                 </a>
             </li>
             <li class="menu-item">
-                <a class="menu-link" href="{% url 'user_app:profile-address' %}"> <i class="icon material-icons md-shopping_bag"></i>
+                <a class="menu-link" href="{% url 'user_app:profile-address' %}">
+                    <i class="icon material-icons md-shopping_bag"></i>
                     <span class="text">Manage Address</span>
                 </a>
             </li>
             <li class="menu-item">
-                <a class="menu-link" href="{% url 'user_app:profile-orders' %}"> <i class="icon material-icons md-shopping_cart"></i>
+                <a class="menu-link" href="{% url 'user_app:profile-orders' %}">
+                    <i class="icon material-icons md-shopping_cart"></i>
                     <span class="text">My Orders</span>
                 </a>
             </li>
             <li class="menu-item">
-                <a class="menu-link" href="{% url 'wallet_app:wallet' %}"> <i class="icon material-icons md-shopping_cart"></i>
+                <a class="menu-link" href="{% url 'wallet_app:wallet' %}">
+                    <i class="icon material-icons md-shopping_cart"></i>
                     <span class="text">Wallet</span>
                 </a>
             </li>
             <li class="menu-item">
-                <a class="menu-link" href="{% url 'store_app:referral' %}"> <i class="icon material-icons md-shopping_cart"></i>
+                <a class="menu-link" href="{% url 'store_app:referral' %}">
+                    <i class="icon material-icons md-shopping_cart"></i>
                     <span class="text">Refer and Earn</span>
                 </a>
             </li>
             <li class="menu-item">
-                <a class="menu-link" onClick='logoutalert()'> <i class="icon material-icons md-shopping_cart"></i>
+                <a class="menu-link" onClick="logoutalert()">
+                    <i class="icon material-icons md-shopping_cart"></i>
                     <span class="text">Logout</span>
                 </a>
             </li>
-            <!-- Add more menu items for other options if needed -->
         </ul>
         <hr>
         <br>
         <br>
     </nav>
-    
 </aside>
 
 <script>
+    function toggleAside() {
+        var menuAside = document.getElementById('menu-aside');
+        if (menuAside.style.display === 'none' || menuAside.style.display === '') {
+            menuAside.style.display = 'block';
+        } else {
+            menuAside.style.display = 'none';
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         // Get all menu items
         var menuItems = document.querySelectorAll('.menu-item');
-    
+
         // Loop through each menu item
         menuItems.forEach(function(item) {
             // Add click event listener to each menu item
@@ -63,68 +79,43 @@
                     item.classList.remove('active');
                     item.style.backgroundColor = ''; // Reset background color
                 });
-    
+
                 // Add active class to the clicked menu item
                 this.classList.add('active');
-
                 this.style.backgroundColor = '#D19C97'; // Change background color
-                
             });
         });
     });
-{% comment %} 
 
-    function loginalert(){
+    function logoutalert() {
         Swal.fire({
+            title: "Logout",
+            text: "Are you sure you want to logout?",
             icon: "warning",
-            title: "Oops...",
-            text: "Please log in to access your account!",
-            
-          });
-      } {% endcomment %}
-      function logoutalert(){
-          Swal.fire({
-              title: "Logout",
-              text: "Are you sure you want to logout?",
-              icon: "warning",
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Yes",
-              cancelButtonText: "No"
-
-
-            }).then((result) => {
-              if (result.isConfirmed) {
-
-                  fetch('{% url "user_app:user_logout" %}', {
-                      method: 'GET', // or 'POST', 'PUT', 'DELETE', etc.
-                      headers: {
-                        'Content-Type': 'application/json', // specify the content type if sending JSON data
-                        // Add any other headers you need, such as authorization tokens
-                      },
-                      // You can include a body for methods like POST or PUT
-                      // body: JSON.stringify(data), // where data is the JSON object you want to send
-                    })
-                    .then(response => {
-                      if (!response.ok) {
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('{% url "user_app:user_logout" %}', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
                         throw new Error('Network response was not ok');
-                      }
-                      console.log(response)
-                      window.location.href='{% url "user_app:userhome" %}'
-                // or response.text() if expecting plain text
-                    })
-             
-                    .catch(error => {
-                      // Handle errors here
-                    });
-                    
-
-    
-              }
-            });
-    </script>
-    
-
-
-
+                    }
+                    console.log(response);
+                    window.location.href = '{% url "user_app:userhome" %}';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        });
+    }
+</script>

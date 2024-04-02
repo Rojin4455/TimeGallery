@@ -12,32 +12,8 @@
             <a href="{% url 'store_app:products_by_category' %}" class="btn btn-primary">Continue Shopping</a>
         </div>
     {% else %}
-   
-    {% comment %} <div class="input-group mb-3 col-lg-5"> {% endcomment %}
-    {% comment %} <form id="coupenform" action="{% url 'cart_app:cart' %}" method="post" enctype="multipart/form-data"> {% endcomment %}
-            {% comment %} {% csrf_token %} {% endcomment %}
-        {% comment %} <input type="text" class="form-control"  id="inputField" name = "coupencode" oninput="handleInput()" placeholder="Enter code">
-        <div class="input-group-append" id ='applybutton'>
-            <button type="button" class="btn btn-outline-info" id="clearButton" onclick="clearInput()">Apply</button>
-        </div>  {% endcomment %}
-    {% comment %} </form> {% endcomment %}
-    {% comment %} <form method="post" id="couponForm">
-        {% csrf_token %}
-        <div class="input-group mb-3 col-lg-3">
-            <input type="text" class="form-control" id="inputField" name="coupencode" placeholder="Enter code">
-            <div class="input-group-append" id="applybutton">
-                <button type="submit" class="btn btn-outline-info" id="applyButton">Apply</button>
-            </div>
-        </div>
-    </form>
-    <div class="input-group-append">
-        <button type="button" class="btn btn-outline-info" id="applyCouponBtn">Show Coupons</button>
-    </div> {% endcomment %}
-    
-    {% comment %} </div> {% endcomment %}
-    
         <div class="row">
-            <aside class="col-lg-9">    
+            <div class="col-lg-9">
                 <div class="card">
                     <table class="table table-borderless table-shopping-cart">
                         <thead class="text-muted">
@@ -50,7 +26,6 @@
                         </thead>
                         <tbody>
                             {% for cart_item in cart_items %}
-                            
                             <tr>
                                 <td>
                                     <figure class="itemside align-items-center">
@@ -63,13 +38,13 @@
                                 </td>
                                 <td> 
                                     <div class="col"> 
-                                        <div class="input-group input-spinner" style="display: flex; align-items: center;">
+                                        <div class="input-group input-spinner">
                                             <a href="{% url 'cart_app:remove_cart' cart_item.product.id %}">
-                                                <button class="btn btn-light" type="button" onclick="decreaseQuantity({{ cart_item.id }})" style="padding: 5px 10px;"> <i class="fa fa-minus"></i> </button>
+                                                <button class="btn btn-light" type="button" onclick="decreaseQuantity({{ cart_item.id }})"> <i class="fa fa-minus"></i> </button>
                                             </a>
-                                            <input type="text" class="form-control text-center" id="quantity-{{ cart_item.id }}" value="{{ cart_item.quantity }}" style="text-align: center; padding: 0; width: 50px;" readonly>
+                                            <input type="text" class="form-control text-center" id="quantity-{{ cart_item.id }}" value="{{ cart_item.quantity }}" readonly>
                                             <a href="{% url 'cart_app:update_cart' cart_item.product.id %}">
-                                                <button class="btn btn-light" type="button" onclick="increaseQuantity({{ cart_item.id }})" style="padding: 5px 10px;"> <i class="fa fa-plus"></i> </button>
+                                                <button class="btn btn-light" type="button" onclick="increaseQuantity({{ cart_item.id }})"> <i class="fa fa-plus"></i> </button>
                                             </a>
                                         </div> <!-- input-group.// -->
                                     </div> <!-- col.// -->
@@ -84,7 +59,6 @@
                                     <a href="{% url 'cart_app:remove_cart_item' cart_item.product.id %}" class="btn btn-danger"> Remove</a>
                                 </td>
                             </tr>
-                           
                             {% endfor %}
                         </tbody>
                     </table>
@@ -99,59 +73,42 @@
                         {% endfor %}
                     {% endif %}
                 </div> <!-- card.// -->
-            </aside> <!-- col.// -->
+            </div> <!-- col-lg-9.// -->
             
-            <aside class="col-lg-3">
+            <div class="col-lg-3">
                 <div class="card">
                     <div class="card-body">
-                        <!-- Apply Coupon Section -->
-                        {% comment %} <h6 class="card-title">Apply Coupon</h6> {% endcomment %}
-                        {% comment %} <div class="input-group mb-3">
-                            <input type="text" class="form-control" id="couponInput" placeholder="Enter code">
-                            <div class="input-group-append">
-                                <button type="button" class="btn btn-outline-info" id="applyCouponBtn">Apply</button>
-                            </div>
-                        </div> {% endcomment %}
-                        <!-- Total price -->
                         <dl class="dlist-align">
                             <dt>Total price:</dt>
                             <dd class="text-right">₹{{ total_with_original_price }}</dd>
                         </dl>
-                        <!-- Discount -->
                         <dl class="dlist-align">
                             <dt>Product Discount:</dt>
                             <dd class="text-right"> ₹{{ discount }}</dd>
                         </dl>
                         {% if coupon_discount_amount %}
-
-                        <dl class="dlist-align">
-                            <dt>Coupon Discount:</dt>
-                            <dd class="text-right"> ₹{{ coupon_discount_amount }}</dd>
-                        </dl>
+                            <dl class="dlist-align">
+                                <dt>Coupon Discount:</dt>
+                                <dd class="text-right"> ₹{{ coupon_discount_amount }}</dd>
+                            </dl>
                         {% endif %}
-                        <!-- Total with discount -->
                         <dl class="dlist-align">
                             <dt>Total:</dt>
                             <p><dd class="text-right text-dark b"><strong>₹ {{ total }}</strong></dd></p>
                         </dl>
                         <hr>
-                        <!-- Payment options -->
-                        <p class="text-center mb-3">
+                        {% comment %} <p class="text-center mb-3">
                             <img src="{% static 'images/misc/payments.png' %}" height="26">
-                        </p>
-                        <!-- Checkout button -->
+                        </p> {% endcomment %}
                         <button onclick="checkoutClicked()" class="btn btn-primary btn-block">Checkout</button>
-                        <!-- Continue shopping button -->
                         <a href="{% url 'store_app:products_by_category' %}" class="btn btn-light btn-block">Continue Shopping</a>
                     </div>
                 </div>
-            </aside>
+            </div> <!-- col-lg-3.// -->
         </div> <!-- row.// -->
     {% endif %}
     </div> <!-- container .//  -->
 </section>
-
-
 
 <script>
     function decreaseQuantity(cartItemId) {
@@ -189,8 +146,6 @@
             });
         {% endif %}
     }
-
-        
 </script>
 
 {% endblock %}

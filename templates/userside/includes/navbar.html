@@ -1,6 +1,6 @@
 {% load static %}
 
-<style>
+{% comment %} <style>
     /* Custom CSS for Navbar */
 .navbar-nav .nav-link {
     padding: 8px 15px;
@@ -16,7 +16,7 @@
 .navbar-nav .active .nav-link {
     color: #007bff; /* Blue for active link */
 }
-</style>
+</style> {% endcomment %}
 
 <body>
     <!-- Topbar Start -->
@@ -106,27 +106,7 @@
     <!-- Navbar Start -->
     <div class="container-fluid mb-5">
         <div class="row border-top px-xl-5">
-            {% comment %} <div class="col-lg-3 d-none d-lg-block">
-                <a class="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100" data-toggle="collapse" href="#navbar-vertical" style="height: 65px; margin-top: -1px; padding: 0 30px;">
-                    <h6 class="m-0">Categories</h6>
-                    <i class="fa fa-angle-down text-dark"></i>
-                </a>
-                <nav class="collapse show navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0" id="navbar-vertical">
-                    <div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
-                        <div class="nav-item">
-                            <a href="#" class="nav-link" data-toggle="dropdown">Watches <i class="fa fa-angle-down float-right mt-1"></i></a>
-                            <!-- <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                <a href="" class="dropdown-item">Men's Dresses</a>
-                                <a href="" class="dropdown-item">Women's Dresses</a>
-                                <a href="" class="dropdown-item">Baby's Dresses</a>
-                            </div> -->
-                        </div>
-                        <a href="" class="nav-item nav-link">Analog Watch</a>
-                        <a href="" class="nav-item nav-link">Luxury Watch</a>
-                        <a href="" class="nav-item nav-link">Smart Watch</a>
-                    </div>
-                </nav>
-            </div> {% endcomment %}
+            
             <div class="col-lg-9">
                 <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
                     <a href="" class="text-decoration-none d-block d-lg-none">
@@ -136,29 +116,8 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                        {% comment %} <div class="navbar-nav mr-auto py-0">
-                            <a href="{% url 'user_app:userhome' %}" class="nav-item nav-link active">Home</a>
-                            <a href="{% url 'store_app:products_by_category' %}" class="nav-item nav-link">Shop</a>
-                            <a href="detail.html" class="nav-item nav-link">Shop Detail</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
-                                <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="cart.html" class="dropdown-item">Shopping Cart</a>
-                                    <a href="checkout.html" class="dropdown-item">Checkout</a>
-                                </div>
-                            </div>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
-                                                    
-                        </div> {% endcomment %}
-
-
-                        {% comment %} <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                            <a class="navbar-brand" href="#">Your Brand</a>
-                            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
-                         {% endcomment %}
+                       
+                        
                             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                                 <ul class="navbar-nav mr-auto">
                                     <li class="nav-item {% if request.path == '/userhome/' %}active{% endif %}">
@@ -167,21 +126,7 @@
                                     <li class="nav-item {% if request.path == '/products_by_category/' %}active{% endif %}">
                                         <a class="nav-link" href="{% url 'store_app:products_by_category' %}">Shop</a>
                                     </li>
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                                            aria-haspopup="true" aria-expanded="false">
-                                            Pages
-                                        </a>
-                                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                            <a class="dropdown-item {% if request.path == '/checkout/' %}active{% endif %}"
-                                                href="checkout.html">Checkout</a>
-                                            <a class="dropdown-item {% if request.path == '/user-cart/' %}active{% endif %}"
-                                                href="{% url 'cart_app:cart' %}">Shopping Cart</a>
-                                        </div>
-                                    </li>
-                                    <li class="nav-item {% if request.path == '/contact/' %}active{% endif %}">
-                                        <a class="nav-link" href="contact.html">Contact</a>
-                                    </li>
+
                                 </ul>
                             </div>
                         
