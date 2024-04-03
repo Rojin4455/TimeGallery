@@ -1,7 +1,5 @@
-# settings.py
-
-from pathlib import Path
 from dotenv import load_dotenv
+from pathlib import Path
 import os
 from django.urls import reverse_lazy
 
@@ -10,11 +8,21 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
 
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.getenv('SECRET_KEY')
+print("SECRET_KEY:", SECRET_KEY)
+
+
+ENGINE = os.getenv('ENGINE')
+print("ENGINE:", ENGINE)
+
+NAME = os.getenv('NAME')
+print("NAME:", NAME)
+
+
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['13.53.127.187','0.0.0.0']
 CSRF_TRUSTED_ORIGINS = ['https://api.razorpay.com']
 
 LOGIN_REDIRECT_URL = '/'
@@ -87,12 +95,12 @@ WSGI_APPLICATION = 'First_Ecommerce.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ['ENGINE'],
-        'NAME': os.environ['NAME'],
-        'USER': os.environ['USER'],
-        'PASSWORD': os.environ['PASSWORD'],
-        'HOST': os.environ['HOST'],
-        'PORT': os.environ['PORT'],
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.getenv('NAME'),
+        'USER': os.getenv('USER'),
+        'PASSWORD': os.getenv('PASSWORD'),
+        'HOST': os.getenv('HOST'),
+        'PORT': os.getenv('PORT'),
     }
 }
 
@@ -121,12 +129,12 @@ USE_TZ = True
 
 #Email Config
 
-EMAIL_BACKEND       = os.environ["EMAIL_BACKEND"]
-EMAIL_HOST          = os.environ["EMAIL_HOST"]
-EMAIL_USE_TLS       = os.environ["EMAIL_USE_TLS"]
-EMAIL_PORT          = os.environ["EMAIL_PORT"]
-EMAIL_HOST_USER     = os.environ["EMAIL_HOST_USER"]
-EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"] 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
+EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
 STATIC_URL = '/static/'
@@ -154,8 +162,9 @@ AUTH_USER_MODEL = 'admin_app.User'
 
 LOGIN_URL = reverse_lazy('user_app:login')
 
-RAZOR_PAY_KEY_ID = os.environ["RAZOR_PAY_KEY_ID"]
-KEY_SECRET = os.environ["KEY_SECRET"]
+RAZOR_PAY_KEY_ID = os.getenv('RAZOR_PAY_KEY_ID')
+KEY_SECRET = os.getenv('KEY_SECRET')
+
 
 SESSION_COOKIE_AGE = 3600  # 1 hour in seconds
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
