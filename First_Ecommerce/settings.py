@@ -20,8 +20,8 @@ NAME = os.getenv('NAME')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1']
-CSRF_TRUSTED_ORIGINS = ['https://api.razorpay.com']
+ALLOWED_HOSTS = ['127.0.0.1','timegallery.store','0.0.0.0']
+CSRF_TRUSTED_ORIGINS = ['https://api.razorpay.com','timegallery.store']
 
 LOGIN_REDIRECT_URL = '/'
 
