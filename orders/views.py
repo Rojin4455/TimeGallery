@@ -386,8 +386,8 @@ def place_order_razpay(request):
                 return redirect('order_app:order_success',razorpay_order_id,payment_id,signature)
 
         except Exception as e:
-            print('Exception:', str(e))
-            return redirect('order_app:payment_fail_order')
+                print('Exception:', str(e))
+                return redirect('order_app:payment_fail_order')
     else:
         messages.error(request,"Payment is Faied, Try Again")
         return redirect('checkout_app:checkout_payment')

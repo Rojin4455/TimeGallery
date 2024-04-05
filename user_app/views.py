@@ -135,7 +135,6 @@ def otp(request):
                     refferal.save()
                     WalletTransaction.objects.create(wallet = referral_user_wallet, transaction_type = "CREDIT", transaction_detail = "Referral Bonus", amount = referral_offer.amount)
 
-                    ReferralUser.objects.create(user = customer,count = 0)
                     user_wallet.balance += referral_offer.amount
                     user_wallet.save()
                     WalletTransaction.objects.create(wallet = user_wallet, transaction_type = "CREDIT", transaction_detail = "Signup Referral Bonus", amount = referral_offer.amount)
@@ -143,7 +142,8 @@ def otp(request):
                 except:
                     print("referral cannot exist")
                     pass
-
+                    
+            ReferralUser.objects.create(user = customer,count = 0)
 
             return redirect('user_app:userhome')
         else:

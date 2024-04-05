@@ -7,22 +7,20 @@ from django.urls import reverse_lazy
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
+print("BASE_DIR",BASE_DIR)
 
 SECRET_KEY = os.getenv('SECRET_KEY')
-print("SECRET_KEY:", SECRET_KEY)
 
 
 ENGINE = os.getenv('ENGINE')
-print("ENGINE:", ENGINE)
 
 NAME = os.getenv('NAME')
-print("NAME:", NAME)
 
 
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.53.127.187','0.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1']
 CSRF_TRUSTED_ORIGINS = ['https://api.razorpay.com']
 
 LOGIN_REDIRECT_URL = '/'
@@ -141,6 +139,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 MEDIA_URL='media/'
 MEDIA_ROOT=os.path.join(BASE_DIR,'media/')
