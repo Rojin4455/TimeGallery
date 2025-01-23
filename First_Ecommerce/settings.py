@@ -7,7 +7,6 @@ from django.urls import reverse_lazy
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
-print("BASE_DIR",BASE_DIR)
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
@@ -17,11 +16,13 @@ ENGINE = os.getenv('ENGINE')
 NAME = os.getenv('NAME')
 
 
+BASE_API_URL = os.getenv("BASE_API_URL")
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','timegallery.store','0.0.0.0']
-CSRF_TRUSTED_ORIGINS = ['https://api.razorpay.com','timegallery.store']
+# ALLOWED_HOSTS = ['127.0.0.1','timegallery.store','0.0.0.0']
+ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = ['https://api.razorpay.com','https://timegallery.store']
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -130,7 +131,7 @@ USE_TZ = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
-EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
+EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 

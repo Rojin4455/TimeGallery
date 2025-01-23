@@ -142,7 +142,7 @@
             description: "Test Transaction",
             image: "https://example.com/your_logo",
             order_id: data.context.order_id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-            callback_url: "https://timegallery.store/place_order_razpay/",
+            callback_url: "{{BASE_API_URL}}/place_order_razpay/",
             handler: function (response) {
               // Handle Razorpay response
               window.location.reload();

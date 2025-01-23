@@ -24,7 +24,7 @@ from django.conf.urls.static import static
 
 app_name = 'admin_app'
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin-default/', admin.site.urls),
     path('', include('user_app.urls')),
     path('', include('admin_app.urls')),
     path('', include('store.urls')),

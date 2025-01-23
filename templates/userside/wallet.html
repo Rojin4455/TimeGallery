@@ -86,7 +86,7 @@
                     name: "Time Gallery",
                     description: "Add Funds to Wallet",
                     order_id: data.order_id,
-                    callback_url: "https://timegallery.store/wallet_handler/?amount=" + amount,
+                    callback_url: "{{BASE_API_URL}}/wallet_handler/?amount=" + amount,
                     handler: function(response) {
                         // Handle successful payment
                         alert("Payment successful!");

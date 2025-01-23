@@ -989,8 +989,6 @@ def place_order_wallet(request):
     
 
     user_id = request.user.id
-
-    # Get necessary instances
     
     payment_methods_instance = PaymentMethod.objects.get(method_name="WALLET")
 

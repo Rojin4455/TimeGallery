@@ -45,7 +45,7 @@ def wallet(request):
             'user_wallet': user_wallet,
             'wallet_transaction': wallet_transaction,
         }
-
+        context["BASE_API_URL"] = settings.BASE_API_URL
         return render(request, 'userside/wallet.html', context)
     except Wallet.DoesNotExist:
         user_wallet = Wallet.objects.create(user=user, balance=0)
@@ -53,7 +53,7 @@ def wallet(request):
             'user': user,
             'user_wallet': user_wallet,
         }
-
+        context["BASE_API_URL"] = settings.BASE_API_URL
         return render(request, 'userside/wallet.html', context)
     except Exception as e:
         # Handle other exceptions as needed

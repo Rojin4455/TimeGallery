@@ -324,6 +324,7 @@ def checkout_payment(request,total=0,total_with_og_price=0,discount=0,quantity=0
             "wallet_balance":wallet.balance,
             "coupon_discount":cart.coupon_discount,
             "total":total,
+            
         }
     else:
         total_with_orginal_price = 0
@@ -353,11 +354,11 @@ def checkout_payment(request,total=0,total_with_og_price=0,discount=0,quantity=0
             #     total += cart_item.subtotal()
             total_amount = int(total * 100)  # Replace with your actual total amount calculation
             print("total amount:  ",total_amount)
-            currency = "INR"  # Replace with your currency
+            currency = "INR" 
             order_data = {
                 'amount': total_amount,
                 'currency': currency,
-                'receipt': 'order_rcptid_11',  # Replace with your receipt ID or generate dynamically
+                'receipt': 'order_rcptid_11',
                 'payment_capture': 1  # Auto-capture payment
             }
             
@@ -411,6 +412,7 @@ def checkout_payment(request,total=0,total_with_og_price=0,discount=0,quantity=0
             # else:
                 # Handle other payment methods or errors
                 # return JsonResponse({'error': 'Invalid payment method'})
+    context1["BASE_API_URL"] = settings.BASE_API_URL
     return render(request, 'userside/user_orders/payment_options.html', context1)
     # try:
     #     cart_items = CartItem.objects.filter(user=current_user)
